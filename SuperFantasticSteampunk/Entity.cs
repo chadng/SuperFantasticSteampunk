@@ -42,6 +42,7 @@ namespace SuperFantasticSteampunk
 
         public virtual void Update(GameTime gameTime)
         {
+            animationState.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             animationState.Apply(skeleton);
             skeleton.UpdateWorldTransform();
         }

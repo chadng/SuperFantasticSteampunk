@@ -29,8 +29,7 @@ namespace SuperFantasticSteampunk
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
+            ResourceManager.Initialize(Content, GraphicsDevice);
             base.Initialize();
         }
 
@@ -38,7 +37,8 @@ namespace SuperFantasticSteampunk
         {
             skeletonRenderer = new SkeletonRenderer(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            new Scene();
+            Scene.Current.AddEntity(new Entity("spineboy", 500, 500));
         }
 
         protected override void UnloadContent()
@@ -51,7 +51,7 @@ namespace SuperFantasticSteampunk
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            Scene.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -60,7 +60,7 @@ namespace SuperFantasticSteampunk
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            Scene.Draw(skeletonRenderer);
 
             base.Draw(gameTime);
         }

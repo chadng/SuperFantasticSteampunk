@@ -13,7 +13,7 @@ namespace SuperFantasticSteampunk
         #region Static Properties
         public static Scene Current
         {
-            get { return sceneStack.Peek(); }
+            get { return sceneStack.Count == 0 ? null : sceneStack.Peek(); }
         }
         #endregion
 
@@ -21,6 +21,20 @@ namespace SuperFantasticSteampunk
         static Scene()
         {
             sceneStack = new Stack<Scene>();
+        }
+        #endregion
+
+        #region Static Methods
+        public static void Update(GameTime gameTime)
+        {
+            if (Current != null)
+                Current.update(gameTime);
+        }
+
+        public static void Draw(SkeletonRenderer skeletonRenderer)
+        {
+            if (Current != null)
+                Current.draw(skeletonRenderer);
         }
         #endregion
 
@@ -47,25 +61,25 @@ namespace SuperFantasticSteampunk
             entities.Remove(entity);
         }
 
-        public void Update(GameTime gameTime)
-        {
-            foreach (Entity entity in entities)
-                entity.Update(gameTime);
-        }
-
-        public void Draw(SkeletonRenderer skeletonRenderer)
-        {
-            skeletonRenderer.Begin();
-            foreach (Entity entity in entities)
-                entity.Draw(skeletonRenderer);
-            skeletonRenderer.End();
-        }
-
         public void Finish()
         {
             entities.Clear();
             if (Scene.Current == this)
                 sceneStack.Pop();
+        }
+
+        private void update(GameTime gameTime)
+        {
+            foreach (Entity entity in entities)
+                entity.Update(gameTime);
+        }
+
+        private void draw(SkeletonRenderer skeletonRenderer)
+        {
+            skeletonRenderer.Begin();
+            foreach (Entity entity in entities)
+                entity.Draw(skeletonRenderer);
+            skeletonRenderer.End();
         }
         #endregion
     }
