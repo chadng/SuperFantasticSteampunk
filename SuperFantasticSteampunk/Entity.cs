@@ -37,7 +37,7 @@ namespace SuperFantasticSteampunk
         #region Instance Methods
         public virtual void Kill()
         {
-            Scene.Current.RemoveEntity(this);
+            Scene.RemoveEntity(this);
         }
 
         public virtual void Update(GameTime gameTime)

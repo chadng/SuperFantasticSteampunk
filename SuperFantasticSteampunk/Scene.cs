@@ -25,6 +25,27 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Static Methods
+        public static void AddEntity(Entity entity)
+        {
+            if (Current != null)
+                Current.addEntity(entity);
+        }
+
+        public static void RemoveEntity(Entity entity)
+        {
+            if (Current != null)
+                Current.removeEntity(entity);
+        }
+
+        public static void Finish()
+        {
+            if (Current != null)
+            {
+                Current.finish();
+                sceneStack.Pop();
+            }
+        }
+
         public static void Update(GameTime gameTime)
         {
             if (Current != null)
@@ -51,21 +72,19 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public void AddEntity(Entity entity)
+        private void addEntity(Entity entity)
         {
             entities.Add(entity);
         }
 
-        public void RemoveEntity(Entity entity)
+        private void removeEntity(Entity entity)
         {
             entities.Remove(entity);
         }
 
-        public void Finish()
+        private void finish()
         {
             entities.Clear();
-            if (Scene.Current == this)
-                sceneStack.Pop();
         }
 
         private void update(GameTime gameTime)

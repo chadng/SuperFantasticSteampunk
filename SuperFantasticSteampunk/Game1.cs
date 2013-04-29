@@ -38,7 +38,7 @@ namespace SuperFantasticSteampunk
             skeletonRenderer = new SkeletonRenderer(GraphicsDevice);
 
             new Scene();
-            Scene.Current.AddEntity(new Entity("spineboy", 500, 500));
+            Scene.AddEntity(new Entity("spineboy", 500, 500));
         }
 
         protected override void UnloadContent()
