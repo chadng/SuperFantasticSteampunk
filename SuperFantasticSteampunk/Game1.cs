@@ -16,14 +16,14 @@ namespace SuperFantasticSteampunk
     {
         private GraphicsDeviceManager graphics;
         private SkeletonRenderer skeletonRenderer;
-
+        private Entity e;
         public Game1()
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.IsFullScreen = false;
             graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1020;
+            graphics.PreferredBackBufferHeight = 1080;
             Content.RootDirectory = "Content";
         }
 
@@ -38,7 +38,7 @@ namespace SuperFantasticSteampunk
             skeletonRenderer = new SkeletonRenderer(GraphicsDevice);
 
             new Scene();
-            Scene.AddEntity(new Entity("spineboy", 500, 500));
+            Scene.AddEntity(e = new Entity("spineboy", 500, 500));
         }
 
         protected override void UnloadContent()
@@ -48,9 +48,12 @@ namespace SuperFantasticSteampunk
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Input.Pause())
                 Exit();
-
+            if (Input.Y()) e.Y -= 10;
+            if (Input.A()) e.Y += 10;
+            if (Input.X()) e.X -= 10;
+            if (Input.B()) e.X += 10;
             Scene.Update(gameTime);
 
             base.Update(gameTime);
