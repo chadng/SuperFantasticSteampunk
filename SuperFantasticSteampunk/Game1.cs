@@ -50,10 +50,7 @@ namespace SuperFantasticSteampunk
         {
             if (Input.Pause())
                 Exit();
-            if (Input.Y()) e.Y -= 10;
-            if (Input.A()) e.Y += 10;
-            if (Input.X()) e.X -= 10;
-            if (Input.B()) e.X += 10;
+
             Scene.Update(gameTime);
 
             base.Update(gameTime);
