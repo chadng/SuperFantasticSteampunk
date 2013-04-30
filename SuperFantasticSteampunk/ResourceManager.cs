@@ -65,8 +65,11 @@ namespace SuperFantasticSteampunk
             List<Dictionary<string, object>> weaponDataList = loadItemData(contentManager.RootDirectory + @"\Items\Weapons.txt");
             foreach (var data in weaponDataList)
             {
-                WeaponData weaponData = new WeaponData(data);
+                WeaponData weaponData = newObjectFromItemData<WeaponData>(data);
                 weaponDataDictionary.Add(weaponData.Name, weaponData);
+#if DEBUG
+                System.Console.WriteLine("Loaded weapon '" + weaponData.Name + "'");
+#endif
             }
         }
 
@@ -96,6 +99,18 @@ namespace SuperFantasticSteampunk
             if (currentData.Count > 0)
                 result.Add(currentData);
 
+            return result;
+        }
+
+        private static T newObjectFromItemData<T>(Dictionary<string, object> data)
+        {
+            T result = Activator.CreateInstance<T>();
+            foreach (KeyValuePair<string, object> property in data)
+            {
+                System.Reflection.PropertyInfo propertyInfo = typeof(T).GetProperty(property.Key);
+                if (propertyInfo != null)
+                    propertyInfo.SetValue(result, property.Value, null);
+            }
             return result;
         }
 

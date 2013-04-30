@@ -11,7 +11,7 @@ namespace SuperFantasticSteampunk
             return self;
         }
 
-        public static void WriteProperties(this Object self)
+        public static void WriteLineProperties(this Object self)
         {
             foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(self))
                 Console.WriteLine("{0}={1}", descriptor.Name, descriptor.GetValue(self));
