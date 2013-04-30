@@ -38,9 +38,14 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Battle.cs" />
+    <Compile Include="BattleState.cs" />
+    <Compile Include="BattleStates\Intro.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Input.cs" />
+    <Compile Include="Party.cs" />
+    <Compile Include="PartyMember.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManager.cs" />

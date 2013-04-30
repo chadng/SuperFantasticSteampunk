@@ -64,7 +64,7 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Constructors
-        public Scene()
+        protected Scene()
         {
             entities = new List<Entity>();
             sceneStack.Push(this);
@@ -72,28 +72,28 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        private void addEntity(Entity entity)
+        protected virtual void addEntity(Entity entity)
         {
             entities.Add(entity);
         }
 
-        private void removeEntity(Entity entity)
+        protected virtual void removeEntity(Entity entity)
         {
             entities.Remove(entity);
         }
 
-        private void finish()
+        protected virtual void finish()
         {
             entities.Clear();
         }
 
-        private void update(GameTime gameTime)
+        protected virtual void update(GameTime gameTime)
         {
             foreach (Entity entity in entities)
                 entity.Update(gameTime);
         }
 
-        private void draw(SkeletonRenderer skeletonRenderer)
+        protected virtual void draw(SkeletonRenderer skeletonRenderer)
         {
             skeletonRenderer.Begin();
             foreach (Entity entity in entities)
