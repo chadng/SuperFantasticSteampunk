@@ -2,10 +2,10 @@
 
 namespace SuperFantasticSteampunk.BattleStates
 {
-    class Intro : BattleState
+    class EndTurn : BattleState
     {
         #region Constructors
-        public Intro(Battle battle)
+        public EndTurn(Battle battle)
             : base(battle)
         {
         }
@@ -19,7 +19,12 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
-            ChangeState(new Think(battle));
+            if (battle.PlayerParty.Count == 0)
+                ChangeState(new Lose(battle));
+            else if (battle.EnemyParty.Count == 0)
+                ChangeState(new Win(battle));
+            else
+                ChangeState(new Think(battle));
         }
 
         public override void Update(GameTime gameTime)

@@ -21,7 +21,9 @@ namespace SuperFantasticSteampunk
         public abstract void Finish();
 
         public abstract void Update(GameTime gameTime);
-        public abstract void Draw(SkeletonRenderer skeletonRenderer);
+        public virtual void Draw(SkeletonRenderer skeletonRenderer)
+        {
+        }
 
         public void ChangeState(BattleState state)
         {

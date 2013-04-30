@@ -2,10 +2,10 @@
 
 namespace SuperFantasticSteampunk.BattleStates
 {
-    class Intro : BattleState
+    class Think : BattleState
     {
         #region Constructors
-        public Intro(Battle battle)
+        public Think(Battle battle)
             : base(battle)
         {
         }
@@ -19,7 +19,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
-            ChangeState(new Think(battle));
+            ChangeState(new Act(battle));
         }
 
         public override void Update(GameTime gameTime)
