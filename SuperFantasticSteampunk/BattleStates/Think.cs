@@ -3,23 +3,19 @@ using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk.BattleStates
 {
-    using InventoryItemList = List<KeyValuePair<string, int>>;
-
     class Think : BattleState
     {
         #region Instance Fields
-        private InputButtonDelayer inputButtonDelayer;
+        private InputButtonListener inputButtonListener;
         #endregion
 
         #region Constructors
         public Think(Battle battle)
             : base(battle)
         {
-            inputButtonDelayer = new InputButtonDelayer(new Dictionary<InputButton, InputButtonDelayer.KeyPressEventhandler> {
-                { InputButton.Up, buttonUpPressed },
-                { InputButton.Down, buttonDownPressed },
-                { InputButton.A, buttonAPressed },
-                { InputButton.B, buttonBPressed }
+            inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
+                { InputButton.Up, new ButtonEventHandlers(press: buttonUpPressed) },
+                { InputButton.Down, new ButtonEventHandlers(press: buttonDownPressed) }
             });
         }
         #endregion
@@ -38,7 +34,7 @@ namespace SuperFantasticSteampunk.BattleStates
         public override void Update(GameTime gameTime)
         {
             //TODO: Allow player to select from a menu to reposition and choose moves for party
-            inputButtonDelayer.Update(gameTime);
+            inputButtonListener.Update(gameTime);
         }
 
         private void buttonUpPressed()
@@ -59,6 +55,16 @@ namespace SuperFantasticSteampunk.BattleStates
         private void buttonBPressed()
         {
             System.Console.WriteLine("B");
+        }
+
+        private void buttonXPressed()
+        {
+            System.Console.WriteLine("X");
+        }
+
+        private void buttonYPressed()
+        {
+            System.Console.WriteLine("Y");
         }
         #endregion
     }

@@ -139,6 +139,7 @@ namespace SuperFantasticSteampunk
             case "string": return (object)valueString;
             case "int": return parseItemDataInt(valueString);
             case "WeaponType": return parseItemDataEnum<WeaponType>(valueString);
+            case "WeaponUseAgainst": return parseItemDataEnum<WeaponUseAgainst>(valueString);
             case "CharacterClass": return parseItemDataEnum<CharacterClass>(valueString);
             }
             return null;
