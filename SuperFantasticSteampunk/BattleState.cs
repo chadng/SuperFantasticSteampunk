@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Spine;
 
 namespace SuperFantasticSteampunk
@@ -12,6 +13,8 @@ namespace SuperFantasticSteampunk
         #region Constructors
         protected BattleState(Battle battle)
         {
+            if (battle == null)
+                throw new Exception("Battle cannot be null");
             this.battle = battle;
         }
         #endregion

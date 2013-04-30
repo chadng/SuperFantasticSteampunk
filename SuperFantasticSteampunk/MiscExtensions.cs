@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace SuperFantasticSteampunk
 {
@@ -8,6 +9,12 @@ namespace SuperFantasticSteampunk
         {
             action(self);
             return self;
+        }
+
+        public static void WriteProperties(this Object self)
+        {
+            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(self))
+                Console.WriteLine("{0}={1}", descriptor.Name, descriptor.GetValue(self));
         }
     }
 }

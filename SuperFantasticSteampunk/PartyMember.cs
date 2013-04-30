@@ -1,8 +1,11 @@
 ﻿namespace SuperFantasticSteampunk
 {
+    enum CharacterClass { Warrior, Marksman, Thief, Medic, Enemy }
+
     class PartyMember
     {
         #region Instance Properties
+        public CharacterClass CharacterClass { get; private set; }
         public int MaxHealth { get; private set; }
         public int Health { get; private set; }
         public int Attack { get; private set; }
