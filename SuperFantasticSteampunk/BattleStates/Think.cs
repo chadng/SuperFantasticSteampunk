@@ -14,7 +14,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
-            throw new System.NotImplementedException();
+            //TODO: Set up data structures for storing position data and move selections
         }
 
         public override void Finish()
@@ -24,7 +24,8 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(GameTime gameTime)
         {
-            throw new System.NotImplementedException();
+            //TODO: Allow player to select from a menu to reposition and choose moves for party
+            Finish();
         }
         #endregion
     }

@@ -14,7 +14,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
-            throw new System.NotImplementedException();
+            //TODO: Handle any status effects
         }
 
         public override void Finish()
@@ -29,7 +29,8 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(GameTime gameTime)
         {
-            throw new System.NotImplementedException();
+            //TODO: Update entities for any status effects
+            Finish();
         }
         #endregion
     }

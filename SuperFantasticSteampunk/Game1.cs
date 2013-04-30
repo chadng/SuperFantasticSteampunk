@@ -16,7 +16,7 @@ namespace SuperFantasticSteampunk
     {
         private GraphicsDeviceManager graphics;
         private SkeletonRenderer skeletonRenderer;
-        private Entity e;
+        
         public Game1()
             : base()
         {
@@ -37,8 +37,8 @@ namespace SuperFantasticSteampunk
         {
             skeletonRenderer = new SkeletonRenderer(GraphicsDevice);
 
-            new Battle(new Party(), new Party());
-            Scene.AddEntity(e = new Entity("spineboy", 500, 500));
+            new Battle(new Party().Tap(p => p.Add(new PartyMember())), new Party());
+            Scene.AddEntity(new Entity("spineboy", 500, 500));
         }
 
         protected override void UnloadContent()

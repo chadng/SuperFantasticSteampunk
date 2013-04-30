@@ -7,7 +7,7 @@ namespace SuperFantasticSteampunk
         #region Instance Properties
         public PartyMember PrimaryPartyMember
         {
-            get { return this[0]; }
+            get { return Count == 0 ? null : this[0]; }
         }
         #endregion
 
