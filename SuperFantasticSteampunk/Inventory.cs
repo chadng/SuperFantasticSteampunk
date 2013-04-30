@@ -2,7 +2,7 @@
 
 namespace SuperFantasticSteampunk
 {
-    using InventoryItemList = List<KeyValuePair<string, int>>;
+    using InventoryItem = KeyValuePair<string, int>;
 
     class Inventory : SortedDictionary<string, int>
     {
@@ -33,17 +33,19 @@ namespace SuperFantasticSteampunk
             }
         }
 
-        public InventoryItemList GetOrderedItems()
+        public List<InventoryItem> GetSortedItems()
         {
-            InventoryItemList result = new List<KeyValuePair<string, int>>(Count);
+            List<InventoryItem> result = new List<InventoryItem>(Count);
             if (LastUsedItemKey != null)
-                result.Add(new KeyValuePair<string, int>(LastUsedItemKey, this[LastUsedItemKey]));
+                result.Add(new InventoryItem(LastUsedItemKey, this[LastUsedItemKey]));
 
-            foreach (KeyValuePair<string, int> item in this)
+            foreach (InventoryItem item in this)
             {
                 if (item.Key != LastUsedItemKey)
                     result.Add(item);
             }
+
+            result.Sort();
             return result;
         }
         #endregion
