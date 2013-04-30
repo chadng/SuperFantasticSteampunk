@@ -1,15 +1,47 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace SuperFantasticSteampunk
 {
+    enum InputButton { Up, Down, Left, Right, A, B, X, Y, Pause }
+
     static class Input
     {
+        #region Types
+        private delegate bool buttonCheckMethod();
+        #endregion
+
         #region Constants
         private const float thumbStickDeadZone = 0.6f;
         #endregion
 
+        #region Static Fields
+        private static Dictionary<InputButton, buttonCheckMethod> buttonCheckBindings;
+        #endregion
+
+        #region Static Constructors
+        static Input()
+        {
+            buttonCheckBindings = new Dictionary<InputButton, buttonCheckMethod>();
+            buttonCheckBindings.Add(InputButton.Up, Up);
+            buttonCheckBindings.Add(InputButton.Down, Down);
+            buttonCheckBindings.Add(InputButton.Left, Left);
+            buttonCheckBindings.Add(InputButton.Right, Right);
+            buttonCheckBindings.Add(InputButton.A, A);
+            buttonCheckBindings.Add(InputButton.B, B);
+            buttonCheckBindings.Add(InputButton.X, X);
+            buttonCheckBindings.Add(InputButton.Y, Y);
+            buttonCheckBindings.Add(InputButton.Pause, Pause);
+        }
+        #endregion
+
         #region Static Methods
+        public static bool ButtonPressed(InputButton button)
+        {
+            return buttonCheckBindings[button]();
+        }
+
         public static bool Up()
         {
             return keyboardUp() || gamePadUp();

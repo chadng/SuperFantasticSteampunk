@@ -39,6 +39,14 @@ namespace SuperFantasticSteampunk
             return null;
         }
 
+        public static WeaponData GetWeaponData(string name)
+        {
+            WeaponData weaponData;
+            if (weaponDataDictionary.TryGetValue(name, out weaponData))
+                return weaponData;
+            return null;
+        }
+
         private static void populateSkeletonDataDictionary(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             string skeletonDirectory = contentManager.RootDirectory + @"\Skeletons\";
@@ -48,7 +56,7 @@ namespace SuperFantasticSteampunk
                 string skeletonName = atlasFileName.Replace(skeletonDirectory, "").Replace(".atlas", "");
                 skeletonDataDictionary.Add(skeletonName, loadSkeletonData(skeletonDirectory + skeletonName, graphicsDevice));
 #if DEBUG
-                System.Console.WriteLine("Loaded skeleton '" + skeletonName + "'");
+                Console.WriteLine("Loaded skeleton '" + skeletonName + "'");
 #endif
             }
         }
@@ -68,7 +76,7 @@ namespace SuperFantasticSteampunk
                 WeaponData weaponData = newObjectFromItemData<WeaponData>(data);
                 weaponDataDictionary.Add(weaponData.Name, weaponData);
 #if DEBUG
-                System.Console.WriteLine("Loaded weapon '" + weaponData.Name + "'");
+                Console.WriteLine("Loaded weapon '" + weaponData.Name + "'");
 #endif
             }
         }

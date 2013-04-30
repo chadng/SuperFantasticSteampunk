@@ -9,16 +9,16 @@ namespace SuperFantasticSteampunk
         {
             get { return Count == 0 ? null : this[0]; }
         }
+
+        public Inventory WeaponInventory { get; private set; }
+        public Inventory ItemInventory { get; private set; }
         #endregion
 
         #region Constructors
         public Party()
         {
-        }
-
-        public Party(IEnumerable<PartyMember> collection)
-            : base(collection)
-        {
+            WeaponInventory = new Inventory();
+            ItemInventory = new Inventory();
         }
         #endregion
 

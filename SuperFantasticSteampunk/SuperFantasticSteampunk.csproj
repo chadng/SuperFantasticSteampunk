@@ -61,6 +61,8 @@
     <Compile Include="BattleStates\Lose.cs" />
     <Compile Include="BattleStates\Think.cs" />
     <Compile Include="BattleStates\Win.cs" />
+    <Compile Include="InputButtonDelayer.cs" />
+    <Compile Include="Inventory.cs" />
     <Compile Include="MiscExtensions.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Game1.cs" />
