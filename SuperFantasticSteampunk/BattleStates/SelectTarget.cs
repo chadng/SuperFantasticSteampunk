@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk.BattleStates
@@ -16,6 +17,8 @@ namespace SuperFantasticSteampunk.BattleStates
         public SelectTarget(Battle battle, ThinkAction thinkAction)
             : base(battle)
         {
+            if (thinkAction == null)
+                throw new Exception("ThinkAction cannot be null");
             this.thinkAction = thinkAction;
             potentialTargets = new List<PartyMember>();
             currentPotentialTargetIndex = 0;

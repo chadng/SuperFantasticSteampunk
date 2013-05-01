@@ -1,13 +1,22 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk.BattleStates
 {
     class Act : BattleState
     {
+        #region Instance Fields
+        private List<ThinkAction> thinkActions;
+        #endregion
+
         #region Constructors
-        public Act(Battle battle)
+        public Act(Battle battle, List<ThinkAction> thinkActions)
             : base(battle)
         {
+            if (thinkActions == null)
+                throw new Exception("List<ThinkAction> cannot be null");
+            this.thinkActions = thinkActions;
         }
         #endregion
 

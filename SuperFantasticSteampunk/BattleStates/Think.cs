@@ -84,7 +84,8 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
-            ChangeState(new Act(battle));
+            thinkAboutEnemyPartyActions();
+            ChangeState(new Act(battle, actions));
         }
 
         public override void Resume(BattleState previousBattleState)
@@ -272,6 +273,11 @@ namespace SuperFantasticSteampunk.BattleStates
             }
             foreach (InventoryItem item in battle.PlayerParty.ItemInventory.GetSortedItems())
                 itemOptionNames.Add(item.Key);
+        }
+
+        private void thinkAboutEnemyPartyActions()
+        {
+            //TODO: Move and add actions for enemy party
         }
         #endregion
     }
