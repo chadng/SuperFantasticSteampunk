@@ -27,7 +27,7 @@ namespace SuperFantasticSteampunk
         {
         }
 
-        public virtual void Resume()
+        public virtual void Resume(BattleState previousBattleState)
         {
         }
 
@@ -38,17 +38,20 @@ namespace SuperFantasticSteampunk
 
         public void ChangeState(BattleState state)
         {
-            battle.ChangeState(state);
+            if (battle.CurrentBattleState == this)
+                battle.ChangeState(state);
         }
 
         public void PushState(BattleState state)
         {
-            battle.PushState(state);
+            if (battle.CurrentBattleState == this)
+                battle.PushState(state);
         }
 
-        public BattleState PopState()
+        public void PopState()
         {
-            return battle.PopState();
+            if (battle.CurrentBattleState == this)
+                battle.PopState();
         }
         #endregion
     }

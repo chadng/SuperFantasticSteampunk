@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk.BattleStates
@@ -10,16 +11,18 @@ namespace SuperFantasticSteampunk.BattleStates
     class ThinkAction
     {
         #region Instance Fields
-        public readonly ThinkActionType Type;
-        public readonly string OptionName;
-        public PartyMember Target;
+        public ThinkActionType Type { get; private set; }
+        public string OptionName { get; private set; }
+        public PartyMember Actor { get; set; }
+        public PartyMember Target { get; set; }
         #endregion
 
         #region Constructors
-        public ThinkAction(ThinkActionType type, string optionName, PartyMember target = null)
+        public ThinkAction(ThinkActionType type, string optionName, PartyMember actor = null, PartyMember target = null)
         {
             Type = type;
             OptionName = optionName;
+            Actor = actor;
             Target = target;
         }
         #endregion
@@ -29,12 +32,13 @@ namespace SuperFantasticSteampunk.BattleStates
     {
         #region Instance Fields
         private ThinkActionType currentThinkActionType;
+        private ThinkAction currentThinkAction; // Assigned to just before SelectTarget state is pushed
         private int currentOptionNameIndex;
         private PartyMember currentPartyMember;
         private List<string> optionNames;
         private List<string> weaponOptionNames;
         private List<string> itemOptionNames;
-        private Dictionary<PartyMember, ThinkAction> actions;
+        private List<ThinkAction> actions;
         private InputButtonListener inputButtonListener;
         #endregion
 
@@ -43,19 +47,21 @@ namespace SuperFantasticSteampunk.BattleStates
             : base(battle)
         {
             currentThinkActionType = ThinkActionType.None;
+            currentThinkAction = null;
             currentOptionNameIndex = 0;
             currentPartyMember = null;
             optionNames = null;
             weaponOptionNames = new List<string>().Tap(names => names.Add("Cancel"));
             itemOptionNames = new List<string>().Tap(names => names.Add("Cancel"));
-            actions = new Dictionary<PartyMember, ThinkAction>(battle.PlayerParty.Count);
+            actions = new List<ThinkAction>(battle.PlayerParty.Count);
 
             inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
                 { InputButton.Up, new ButtonEventHandlers(down: buttonUpDown) },
                 { InputButton.Down, new ButtonEventHandlers(down: buttonDownDown) },
                 { InputButton.A, new ButtonEventHandlers(down: buttonADown, up: buttonAUp) },
                 { InputButton.B, new ButtonEventHandlers(down: buttonBDown, up: buttonBUp) },
-                { InputButton.X, new ButtonEventHandlers(down: buttonXDown, up: buttonXUp) }
+                { InputButton.X, new ButtonEventHandlers(down: buttonXDown, up: buttonXUp) },
+                { InputButton.Y, new ButtonEventHandlers(up: buttonYUp) }
             });
         }
         #endregion
@@ -74,6 +80,25 @@ namespace SuperFantasticSteampunk.BattleStates
         public override void Finish()
         {
             ChangeState(new Act(battle));
+        }
+
+        public override void Resume(BattleState previousBattleState)
+        {
+            base.Resume(previousBattleState);
+
+            if (previousBattleState is SelectTarget)
+            {
+                if (currentThinkAction.Target != null)
+                {
+                    actions.Add(currentThinkAction);
+                    getNextPartyMember();
+                }
+                else // i.e. Cancel
+                {
+                    currentThinkAction = null;
+                    initThinkActionTypeMenu(ThinkActionType.None);
+                }
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -99,7 +124,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 currentOptionNameIndex = optionNames.Count - 1;
         }
 
-        private void buttonADown()
+        private void buttonADown() // Attack
         {
             if (currentThinkActionType == ThinkActionType.None)
                 initThinkActionTypeMenu(ThinkActionType.Attack);
@@ -111,7 +136,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 selectAction();
         }
 
-        private void buttonBDown()
+        private void buttonBDown() // Defend
         {
             if (currentThinkActionType == ThinkActionType.None)
                 initThinkActionTypeMenu(ThinkActionType.Defend);
@@ -123,7 +148,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 selectAction();
         }
 
-        private void buttonXDown()
+        private void buttonXDown() // Use item
         {
             if (currentThinkActionType == ThinkActionType.None)
                 initThinkActionTypeMenu(ThinkActionType.UseItem);
@@ -133,6 +158,16 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             if (currentThinkActionType == ThinkActionType.UseItem)
                 selectAction();
+        }
+
+        private void buttonYUp() // Cancel/go back
+        {
+            if (currentThinkActionType == ThinkActionType.None && actions.Count > 1)
+            {
+                ThinkAction lastAction = actions[actions.Count - 1];
+                actions.RemoveAt(actions.Count - 1);
+                currentPartyMember = lastAction.Actor;
+            }
         }
 
         private void initThinkActionTypeMenu(ThinkActionType thinkActionType)
@@ -149,8 +184,8 @@ namespace SuperFantasticSteampunk.BattleStates
                 return;
             }
 
-            actions.Add(currentPartyMember, new ThinkAction(currentThinkActionType, optionNames[currentOptionNameIndex]));
-            //TODO: choose target
+            currentThinkAction = new ThinkAction(currentThinkActionType, optionNames[currentOptionNameIndex], currentPartyMember);
+            PushState(new SelectTarget(battle, currentThinkAction));
         }
 
         private void setThinkActionType(ThinkActionType thinkActionType)
@@ -170,6 +205,17 @@ namespace SuperFantasticSteampunk.BattleStates
                 currentOptionNameIndex = 0;
             else
                 currentOptionNameIndex = 1;                
+        }
+
+        private void getNextPartyMember()
+        {
+            if (actions.Count == battle.PlayerParty.Count)
+                Finish();
+            else
+            {
+                IEnumerable<PartyMember> finishedPartyMembers = actions.Select<ThinkAction, PartyMember>(ta => ta.Actor);
+                currentPartyMember = battle.PlayerParty.Find(pm => !finishedPartyMembers.Contains(pm));
+            }
         }
         #endregion
     }

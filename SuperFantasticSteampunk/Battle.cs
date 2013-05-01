@@ -7,12 +7,18 @@ namespace SuperFantasticSteampunk
 {
     class Battle : Scene
     {
+
         #region Instance Fields
         private Stack<BattleState> states;
         private bool stateChanged;
         #endregion
 
         #region Instance Properties
+        public BattleState CurrentBattleState
+        {
+            get { return states.Peek(); }
+        }
+
         public Party PlayerParty { get; private set; }
         public Party EnemyParty { get; private set; }
         #endregion
@@ -43,16 +49,15 @@ namespace SuperFantasticSteampunk
 
         public void PushState(BattleState battleState)
         {
-            states.Peek().Pause();
+            CurrentBattleState.Pause();
             states.Push(battleState);
             stateChanged = true;
         }
 
-        public BattleState PopState()
+        public void PopState()
         {
             BattleState previousBattleState = states.Pop();
-            states.Peek().Resume();
-            return previousBattleState;
+            CurrentBattleState.Resume(previousBattleState);
         }
 
         protected override void update(GameTime gameTime)
@@ -61,18 +66,18 @@ namespace SuperFantasticSteampunk
             {
                 stateChanged = false;
 #if DEBUG
-                System.Console.WriteLine(states.Peek().GetType().Name + " battle state started");
+                System.Console.WriteLine(CurrentBattleState.GetType().Name + " battle state started");
 #endif
-                states.Peek().Start();
+                CurrentBattleState.Start();
             }
 
-            states.Peek().Update(gameTime);
+            CurrentBattleState.Update(gameTime);
             base.update(gameTime);
         }
 
         protected override void draw(SkeletonRenderer skeletonRenderer)
         {
-            states.Peek().Draw(skeletonRenderer);
+            CurrentBattleState.Draw(skeletonRenderer);
             base.draw(skeletonRenderer);
         }
         #endregion
