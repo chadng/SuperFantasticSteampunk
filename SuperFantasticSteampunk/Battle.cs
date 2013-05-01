@@ -50,6 +50,7 @@ namespace SuperFantasticSteampunk
         public void PushState(BattleState battleState)
         {
             CurrentBattleState.Pause();
+            Logger.Log(CurrentBattleState.GetType().Name + " battle state paused");
             states.Push(battleState);
             stateChanged = true;
         }
@@ -58,6 +59,7 @@ namespace SuperFantasticSteampunk
         {
             BattleState previousBattleState = states.Pop();
             CurrentBattleState.Resume(previousBattleState);
+            Logger.Log(CurrentBattleState.GetType().Name + " battle state resumed");
         }
 
         protected override void update(GameTime gameTime)
@@ -65,10 +67,8 @@ namespace SuperFantasticSteampunk
             if (stateChanged)
             {
                 stateChanged = false;
-#if DEBUG
-                System.Console.WriteLine(CurrentBattleState.GetType().Name + " battle state started");
-#endif
                 CurrentBattleState.Start();
+                Logger.Log(CurrentBattleState.GetType().Name + " battle state started");
             }
 
             CurrentBattleState.Update(gameTime);

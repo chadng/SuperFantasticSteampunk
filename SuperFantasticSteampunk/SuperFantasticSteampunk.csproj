@@ -64,6 +64,7 @@
     <Compile Include="BattleStates\Win.cs" />
     <Compile Include="InputButtonListener.cs" />
     <Compile Include="Inventory.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="MiscExtensions.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Game1.cs" />

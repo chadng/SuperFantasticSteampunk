@@ -14,6 +14,7 @@ namespace SuperFantasticSteampunk
         public Inventory()
         {
             LastUsedItemKey = null;
+            this.Add("test1", 3);
         }
         #endregion
 

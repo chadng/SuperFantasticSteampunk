@@ -56,12 +56,12 @@ namespace SuperFantasticSteampunk.BattleStates
             actions = new List<ThinkAction>(battle.PlayerParty.Count);
 
             inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
-                { InputButton.Up, new ButtonEventHandlers(down: buttonUpDown) },
-                { InputButton.Down, new ButtonEventHandlers(down: buttonDownDown) },
-                { InputButton.A, new ButtonEventHandlers(down: buttonADown, up: buttonAUp) },
-                { InputButton.B, new ButtonEventHandlers(down: buttonBDown, up: buttonBUp) },
-                { InputButton.X, new ButtonEventHandlers(down: buttonXDown, up: buttonXUp) },
-                { InputButton.Y, new ButtonEventHandlers(up: buttonYUp) }
+                { InputButton.Up, new ButtonEventHandlers(down: choosePreviousOption) },
+                { InputButton.Down, new ButtonEventHandlers(down: chooseNextOption) },
+                { InputButton.A, new ButtonEventHandlers(down: showAttackMenu, up: hideAttackMenu) },
+                { InputButton.B, new ButtonEventHandlers(down: showDefendMenu, up: hideDefendMenu) },
+                { InputButton.X, new ButtonEventHandlers(down: showItemMenu, up: hideItemMenu) },
+                { InputButton.Y, new ButtonEventHandlers(up: cancelAction) }
             });
         }
         #endregion
@@ -70,9 +70,9 @@ namespace SuperFantasticSteampunk.BattleStates
         public override void Start()
         {
             foreach (InventoryItem item in battle.PlayerParty.WeaponInventory.GetSortedItems())
-                weaponOptionNames.Add(item.Value.ToString() + " x " + item.Key);
+                weaponOptionNames.Add(item.Key);
             foreach (InventoryItem item in battle.PlayerParty.ItemInventory.GetSortedItems())
-                itemOptionNames.Add(item.Value.ToString() + " x " + item.Key);
+                itemOptionNames.Add(item.Key);
 
             currentPartyMember = battle.PlayerParty[0];
         }
@@ -106,61 +106,65 @@ namespace SuperFantasticSteampunk.BattleStates
             inputButtonListener.Update(gameTime);
         }
 
-        private void buttonUpDown()
+        private void choosePreviousOption()
         {
             if (currentThinkActionType == ThinkActionType.None || optionNames == null)
                 return;
 
             if (--currentOptionNameIndex < 0)
                 currentOptionNameIndex = 0;
+
+            Logger.Log("Selected option: " + optionNames[currentOptionNameIndex]);
         }
 
-        private void buttonDownDown()
+        private void chooseNextOption()
         {
             if (currentThinkActionType == ThinkActionType.None || optionNames == null)
                 return;
 
             if (++currentOptionNameIndex >= optionNames.Count)
                 currentOptionNameIndex = optionNames.Count - 1;
+
+            Logger.Log("Selected option: " + optionNames[currentOptionNameIndex]);
         }
 
-        private void buttonADown() // Attack
+        private void showAttackMenu()
         {
             if (currentThinkActionType == ThinkActionType.None)
                 initThinkActionTypeMenu(ThinkActionType.Attack);
         }
 
-        private void buttonAUp()
+        private void hideAttackMenu()
         {
             if (currentThinkActionType == ThinkActionType.Attack)
                 selectAction();
         }
 
-        private void buttonBDown() // Defend
+        private void showDefendMenu()
         {
             if (currentThinkActionType == ThinkActionType.None)
                 initThinkActionTypeMenu(ThinkActionType.Defend);
         }
 
-        private void buttonBUp()
+        private void hideDefendMenu()
         {
             if (currentThinkActionType == ThinkActionType.Defend)
                 selectAction();
         }
 
-        private void buttonXDown() // Use item
+        private void showItemMenu()
         {
             if (currentThinkActionType == ThinkActionType.None)
                 initThinkActionTypeMenu(ThinkActionType.UseItem);
         }
 
-        private void buttonXUp()
+        private void hideItemMenu()
         {
             if (currentThinkActionType == ThinkActionType.UseItem)
                 selectAction();
         }
 
-        private void buttonYUp() // Cancel/go back
+        private void cancelAction()
         {
             if (currentThinkActionType == ThinkActionType.None && actions.Count > 1)
             {

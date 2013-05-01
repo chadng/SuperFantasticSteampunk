@@ -55,9 +55,7 @@ namespace SuperFantasticSteampunk
             {
                 string skeletonName = atlasFileName.Replace(skeletonDirectory, "").Replace(".atlas", "");
                 skeletonDataDictionary.Add(skeletonName, loadSkeletonData(skeletonDirectory + skeletonName, graphicsDevice));
-#if DEBUG
-                Console.WriteLine("Loaded skeleton '" + skeletonName + "'");
-#endif
+                Logger.Log("Loaded skeleton '" + skeletonName + "'");
             }
         }
 
@@ -75,9 +73,7 @@ namespace SuperFantasticSteampunk
             {
                 WeaponData weaponData = newObjectFromItemData<WeaponData>(data);
                 weaponDataDictionary.Add(weaponData.Name, weaponData);
-#if DEBUG
-                Console.WriteLine("Loaded weapon '" + weaponData.Name + "'");
-#endif
+                Logger.Log("Loaded weapon '" + weaponData.Name + "'");
             }
         }
 
