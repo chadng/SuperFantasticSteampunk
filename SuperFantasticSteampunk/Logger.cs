@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace SuperFantasticSteampunk
 {
@@ -6,20 +7,36 @@ namespace SuperFantasticSteampunk
     {
         #region Static Fields
         private static uint messageCounter;
-        #endregion
-
-        #region Static Constructors
-        static Logger()
-        {
-            messageCounter = 0;
-            //TODO: choose between file and console logging
-        }
+        private static FileStream fileStream;
+        private static StreamWriter streamWriter;
         #endregion
 
         #region Static Methods
+        public static void Start()
+        {
+            messageCounter = 0;
+            fileStream = new FileStream("log.txt", FileMode.Create, FileAccess.Write);
+            streamWriter = new StreamWriter(fileStream);
+        }
+
+        public static void Finish()
+        {
+            streamWriter.Close();
+            fileStream.Close();
+        }
+
         public static void Log(string message)
         {
-            unchecked { Console.WriteLine(messageCounter++.ToString() + ": " + message); }
+            unchecked { message = messageCounter++.ToString() + ": " + message; }
+            streamWriter.WriteLine(message);
+#if DEBUG
+            Console.WriteLine(message);
+#endif
+        }
+
+        public static void Log(Exception e)
+        {
+            Log("Exception: " + e.Message + " (" + e.Source + ") \nTrace:\n" + e.StackTrace);
         }
         #endregion
     }
