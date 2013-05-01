@@ -7,7 +7,7 @@ namespace SuperFantasticSteampunk
     abstract class BattleState
     {
         #region Instance Fields
-        protected Battle battle;
+        protected readonly Battle battle;
         #endregion
 
         #region Constructors
@@ -23,6 +23,14 @@ namespace SuperFantasticSteampunk
         public abstract void Start();
         public abstract void Finish();
 
+        public virtual void Pause()
+        {
+        }
+
+        public virtual void Resume()
+        {
+        }
+
         public abstract void Update(GameTime gameTime);
         public virtual void Draw(SkeletonRenderer skeletonRenderer)
         {
@@ -31,6 +39,16 @@ namespace SuperFantasticSteampunk
         public void ChangeState(BattleState state)
         {
             battle.ChangeState(state);
+        }
+
+        public void PushState(BattleState state)
+        {
+            battle.PushState(state);
+        }
+
+        public BattleState PopState()
+        {
+            return battle.PopState();
         }
         #endregion
     }

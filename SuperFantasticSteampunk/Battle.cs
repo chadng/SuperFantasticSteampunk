@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Spine;
 
@@ -7,7 +8,7 @@ namespace SuperFantasticSteampunk
     class Battle : Scene
     {
         #region Instance Fields
-        private BattleState state;
+        private Stack<BattleState> states;
         private bool stateChanged;
         #endregion
 
@@ -19,9 +20,15 @@ namespace SuperFantasticSteampunk
         #region Constructors
         public Battle(Party playerParty, Party enemyParty)
         {
+            if (playerParty == null)
+                throw new Exception("Party playerParty cannot be null");
+            if (enemyParty == null)
+                throw new Exception("Party enemyParty cannot be null");
+
             PlayerParty = playerParty;
             EnemyParty = enemyParty;
-            this.state = new BattleStates.Intro(this);
+            states = new Stack<BattleState>();
+            states.Push(new BattleStates.Intro(this));
             stateChanged = true;
         }
         #endregion
@@ -29,8 +36,23 @@ namespace SuperFantasticSteampunk
         #region Instance Methods
         public void ChangeState(BattleState battleState)
         {
-            state = battleState;
+            states.Pop();
+            states.Push(battleState);
             stateChanged = true;
+        }
+
+        public void PushState(BattleState battleState)
+        {
+            states.Peek().Pause();
+            states.Push(battleState);
+            stateChanged = true;
+        }
+
+        public BattleState PopState()
+        {
+            BattleState previousBattleState = states.Pop();
+            states.Peek().Resume();
+            return previousBattleState;
         }
 
         protected override void update(GameTime gameTime)
@@ -39,18 +61,18 @@ namespace SuperFantasticSteampunk
             {
                 stateChanged = false;
 #if DEBUG
-                System.Console.WriteLine(state.GetType().Name + " battle state started");
+                System.Console.WriteLine(states.Peek().GetType().Name + " battle state started");
 #endif
-                state.Start();
+                states.Peek().Start();
             }
 
-            state.Update(gameTime);
+            states.Peek().Update(gameTime);
             base.update(gameTime);
         }
 
         protected override void draw(SkeletonRenderer skeletonRenderer)
         {
-            state.Draw(skeletonRenderer);
+            states.Peek().Draw(skeletonRenderer);
             base.draw(skeletonRenderer);
         }
         #endregion
