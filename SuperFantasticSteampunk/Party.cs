@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SuperFantasticSteampunk
 {
@@ -10,14 +11,16 @@ namespace SuperFantasticSteampunk
             get { return Count == 0 ? null : this[0]; }
         }
 
-        public Inventory WeaponInventory { get; private set; }
+        public Dictionary<CharacterClass, Inventory> WeaponInventories { get; private set; }
         public Inventory ItemInventory { get; private set; }
         #endregion
 
         #region Constructors
         public Party()
         {
-            WeaponInventory = new Inventory();
+            WeaponInventories = new Dictionary<CharacterClass, Inventory>();
+            foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
+                WeaponInventories.Add(characterClass, new Inventory());
             ItemInventory = new Inventory();
         }
         #endregion

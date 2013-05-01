@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 
@@ -36,7 +37,7 @@ namespace SuperFantasticSteampunk.BattleStates
         private int currentOptionNameIndex;
         private PartyMember currentPartyMember;
         private List<string> optionNames;
-        private List<string> weaponOptionNames;
+        private Dictionary<CharacterClass, List<string>> weaponOptionNames;
         private List<string> itemOptionNames;
         private List<ThinkAction> actions;
         private InputButtonListener inputButtonListener;
@@ -51,7 +52,11 @@ namespace SuperFantasticSteampunk.BattleStates
             currentOptionNameIndex = 0;
             currentPartyMember = null;
             optionNames = null;
-            weaponOptionNames = new List<string>().Tap(names => names.Add("Cancel"));
+
+            weaponOptionNames = new Dictionary<CharacterClass, List<string>>();
+            foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
+                weaponOptionNames.Add(characterClass, new List<string>().Tap(names => names.Add("Cancel")));
+
             itemOptionNames = new List<string>().Tap(names => names.Add("Cancel"));
             actions = new List<ThinkAction>(battle.PlayerParty.Count);
 
@@ -69,8 +74,11 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
-            foreach (InventoryItem item in battle.PlayerParty.WeaponInventory.GetSortedItems())
-                weaponOptionNames.Add(item.Key);
+            foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
+            {
+                foreach (InventoryItem item in battle.PlayerParty.WeaponInventories[characterClass].GetSortedItems())
+                    weaponOptionNames[characterClass].Add(item.Key);
+            }
             foreach (InventoryItem item in battle.PlayerParty.ItemInventory.GetSortedItems())
                 itemOptionNames.Add(item.Key);
 
@@ -200,7 +208,7 @@ namespace SuperFantasticSteampunk.BattleStates
             else if (thinkActionType == ThinkActionType.UseItem)
                 optionNames = itemOptionNames;
             else
-                optionNames = weaponOptionNames;
+                optionNames = weaponOptionNames[currentPartyMember.CharacterClass];
         }
 
         private void selectDefaultOptionName()
@@ -217,8 +225,8 @@ namespace SuperFantasticSteampunk.BattleStates
                 Finish();
             else
             {
-                IEnumerable<PartyMember> finishedPartyMembers = actions.Select<ThinkAction, PartyMember>(ta => ta.Actor);
-                currentPartyMember = battle.PlayerParty.Find(pm => !finishedPartyMembers.Contains(pm));
+                IEnumerable<PartyMember> finishedPartyMembers = actions.Select<ThinkAction, PartyMember>(thinkAction => thinkAction.Actor);
+                currentPartyMember = battle.PlayerParty.Find(partyMember => !finishedPartyMembers.Contains(partyMember));
             }
         }
         #endregion
