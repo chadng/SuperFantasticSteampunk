@@ -38,6 +38,7 @@ namespace SuperFantasticSteampunk.BattleStates
         private PartyMember currentPartyMember;
         private List<string> optionNames;
         private Dictionary<CharacterClass, List<string>> weaponOptionNames;
+        private Dictionary<CharacterClass, List<string>> shieldOptionNames;
         private List<string> itemOptionNames;
         private List<ThinkAction> actions;
         private InputButtonListener inputButtonListener;
@@ -50,14 +51,17 @@ namespace SuperFantasticSteampunk.BattleStates
             currentThinkActionType = ThinkActionType.None;
             currentThinkAction = null;
             currentOptionNameIndex = 0;
-            currentPartyMember = null;
             optionNames = null;
 
             weaponOptionNames = new Dictionary<CharacterClass, List<string>>();
+            shieldOptionNames = new Dictionary<CharacterClass, List<string>>();
+            itemOptionNames = new List<string>();
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
-                weaponOptionNames.Add(characterClass, new List<string>().Tap(names => names.Add("Cancel")));
+            {
+                weaponOptionNames.Add(characterClass, new List<string>());
+                shieldOptionNames.Add(characterClass, new List<string>());
+            }
 
-            itemOptionNames = new List<string>().Tap(names => names.Add("Cancel"));
             actions = new List<ThinkAction>(battle.PlayerParty.Count);
 
             inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
@@ -74,15 +78,8 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
-            foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
-            {
-                foreach (InventoryItem item in battle.PlayerParty.WeaponInventories[characterClass].GetSortedItems())
-                    weaponOptionNames[characterClass].Add(item.Key);
-            }
-            foreach (InventoryItem item in battle.PlayerParty.ItemInventory.GetSortedItems())
-                itemOptionNames.Add(item.Key);
-
-            currentPartyMember = battle.PlayerParty[0];
+            repopulateOptionNames();
+            getNextPartyMember();
         }
 
         public override void Finish()
@@ -98,19 +95,26 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 if (currentThinkAction.Target != null)
                 {
+                    Inventory inventory = getInventoryFromThinkActionType(currentThinkAction.Type);
+                    if (inventory != null)
+                        inventory.UseItem(currentThinkAction.OptionName);
+                    repopulateOptionNames();
                     actions.Add(currentThinkAction);
                     getNextPartyMember();
                 }
-                else // i.e. Cancel
-                {
-                    currentThinkAction = null;
-                    initThinkActionTypeMenu(ThinkActionType.None);
-                }
+
+                currentThinkAction = null;
+                initThinkActionTypeMenu(ThinkActionType.None);
             }
         }
 
         public override void Update(GameTime gameTime)
         {
+            if (actions.Count == battle.PlayerParty.Count)
+            {
+                Finish();
+                return;
+            }
             inputButtonListener.Update(gameTime);
         }
 
@@ -174,18 +178,26 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void cancelAction()
         {
-            if (currentThinkActionType == ThinkActionType.None && actions.Count > 1)
+            if (currentThinkActionType == ThinkActionType.None && actions.Count > 0)
             {
                 ThinkAction lastAction = actions[actions.Count - 1];
                 actions.RemoveAt(actions.Count - 1);
                 currentPartyMember = lastAction.Actor;
+                Inventory inventory = getInventoryFromThinkActionType(lastAction.Type);
+                if (inventory != null)
+                    inventory.AddItem(lastAction.OptionName);
+                repopulateOptionNames();
+                Logger.Log("Back to action selection for party member " + (actions.Count + 1).ToString());
             }
         }
 
         private void initThinkActionTypeMenu(ThinkActionType thinkActionType)
         {
             setThinkActionType(thinkActionType);
+            Logger.Log(thinkActionType.ToString() + " action menu opened");
             selectDefaultOptionName();
+            if (optionNames != null)
+                Logger.Log("Selected option: " + optionNames[currentOptionNameIndex]);
         }
 
         private void selectAction()
@@ -203,12 +215,13 @@ namespace SuperFantasticSteampunk.BattleStates
         private void setThinkActionType(ThinkActionType thinkActionType)
         {
             currentThinkActionType = thinkActionType;
-            if (thinkActionType == ThinkActionType.None)
-                optionNames = null;
-            else if (thinkActionType == ThinkActionType.UseItem)
-                optionNames = itemOptionNames;
-            else
-                optionNames = weaponOptionNames[currentPartyMember.CharacterClass];
+            switch (thinkActionType)
+            {
+            case ThinkActionType.Attack: optionNames = weaponOptionNames[currentPartyMember.CharacterClass]; break;
+            case ThinkActionType.Defend: optionNames = shieldOptionNames[currentPartyMember.CharacterClass]; break;
+            case ThinkActionType.UseItem: optionNames = itemOptionNames; break;
+            default: optionNames = null; break;
+            }
         }
 
         private void selectDefaultOptionName()
@@ -221,13 +234,44 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void getNextPartyMember()
         {
-            if (actions.Count == battle.PlayerParty.Count)
-                Finish();
-            else
+            if (actions.Count < battle.PlayerParty.Count)
             {
                 IEnumerable<PartyMember> finishedPartyMembers = actions.Select<ThinkAction, PartyMember>(thinkAction => thinkAction.Actor);
                 currentPartyMember = battle.PlayerParty.Find(partyMember => !finishedPartyMembers.Contains(partyMember));
+                Logger.Log("Action selection for party member " + (actions.Count + 1).ToString());
             }
+        }
+
+        private Inventory getInventoryFromThinkActionType(ThinkActionType thinkActionType)
+        {
+            switch (thinkActionType)
+            {
+            case ThinkActionType.Attack: return battle.PlayerParty.WeaponInventories[currentPartyMember.CharacterClass];
+            case ThinkActionType.Defend: return battle.PlayerParty.ShieldInventories[currentPartyMember.CharacterClass];
+            case ThinkActionType.UseItem: return battle.PlayerParty.ItemInventory;
+            default: return null;
+            }
+        }
+
+        private void repopulateOptionNames()
+        {
+            itemOptionNames.Clear();
+            itemOptionNames.Add("Cancel");
+            foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
+            {
+                weaponOptionNames[characterClass].Tap(names => names.Clear()).Add("Cancel");
+                shieldOptionNames[characterClass].Tap(names => names.Clear()).Add("Cancel");
+            }
+
+            foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
+            {
+                foreach (InventoryItem item in battle.PlayerParty.WeaponInventories[characterClass].GetSortedItems())
+                    weaponOptionNames[characterClass].Add(item.Key);
+                foreach (InventoryItem item in battle.PlayerParty.ShieldInventories[characterClass].GetSortedItems())
+                    shieldOptionNames[characterClass].Add(item.Key);
+            }
+            foreach (InventoryItem item in battle.PlayerParty.ItemInventory.GetSortedItems())
+                itemOptionNames.Add(item.Key);
         }
         #endregion
     }

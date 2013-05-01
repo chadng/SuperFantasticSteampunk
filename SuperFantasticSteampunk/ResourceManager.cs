@@ -12,6 +12,7 @@ namespace SuperFantasticSteampunk
         #region Static Fields
         private static SortedDictionary<string, SkeletonData> skeletonDataDictionary;
         private static SortedDictionary<string, WeaponData> weaponDataDictionary;
+        private static SortedDictionary<string, ShieldData> shieldDataDictionary;
         #endregion
 
         #region Static Methods
@@ -21,6 +22,8 @@ namespace SuperFantasticSteampunk
             populateSkeletonDataDictionary(contentManager, graphicsDevice);
             weaponDataDictionary = new SortedDictionary<string, WeaponData>();
             populateWeaponDataDictionary(contentManager);
+            shieldDataDictionary = new SortedDictionary<string, ShieldData>();
+            populateShieldDataDictionary(contentManager);
         }
 
         public static Skeleton GetSkeleton(string name)
@@ -31,19 +34,19 @@ namespace SuperFantasticSteampunk
             return null;
         }
 
-        public static Weapon GetWeapon(string name)
-        {
-            WeaponData weaponData;
-            if (weaponDataDictionary.TryGetValue(name, out weaponData))
-                return new Weapon(weaponData);
-            return null;
-        }
-
         public static WeaponData GetWeaponData(string name)
         {
             WeaponData weaponData;
             if (weaponDataDictionary.TryGetValue(name, out weaponData))
                 return weaponData;
+            return null;
+        }
+
+        public static ShieldData GetShieldData(string name)
+        {
+            ShieldData shieldData;
+            if (shieldDataDictionary.TryGetValue(name, out shieldData))
+                return shieldData;
             return null;
         }
 
@@ -77,11 +80,25 @@ namespace SuperFantasticSteampunk
             }
         }
 
+        private static void populateShieldDataDictionary(ContentManager contentManager)
+        {
+            List<Dictionary<string, object>> shieldDataList = loadItemData(contentManager.RootDirectory + @"\Items\Shields.txt");
+            foreach (var data in shieldDataList)
+            {
+                ShieldData shieldData = newObjectFromItemData<ShieldData>(data);
+                shieldDataDictionary.Add(shieldData.Name, shieldData);
+                Logger.Log("Loaded shield '" + shieldData.Name + "'");
+            }
+        }
+
         private static List<Dictionary<string, object>> loadItemData(string itemsFilePath)
         {
             List<Dictionary<string, object>> result = new List<Dictionary<string, object>>();
             if (!File.Exists(itemsFilePath))
+            {
+                Logger.Log("Could not find file '" + itemsFilePath + "' to load item data from");
                 return result;
+            }
 
             Dictionary<string, object> currentData = new Dictionary<string,object>();
             foreach (string line in File.ReadAllLines(itemsFilePath))

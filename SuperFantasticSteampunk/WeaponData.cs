@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SuperFantasticSteampunk
+﻿namespace SuperFantasticSteampunk
 {
     enum WeaponType { Melee, Ranged }
     enum WeaponUseAgainst { Player, Enemy, Both }

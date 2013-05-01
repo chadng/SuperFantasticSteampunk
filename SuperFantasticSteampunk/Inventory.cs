@@ -14,7 +14,7 @@ namespace SuperFantasticSteampunk
         public Inventory()
         {
             LastUsedItemKey = null;
-            this.Add("test1", 3);
+            this.Add("test1", 1);
         }
         #endregion
 
@@ -24,14 +24,29 @@ namespace SuperFantasticSteampunk
             if (ContainsKey(itemName))
             {
                 --this[itemName];
-                if (this[itemName] <= 0)
+                if (this[itemName] == 0) // not <= because negative is infinite
                 {
                     Remove(itemName);
                     LastUsedItemKey = null;
                 }
                 else
+                {
                     LastUsedItemKey = itemName;
+                    if (this[itemName] < 0)
+                        this[itemName] = -1;
+                }
             }
+        }
+
+        public void AddItem(string itemName)
+        {
+            if (ContainsKey(itemName))
+            {
+                if (this[itemName] > 0) // Negative is infinite so increment will mess it up
+                    ++this[itemName];
+            }
+            else
+                Add(itemName, 1);
         }
 
         public List<InventoryItem> GetSortedItems()

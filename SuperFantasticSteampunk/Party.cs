@@ -12,6 +12,7 @@ namespace SuperFantasticSteampunk
         }
 
         public Dictionary<CharacterClass, Inventory> WeaponInventories { get; private set; }
+        public Dictionary<CharacterClass, Inventory> ShieldInventories { get; private set; }
         public Inventory ItemInventory { get; private set; }
         #endregion
 
@@ -19,8 +20,12 @@ namespace SuperFantasticSteampunk
         public Party()
         {
             WeaponInventories = new Dictionary<CharacterClass, Inventory>();
+            ShieldInventories = new Dictionary<CharacterClass, Inventory>();
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
+            {
                 WeaponInventories.Add(characterClass, new Inventory());
+                ShieldInventories.Add(characterClass, new Inventory());
+            }
             ItemInventory = new Inventory();
         }
         #endregion
