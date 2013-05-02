@@ -31,11 +31,26 @@ namespace SuperFantasticSteampunk
             if (enemyParty == null)
                 throw new Exception("Party enemyParty cannot be null");
 
-            PlayerParty = playerParty;
-            EnemyParty = enemyParty;
+            PlayerParty = playerParty.Tap(party => party.StartBattle(this));
+            EnemyParty = enemyParty.Tap(party => party.StartBattle(this));
             states = new Stack<BattleState>();
             states.Push(new BattleStates.Intro(this));
             stateChanged = true;
+
+            Vector2 pos = new Vector2(400.0f);
+            foreach (PartyMember partyMember in PlayerParty)
+            {
+                partyMember.BattleEntity.Position = pos;
+                pos.Y += 150.0f;
+                pos.X -= 100.0f;
+            }
+            pos = new Vector2(700.0f, 400.0f);
+            foreach (PartyMember partyMember in EnemyParty)
+            {
+                partyMember.BattleEntity.Position = pos;
+                pos.Y += 150.0f;
+                pos.X += 100.0f;
+            }
         }
         #endregion
 
@@ -60,6 +75,23 @@ namespace SuperFantasticSteampunk
             BattleState previousBattleState = states.Pop();
             CurrentBattleState.Resume(previousBattleState);
             Logger.Log(CurrentBattleState.GetType().Name + " battle state resumed");
+        }
+
+        public void AddBattleEntity(Entity entity)
+        {
+            addEntity(entity);
+        }
+
+        public void RemoveBattleEntity(Entity entity)
+        {
+            removeEntity(entity);
+        }
+
+        protected override void finish()
+        {
+            PlayerParty.FinishBattle(this);
+            EnemyParty.FinishBattle(this);
+            base.finish();
         }
 
         protected override void update(GameTime gameTime)

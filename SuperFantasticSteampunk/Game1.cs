@@ -38,7 +38,6 @@ namespace SuperFantasticSteampunk
 
             new Battle(new Party().Tap(p => p.Add(new PartyMember(ResourceManager.GetPartyMemberData("player")))).Tap(p => p.Add(new PartyMember(ResourceManager.GetPartyMemberData("player")))),
                 new Party().Tap(p => p.Add(new PartyMember(ResourceManager.GetPartyMemberData("enemy")))));
-            Scene.AddEntity(new Entity(ResourceManager.GetNewSkeleton("spineboy"), new Vector2(500, 500)));
         }
 
         protected override void UnloadContent()

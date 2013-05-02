@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk
 {
@@ -15,6 +16,7 @@ namespace SuperFantasticSteampunk
         public int Charm { get; private set; }
         public int Level { get; private set; }
         public int Experience { get; private set; }
+        public Entity BattleEntity { get; private set; }
 
         public CharacterClass CharacterClass
         {
@@ -28,6 +30,21 @@ namespace SuperFantasticSteampunk
             if (partyMemberData == null)
                 throw new Exception("PartyMemberData cannot be null");
             PartyMemberData = partyMemberData;
+            BattleEntity = null;
+        }
+        #endregion
+
+        #region Instance Methods
+        public void StartBattle()
+        {
+            BattleEntity = new Entity(ResourceManager.GetNewSkeleton(PartyMemberData.SkeletonName), new Vector2());
+            BattleEntity.Skeleton.SetSkin(PartyMemberData.SkeletonSkinName);
+            BattleEntity.Skeleton.SetSlotsToBindPose();
+        }
+
+        public void FinishBattle()
+        {
+            BattleEntity = null;
         }
         #endregion
     }

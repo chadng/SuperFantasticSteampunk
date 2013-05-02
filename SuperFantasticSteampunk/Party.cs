@@ -53,6 +53,24 @@ namespace SuperFantasticSteampunk
             }
             return false;
         }
+
+        public void StartBattle(Battle battle)
+        {
+            foreach (PartyMember partyMember in this)
+            {
+                partyMember.StartBattle();
+                battle.AddBattleEntity(partyMember.BattleEntity);
+            }
+        }
+
+        public void FinishBattle(Battle battle)
+        {
+            foreach (PartyMember partyMember in this)
+            {
+                battle.RemoveBattleEntity(partyMember.BattleEntity);
+                partyMember.FinishBattle();
+            }
+        }
         #endregion
     }
 }
