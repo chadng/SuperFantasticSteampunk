@@ -19,12 +19,12 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
-            if (battle.PlayerParty.Count == 0)
-                ChangeState(new Lose(battle));
-            else if (battle.EnemyParty.Count == 0)
-                ChangeState(new Win(battle));
+            if (Battle.PlayerParty.Count == 0)
+                ChangeState(new Lose(Battle));
+            else if (Battle.EnemyParty.Count == 0)
+                ChangeState(new Win(Battle));
             else
-                ChangeState(new Think(battle));
+                ChangeState(new Think(Battle));
         }
 
         public override void Update(GameTime gameTime)

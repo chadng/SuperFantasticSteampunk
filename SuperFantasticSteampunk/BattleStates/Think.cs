@@ -72,6 +72,8 @@ namespace SuperFantasticSteampunk.BattleStates
                 { InputButton.X, new ButtonEventHandlers(down: showItemMenu, up: hideItemMenu) },
                 { InputButton.Y, new ButtonEventHandlers(up: cancelAction) }
             });
+
+            BattleStateRenderer = new ThinkRenderer(this);
         }
         #endregion
 
@@ -85,7 +87,7 @@ namespace SuperFantasticSteampunk.BattleStates
         public override void Finish()
         {
             thinkAboutEnemyPartyActions();
-            ChangeState(new Act(battle, actions));
+            ChangeState(new Act(Battle, actions));
         }
 
         public override void Resume(BattleState previousBattleState)
@@ -111,7 +113,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(GameTime gameTime)
         {
-            if (actions.Count == battle.PlayerParty.Count)
+            if (actions.Count == Battle.PlayerParty.Count)
             {
                 Finish();
                 return;
@@ -210,7 +212,7 @@ namespace SuperFantasticSteampunk.BattleStates
             }
 
             currentThinkAction = new ThinkAction(currentThinkActionType, optionNames[currentOptionNameIndex], currentPartyMember);
-            PushState(new SelectTarget(battle, currentThinkAction));
+            PushState(new SelectTarget(Battle, currentThinkAction));
         }
 
         private void setThinkActionType(ThinkActionType thinkActionType)
@@ -235,10 +237,10 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void getNextPartyMember()
         {
-            if (actions.Count < battle.PlayerParty.Count)
+            if (actions.Count < Battle.PlayerParty.Count)
             {
                 IEnumerable<PartyMember> finishedPartyMembers = actions.Select<ThinkAction, PartyMember>(thinkAction => thinkAction.Actor);
-                currentPartyMember = battle.PlayerParty.Find(partyMember => !finishedPartyMembers.Contains(partyMember));
+                currentPartyMember = Battle.PlayerParty.Find(partyMember => !finishedPartyMembers.Contains(partyMember));
                 Logger.Log("Action selection for party member " + (actions.Count + 1).ToString());
             }
         }
@@ -247,9 +249,9 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             switch (thinkActionType)
             {
-            case ThinkActionType.Attack: return battle.PlayerParty.WeaponInventories[currentPartyMember.CharacterClass];
-            case ThinkActionType.Defend: return battle.PlayerParty.ShieldInventories[currentPartyMember.CharacterClass];
-            case ThinkActionType.UseItem: return battle.PlayerParty.ItemInventory;
+            case ThinkActionType.Attack: return Battle.PlayerParty.WeaponInventories[currentPartyMember.CharacterClass];
+            case ThinkActionType.Defend: return Battle.PlayerParty.ShieldInventories[currentPartyMember.CharacterClass];
+            case ThinkActionType.UseItem: return Battle.PlayerParty.ItemInventory;
             default: return null;
             }
         }
@@ -266,12 +268,12 @@ namespace SuperFantasticSteampunk.BattleStates
 
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
             {
-                foreach (InventoryItem item in battle.PlayerParty.WeaponInventories[characterClass].GetSortedItems())
+                foreach (InventoryItem item in Battle.PlayerParty.WeaponInventories[characterClass].GetSortedItems())
                     weaponOptionNames[characterClass].Add(item.Key);
-                foreach (InventoryItem item in battle.PlayerParty.ShieldInventories[characterClass].GetSortedItems())
+                foreach (InventoryItem item in Battle.PlayerParty.ShieldInventories[characterClass].GetSortedItems())
                     shieldOptionNames[characterClass].Add(item.Key);
             }
-            foreach (InventoryItem item in battle.PlayerParty.ItemInventory.GetSortedItems())
+            foreach (InventoryItem item in Battle.PlayerParty.ItemInventory.GetSortedItems())
                 itemOptionNames.Add(item.Key);
         }
 

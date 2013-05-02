@@ -40,13 +40,13 @@ namespace SuperFantasticSteampunk.BattleStates
                 if (weaponData != null)
                 {
                     if (weaponData.WeaponUseAgainst == WeaponUseAgainst.Player || weaponData.WeaponUseAgainst == WeaponUseAgainst.Both)
-                        potentialTargets.AddRange(battle.PlayerParty);
+                        potentialTargets.AddRange(Battle.PlayerParty);
                     if (weaponData.WeaponUseAgainst == WeaponUseAgainst.Enemy || weaponData.WeaponUseAgainst == WeaponUseAgainst.Both)
-                        potentialTargets.AddRange(battle.EnemyParty);
+                        potentialTargets.AddRange(Battle.EnemyParty);
                 }
             }
             else
-                potentialTargets.AddRange(battle.PlayerParty);
+                potentialTargets.AddRange(Battle.PlayerParty);
         }
 
         public override void Finish()

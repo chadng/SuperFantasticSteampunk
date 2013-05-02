@@ -28,7 +28,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
-            ChangeState(new EndTurn(battle));
+            ChangeState(new EndTurn(Battle));
         }
 
         public override void Update(GameTime gameTime)

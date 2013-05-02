@@ -6,8 +6,9 @@ namespace SuperFantasticSteampunk
 {
     abstract class BattleState
     {
-        #region Instance Fields
-        protected readonly Battle battle;
+        #region Instance Properties
+        public Battle Battle { get; private set; }
+        public BattleStateRenderer BattleStateRenderer { get; protected set; }
         #endregion
 
         #region Constructors
@@ -15,7 +16,7 @@ namespace SuperFantasticSteampunk
         {
             if (battle == null)
                 throw new Exception("Battle cannot be null");
-            this.battle = battle;
+            Battle = battle;
         }
         #endregion
 
@@ -32,26 +33,23 @@ namespace SuperFantasticSteampunk
         }
 
         public abstract void Update(GameTime gameTime);
-        public virtual void Draw(SkeletonRenderer skeletonRenderer)
-        {
-        }
 
         public void ChangeState(BattleState state)
         {
-            if (battle.CurrentBattleState == this)
-                battle.ChangeState(state);
+            if (Battle.CurrentBattleState == this)
+                Battle.ChangeState(state);
         }
 
         public void PushState(BattleState state)
         {
-            if (battle.CurrentBattleState == this)
-                battle.PushState(state);
+            if (Battle.CurrentBattleState == this)
+                Battle.PushState(state);
         }
 
         public void PopState()
         {
-            if (battle.CurrentBattleState == this)
-                battle.PopState();
+            if (Battle.CurrentBattleState == this)
+                Battle.PopState();
         }
         #endregion
     }

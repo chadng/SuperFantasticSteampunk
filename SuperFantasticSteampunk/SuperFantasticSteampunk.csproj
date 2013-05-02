@@ -55,12 +55,14 @@
   <ItemGroup>
     <Compile Include="Battle.cs" />
     <Compile Include="BattleState.cs" />
+    <Compile Include="BattleStateRenderer.cs" />
     <Compile Include="BattleStates\Act.cs" />
     <Compile Include="BattleStates\EndTurn.cs" />
     <Compile Include="BattleStates\Intro.cs" />
     <Compile Include="BattleStates\Lose.cs" />
     <Compile Include="BattleStates\SelectTarget.cs" />
     <Compile Include="BattleStates\Think.cs" />
+    <Compile Include="BattleStates\ThinkRenderer.cs" />
     <Compile Include="BattleStates\Win.cs" />
     <Compile Include="InputButtonListener.cs" />
     <Compile Include="Inventory.cs" />
