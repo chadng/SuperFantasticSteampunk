@@ -13,6 +13,13 @@ namespace SuperFantasticSteampunk.BattleStates
         private InputButtonListener inputButtonListener;
         #endregion
 
+        #region Instance Properties
+        public PartyMember PotentialTarget
+        {
+            get { return potentialTargets[currentPotentialTargetIndex]; }
+        }
+        #endregion
+
         #region Constructors
         public SelectTarget(Battle battle, ThinkAction thinkAction)
             : base(battle)
@@ -47,6 +54,8 @@ namespace SuperFantasticSteampunk.BattleStates
             }
             else
                 potentialTargets.AddRange(Battle.PlayerParty);
+
+            BattleStateRenderer = new SelectTargetRenderer(this);
         }
 
         public override void Finish()

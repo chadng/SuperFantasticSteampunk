@@ -14,6 +14,7 @@ namespace SuperFantasticSteampunk
         private static SortedDictionary<string, WeaponData> weaponDataDictionary;
         private static SortedDictionary<string, ShieldData> shieldDataDictionary;
         private static SortedDictionary<string, PartyMemberData> partyMemberDataDictionary;
+        private static SortedDictionary<string, Texture2D> textureDictionary;
         private static SortedDictionary<string, SpriteFont> spriteFontDictionary;
         #endregion
 
@@ -28,6 +29,8 @@ namespace SuperFantasticSteampunk
             populateShieldDataDictionary(contentManager);
             partyMemberDataDictionary = new SortedDictionary<string, PartyMemberData>();
             populatePartyMemberDataDictionary(contentManager);
+            textureDictionary = new SortedDictionary<string, Texture2D>();
+            populateTextureDictionary(contentManager);
             spriteFontDictionary = new SortedDictionary<string, SpriteFont>();
             populateSpriteFontDictionary(contentManager);
         }
@@ -61,6 +64,14 @@ namespace SuperFantasticSteampunk
             PartyMemberData partyMemberData;
             if (partyMemberDataDictionary.TryGetValue(name, out partyMemberData))
                 return partyMemberData;
+            return null;
+        }
+
+        public static Texture2D GetTexture(string name)
+        {
+            Texture2D texture;
+            if (textureDictionary.TryGetValue(name, out texture))
+                return texture;
             return null;
         }
 
@@ -205,6 +216,18 @@ namespace SuperFantasticSteampunk
             if (Enum.TryParse<T>(valueString, out result))
                 return (object)result;
             return (object)0;
+        }
+
+        private static void populateTextureDictionary(ContentManager contentManager)
+        {
+            string textureDirectory = contentManager.RootDirectory + @"\Textures\";
+            IEnumerable<string> textureFileNames = Directory.EnumerateFiles(textureDirectory, "*.png");
+            foreach (string textureFileName in textureFileNames)
+            {
+                string textureName = textureFileName.Replace(textureDirectory, "").Replace(".png", "");
+                textureDictionary.Add(textureName, contentManager.Load<Texture2D>(@"Textures\" + textureName));
+                Logger.Log("Loaded texture '" + textureName + "'");
+            }
         }
 
         private static void populateSpriteFontDictionary(ContentManager contentManager)

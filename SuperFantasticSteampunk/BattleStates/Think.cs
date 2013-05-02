@@ -31,12 +31,6 @@ namespace SuperFantasticSteampunk.BattleStates
 
     class Think : BattleState
     {
-        #region Instance Properties
-        public ThinkActionType CurrentThinkActionType { get; private set; }
-        public int CurrentOptionNameIndex { get; private set; }
-        public PartyMember CurrentPartyMember { get; private set; }
-        public List<string> OptionNames { get; private set; }
-        #endregion
 
         #region Instance Fields
         private ThinkAction currentThinkAction; // Assigned to just before SelectTarget state is pushed
@@ -45,6 +39,13 @@ namespace SuperFantasticSteampunk.BattleStates
         private List<string> itemOptionNames;
         private List<ThinkAction> actions;
         private InputButtonListener inputButtonListener;
+        #endregion
+
+        #region Instance Properties
+        public ThinkActionType CurrentThinkActionType { get; private set; }
+        public int CurrentOptionNameIndex { get; private set; }
+        public PartyMember CurrentPartyMember { get; private set; }
+        public List<string> OptionNames { get; private set; }
         #endregion
 
         #region Constructors
@@ -75,8 +76,6 @@ namespace SuperFantasticSteampunk.BattleStates
                 { InputButton.X, new ButtonEventHandlers(down: showItemMenu, up: hideItemMenu) },
                 { InputButton.Y, new ButtonEventHandlers(up: cancelAction) }
             });
-
-            BattleStateRenderer = new ThinkRenderer(this);
         }
         #endregion
 
@@ -85,6 +84,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             repopulateOptionNames();
             getNextPartyMember();
+            BattleStateRenderer = new ThinkRenderer(this);
         }
 
         public override void Finish()
@@ -98,20 +98,7 @@ namespace SuperFantasticSteampunk.BattleStates
             base.Resume(previousBattleState);
 
             if (previousBattleState is SelectTarget)
-            {
-                if (currentThinkAction.Target != null)
-                {
-                    Inventory inventory = getInventoryFromThinkActionType(currentThinkAction.Type);
-                    if (inventory != null)
-                        inventory.UseItem(currentThinkAction.OptionName);
-                    repopulateOptionNames();
-                    actions.Add(currentThinkAction);
-                    getNextPartyMember();
-                }
-
-                currentThinkAction = null;
-                initThinkActionTypeMenu(ThinkActionType.None);
-            }
+                finishThinkForCurrentPartyMember();
         }
 
         public override void Update(GameTime gameTime)
@@ -215,7 +202,10 @@ namespace SuperFantasticSteampunk.BattleStates
             }
 
             currentThinkAction = new ThinkAction(CurrentThinkActionType, OptionNames[CurrentOptionNameIndex], CurrentPartyMember);
-            PushState(new SelectTarget(Battle, currentThinkAction));
+            if (CurrentThinkActionType == ThinkActionType.Defend)
+                finishThinkForCurrentPartyMember();
+            else
+                PushState(new SelectTarget(Battle, currentThinkAction));
         }
 
         private void setThinkActionType(ThinkActionType thinkActionType)
@@ -278,6 +268,22 @@ namespace SuperFantasticSteampunk.BattleStates
             }
             foreach (InventoryItem item in Battle.PlayerParty.ItemInventory.GetSortedItems())
                 itemOptionNames.Add(item.Key);
+        }
+
+        private void finishThinkForCurrentPartyMember()
+        {
+            if (currentThinkAction.Target != null || currentThinkAction.Type == ThinkActionType.Defend)
+            {
+                Inventory inventory = getInventoryFromThinkActionType(currentThinkAction.Type);
+                if (inventory != null)
+                    inventory.UseItem(currentThinkAction.OptionName);
+                repopulateOptionNames();
+                actions.Add(currentThinkAction);
+                getNextPartyMember();
+            }
+
+            currentThinkAction = null;
+            initThinkActionTypeMenu(ThinkActionType.None);
         }
 
         private void thinkAboutEnemyPartyActions()

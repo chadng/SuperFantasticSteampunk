@@ -1,11 +1,16 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Spine;
 
 namespace SuperFantasticSteampunk.BattleStates
 {
     class ThinkRenderer : BattleStateRenderer
     {
+        #region Instance Fields
+        Texture2D arrowTexture;
+        #endregion
+
         #region Instance Properties
         protected new Think battleState
         {
@@ -17,6 +22,7 @@ namespace SuperFantasticSteampunk.BattleStates
         public ThinkRenderer(BattleState battleState)
             : base(battleState)
         {
+            arrowTexture = ResourceManager.GetTexture("arrow_down");
         }
         #endregion
 
@@ -33,12 +39,13 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void AfterDraw(Renderer renderer)
         {
-            DrawThinkActionTypeMenu(renderer);
+            drawThinkActionTypeMenu(renderer);
             if (battleState.CurrentThinkActionType != ThinkActionType.None)
-                DrawOptionNamesSubMenu(renderer);
+                drawOptionNamesSubMenu(renderer);
+            drawArrowOverCurrentPartyMember(renderer);
         }
 
-        private void DrawThinkActionTypeMenu(Renderer renderer)
+        private void drawThinkActionTypeMenu(Renderer renderer)
         {
             Vector2 position = new Vector2(100);
             foreach (ThinkActionType thinkActionType in Enum.GetValues(typeof(ThinkActionType)))
@@ -50,7 +57,7 @@ namespace SuperFantasticSteampunk.BattleStates
             }
         }
 
-        private void DrawOptionNamesSubMenu(Renderer renderer)
+        private void drawOptionNamesSubMenu(Renderer renderer)
         {
             Vector2 position = new Vector2(200, 100);
             for (int i = 0; i < battleState.OptionNames.Count; ++i)
@@ -58,6 +65,13 @@ namespace SuperFantasticSteampunk.BattleStates
                 renderer.DrawText(battleState.OptionNames[i], position, i == battleState.CurrentOptionNameIndex ? Color.Blue : Color.White);
                 position.Y += 20.0f;
             }
+        }
+
+        private void drawArrowOverCurrentPartyMember(Renderer renderer)
+        {
+            Vector2 position = battleState.CurrentPartyMember.BattleEntity.Position;
+            position.Y -= 400.0f;
+            renderer.Draw(arrowTexture, position, Color.White);
         }
         #endregion
     }

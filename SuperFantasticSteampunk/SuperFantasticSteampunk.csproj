@@ -61,6 +61,7 @@
     <Compile Include="BattleStates\Intro.cs" />
     <Compile Include="BattleStates\Lose.cs" />
     <Compile Include="BattleStates\SelectTarget.cs" />
+    <Compile Include="BattleStates\SelectTargetRenderer.cs" />
     <Compile Include="BattleStates\Think.cs" />
     <Compile Include="BattleStates\ThinkRenderer.cs" />
     <Compile Include="BattleStates\Win.cs" />
@@ -113,6 +114,9 @@
     <Content Include="Content\Skeletons\spineboy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Textures\arrow_down.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +158,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
