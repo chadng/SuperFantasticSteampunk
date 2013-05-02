@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Spine;
 
 namespace SuperFantasticSteampunk
@@ -7,30 +8,28 @@ namespace SuperFantasticSteampunk
     {
         #region Instance Fields
         private Skeleton skeleton;
+        private Texture2D texture;
         private AnimationState animationState;
         #endregion
 
         #region Instance Properties
-        public float X
-        {
-            get { return skeleton.RootBone.X; }
-            set { skeleton.RootBone.X = value; }
-        }
-
-        public float Y
-        {
-            get { return skeleton.RootBone.Y; }
-            set { skeleton.RootBone.Y = value; }
-        }
+        public Vector2 Position { get; set; }
+        public Color Tint { get; set; }
         #endregion
 
         #region Constructors
-        public Entity(string skeletonName, float x, float y)
+        public Entity(Skeleton skeleton, Vector2 position)
+            : this((Texture2D)null, position)
         {
-            skeleton = ResourceManager.GetSkeleton(skeletonName);
+            this.skeleton = skeleton;
             animationState = new AnimationState(new AnimationStateData(skeleton.Data));
-            skeleton.RootBone.X = x;
-            skeleton.RootBone.Y = y;
+        }
+
+        public Entity(Texture2D texture, Vector2 position)
+        {
+            this.texture = texture;
+            Position = position;
+            Tint = Color.White;
         }
         #endregion
 
@@ -42,14 +41,25 @@ namespace SuperFantasticSteampunk
 
         public virtual void Update(GameTime gameTime)
         {
-            animationState.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-            animationState.Apply(skeleton);
-            skeleton.UpdateWorldTransform();
+            if (skeleton != null)
+                updateSkeleton(gameTime);
         }
 
         public virtual void Draw(Renderer renderer)
         {
-            renderer.Draw(skeleton);
+            if (skeleton != null)
+                renderer.Draw(skeleton);
+            else
+                renderer.Draw(texture, Position, Tint);
+        }
+
+        private void updateSkeleton(GameTime gameTime)
+        {
+            skeleton.RootBone.X = Position.X;
+            skeleton.RootBone.Y = Position.Y;
+            animationState.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            animationState.Apply(skeleton);
+            skeleton.UpdateWorldTransform();
         }
         #endregion
     }

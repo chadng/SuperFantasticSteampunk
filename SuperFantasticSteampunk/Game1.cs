@@ -37,7 +37,7 @@ namespace SuperFantasticSteampunk
             renderer.SpriteFont = ResourceManager.GetSpriteFont("verdana10");
 
             new Battle(new Party().Tap(p => p.Add(new PartyMember())).Tap(p => p.Add(new PartyMember())), new Party().Tap(p => p.Add(new PartyMember())));
-            Scene.AddEntity(new Entity("spineboy", 500, 500));
+            Scene.AddEntity(new Entity(ResourceManager.GetNewSkeleton("spineboy"), new Vector2(500, 500)));
         }
 
         protected override void UnloadContent()

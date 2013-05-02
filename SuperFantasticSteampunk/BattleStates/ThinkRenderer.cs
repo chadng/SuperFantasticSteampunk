@@ -7,7 +7,7 @@ namespace SuperFantasticSteampunk.BattleStates
     class ThinkRenderer : BattleStateRenderer
     {
         #region Instance Properties
-        protected Think battleState
+        protected new Think battleState
         {
             get { return base.battleState as Think; }
         }

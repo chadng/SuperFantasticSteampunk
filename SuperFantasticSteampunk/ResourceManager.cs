@@ -29,7 +29,7 @@ namespace SuperFantasticSteampunk
             populateSpriteFontDictionary(contentManager);
         }
 
-        public static Skeleton GetSkeleton(string name)
+        public static Skeleton GetNewSkeleton(string name)
         {
             SkeletonData skeletonData;
             if (skeletonDataDictionary.TryGetValue(name, out skeletonData))
