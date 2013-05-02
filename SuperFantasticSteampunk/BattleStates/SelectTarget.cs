@@ -41,7 +41,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
-            if (thinkAction.Type == ThinkActionType.Attack || thinkAction.Type == ThinkActionType.Defend)
+            if (thinkAction.Type == ThinkActionType.Attack)
             {
                 WeaponData weaponData = ResourceManager.GetWeaponData(thinkAction.OptionName);
                 if (weaponData != null)
@@ -65,7 +65,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(GameTime gameTime)
         {
-            if (potentialTargets.Count == 0)
+            if (potentialTargets.Count == 0 || thinkAction.Type == ThinkActionType.None || thinkAction.Type == ThinkActionType.Defend)
             {
                 Finish();
                 return;
