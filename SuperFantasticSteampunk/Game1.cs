@@ -13,7 +13,7 @@ namespace SuperFantasticSteampunk
     public class Game1 : Game
     {
         private GraphicsDeviceManager graphics;
-        private SkeletonRenderer skeletonRenderer;
+        private Renderer renderer;
         
         public Game1()
             : base()
@@ -27,13 +27,14 @@ namespace SuperFantasticSteampunk
 
         protected override void Initialize()
         {
-            ResourceManager.Initialize(Content, GraphicsDevice);
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            skeletonRenderer = new SkeletonRenderer(GraphicsDevice);
+            ResourceManager.Initialize(Content, GraphicsDevice);
+            renderer = new Renderer(GraphicsDevice);
+            renderer.SpriteFont = ResourceManager.GetSpriteFont("verdana10");
 
             new Battle(new Party().Tap(p => p.Add(new PartyMember())).Tap(p => p.Add(new PartyMember())), new Party().Tap(p => p.Add(new PartyMember())));
             Scene.AddEntity(new Entity("spineboy", 500, 500));
@@ -47,7 +48,10 @@ namespace SuperFantasticSteampunk
         protected override void Update(GameTime gameTime)
         {
             if (Input.Pause())
+            {
+                Logger.Log("Game exited");
                 Exit();
+            }
 
             Scene.Update(gameTime);
 
@@ -58,7 +62,8 @@ namespace SuperFantasticSteampunk
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Scene.Draw(skeletonRenderer);
+            Scene.Draw(renderer);
+            renderer.End();
 
             base.Draw(gameTime);
         }

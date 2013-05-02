@@ -77,13 +77,13 @@ namespace SuperFantasticSteampunk
                 CurrentBattleState.BattleStateRenderer.Update(gameTime);
         }
 
-        protected override void draw(SkeletonRenderer skeletonRenderer)
+        protected override void draw(Renderer renderer)
         {
             if (CurrentBattleState.BattleStateRenderer != null)
-                CurrentBattleState.BattleStateRenderer.BeforeDraw(skeletonRenderer);
-            base.draw(skeletonRenderer);
+                CurrentBattleState.BattleStateRenderer.BeforeDraw(renderer);
+            base.draw(renderer);
             if (CurrentBattleState.BattleStateRenderer != null)
-                CurrentBattleState.BattleStateRenderer.AfterDraw(skeletonRenderer);
+                CurrentBattleState.BattleStateRenderer.AfterDraw(renderer);
         }
         #endregion
     }

@@ -52,10 +52,10 @@ namespace SuperFantasticSteampunk
                 Current.update(gameTime);
         }
 
-        public static void Draw(SkeletonRenderer skeletonRenderer)
+        public static void Draw(Renderer renderer)
         {
             if (Current != null)
-                Current.draw(skeletonRenderer);
+                Current.draw(renderer);
         }
         #endregion
 
@@ -93,12 +93,10 @@ namespace SuperFantasticSteampunk
                 entity.Update(gameTime);
         }
 
-        protected virtual void draw(SkeletonRenderer skeletonRenderer)
+        protected virtual void draw(Renderer renderer)
         {
-            skeletonRenderer.Begin();
             foreach (Entity entity in entities)
-                entity.Draw(skeletonRenderer);
-            skeletonRenderer.End();
+                entity.Draw(renderer);
         }
         #endregion
     }

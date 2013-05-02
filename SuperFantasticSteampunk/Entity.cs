@@ -47,9 +47,9 @@ namespace SuperFantasticSteampunk
             skeleton.UpdateWorldTransform();
         }
 
-        public virtual void Draw(SkeletonRenderer skeletonRenderer)
+        public virtual void Draw(Renderer renderer)
         {
-            skeletonRenderer.Draw(skeleton);
+            renderer.Draw(skeleton);
         }
         #endregion
     }

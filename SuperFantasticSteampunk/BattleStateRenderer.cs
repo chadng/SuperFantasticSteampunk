@@ -6,8 +6,8 @@ namespace SuperFantasticSteampunk
 {
     abstract class BattleStateRenderer
     {
-        #region Instance Fields
-        private BattleState battleState;
+        #region Instance Properties
+        protected BattleState battleState { get; private set; }
         #endregion
 
         #region Constructors
@@ -22,9 +22,9 @@ namespace SuperFantasticSteampunk
         #region Instance Methods
         public abstract void Update(GameTime gameTime);
 
-        public abstract void BeforeDraw(SkeletonRenderer skeletonRenderer);
+        public abstract void BeforeDraw(Renderer renderer);
 
-        public abstract void AfterDraw(SkeletonRenderer skeletonRenderer);
+        public abstract void AfterDraw(Renderer renderer);
         #endregion
     }
 }

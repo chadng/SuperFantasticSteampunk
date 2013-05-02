@@ -13,6 +13,7 @@ namespace SuperFantasticSteampunk
         private static SortedDictionary<string, SkeletonData> skeletonDataDictionary;
         private static SortedDictionary<string, WeaponData> weaponDataDictionary;
         private static SortedDictionary<string, ShieldData> shieldDataDictionary;
+        private static SortedDictionary<string, SpriteFont> spriteFontDictionary;
         #endregion
 
         #region Static Methods
@@ -24,6 +25,8 @@ namespace SuperFantasticSteampunk
             populateWeaponDataDictionary(contentManager);
             shieldDataDictionary = new SortedDictionary<string, ShieldData>();
             populateShieldDataDictionary(contentManager);
+            spriteFontDictionary = new SortedDictionary<string, SpriteFont>();
+            populateSpriteFontDictionary(contentManager);
         }
 
         public static Skeleton GetSkeleton(string name)
@@ -47,6 +50,14 @@ namespace SuperFantasticSteampunk
             ShieldData shieldData;
             if (shieldDataDictionary.TryGetValue(name, out shieldData))
                 return shieldData;
+            return null;
+        }
+
+        public static SpriteFont GetSpriteFont(string name)
+        {
+            SpriteFont spriteFont;
+            if (spriteFontDictionary.TryGetValue(name, out spriteFont))
+                return spriteFont;
             return null;
         }
 
@@ -172,6 +183,18 @@ namespace SuperFantasticSteampunk
             if (Enum.TryParse<T>(valueString, out result))
                 return (object)result;
             return (object)0;
+        }
+
+        private static void populateSpriteFontDictionary(ContentManager contentManager)
+        {
+            string spriteFontDirectory = contentManager.RootDirectory + @"\Fonts\";
+            IEnumerable<string> spriteFontFileNames = Directory.EnumerateFiles(spriteFontDirectory, "*.xnb");
+            foreach (string spriteFontFileName in spriteFontFileNames)
+            {
+                string spriteFontName = spriteFontFileName.Replace(spriteFontDirectory, "").Replace(".xnb", "");
+                spriteFontDictionary.Add(spriteFontName, contentManager.Load<SpriteFont>(@"Fonts\" + spriteFontName));
+                Logger.Log("Loaded font '" + spriteFontName + "'");
+            }
         }
         #endregion
     }
