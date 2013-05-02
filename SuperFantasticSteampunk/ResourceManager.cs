@@ -13,6 +13,7 @@ namespace SuperFantasticSteampunk
         private static SortedDictionary<string, SkeletonData> skeletonDataDictionary;
         private static SortedDictionary<string, WeaponData> weaponDataDictionary;
         private static SortedDictionary<string, ShieldData> shieldDataDictionary;
+        private static SortedDictionary<string, PartyMemberData> partyMemberDataDictionary;
         private static SortedDictionary<string, SpriteFont> spriteFontDictionary;
         #endregion
 
@@ -25,6 +26,8 @@ namespace SuperFantasticSteampunk
             populateWeaponDataDictionary(contentManager);
             shieldDataDictionary = new SortedDictionary<string, ShieldData>();
             populateShieldDataDictionary(contentManager);
+            partyMemberDataDictionary = new SortedDictionary<string, PartyMemberData>();
+            populatePartyMemberDataDictionary(contentManager);
             spriteFontDictionary = new SortedDictionary<string, SpriteFont>();
             populateSpriteFontDictionary(contentManager);
         }
@@ -50,6 +53,14 @@ namespace SuperFantasticSteampunk
             ShieldData shieldData;
             if (shieldDataDictionary.TryGetValue(name, out shieldData))
                 return shieldData;
+            return null;
+        }
+
+        public static PartyMemberData GetPartyMemberData(string name)
+        {
+            PartyMemberData partyMemberData;
+            if (partyMemberDataDictionary.TryGetValue(name, out partyMemberData))
+                return partyMemberData;
             return null;
         }
 
@@ -99,6 +110,17 @@ namespace SuperFantasticSteampunk
                 ShieldData shieldData = newObjectFromItemData<ShieldData>(data);
                 shieldDataDictionary.Add(shieldData.Name, shieldData);
                 Logger.Log("Loaded shield '" + shieldData.Name + "'");
+            }
+        }
+
+        private static void populatePartyMemberDataDictionary(ContentManager contentManager)
+        {
+            List<Dictionary<string, object>> partyMemberDataList = loadItemData(contentManager.RootDirectory + @"\Items\PartyMembers.txt");
+            foreach (var data in partyMemberDataList)
+            {
+                PartyMemberData partyMemberData = newObjectFromItemData<PartyMemberData>(data);
+                partyMemberDataDictionary.Add(partyMemberData.Name, partyMemberData);
+                Logger.Log("Loaded party member '" + partyMemberData.Name + "'");
             }
         }
 
