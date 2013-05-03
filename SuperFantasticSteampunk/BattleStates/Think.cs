@@ -82,8 +82,8 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
-            repopulateOptionNames();
             getNextPartyMember();
+            repopulateOptionNames();
             BattleStateRenderer = new ThinkRenderer(this);
         }
 
@@ -261,12 +261,12 @@ namespace SuperFantasticSteampunk.BattleStates
 
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
             {
-                foreach (InventoryItem item in Battle.PlayerParty.WeaponInventories[characterClass].GetSortedItems())
+                foreach (InventoryItem item in Battle.PlayerParty.WeaponInventories[characterClass].GetSortedItems(CurrentPartyMember))
                     weaponOptionNames[characterClass].Add(item.Key);
-                foreach (InventoryItem item in Battle.PlayerParty.ShieldInventories[characterClass].GetSortedItems())
+                foreach (InventoryItem item in Battle.PlayerParty.ShieldInventories[characterClass].GetSortedItems(CurrentPartyMember))
                     shieldOptionNames[characterClass].Add(item.Key);
             }
-            foreach (InventoryItem item in Battle.PlayerParty.ItemInventory.GetSortedItems())
+            foreach (InventoryItem item in Battle.PlayerParty.ItemInventory.GetSortedItems(CurrentPartyMember))
                 itemOptionNames.Add(item.Key);
         }
 
@@ -276,10 +276,10 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 Inventory inventory = getInventoryFromThinkActionType(currentThinkAction.Type);
                 if (inventory != null)
-                    inventory.UseItem(currentThinkAction.OptionName);
-                repopulateOptionNames();
+                    inventory.UseItem(currentThinkAction.OptionName, CurrentPartyMember);
                 actions.Add(currentThinkAction);
                 getNextPartyMember();
+                repopulateOptionNames();
             }
 
             currentThinkAction = null;

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace SuperFantasticSteampunk
 {
@@ -6,35 +8,29 @@ namespace SuperFantasticSteampunk
 
     class Inventory : SortedDictionary<string, int>
     {
-        #region Instance Properties
-        public string LastUsedItemKey { get; private set; }
+        #region Instance Fields
+        private ConditionalWeakTable<PartyMember, string> lastUsedItemKeys;
         #endregion
 
         #region Constructors
         public Inventory()
         {
-            LastUsedItemKey = null;
-            this.Add("test1", 1);
+            lastUsedItemKeys = new ConditionalWeakTable<PartyMember, string>();
+            this.Add("test1", 5);
+            this.Add("test2", 5);
         }
         #endregion
 
         #region Instance Methods
-        public void UseItem(string itemName)
+        public void UseItem(string itemName, PartyMember user)
         {
             if (ContainsKey(itemName))
             {
-                --this[itemName];
-                if (this[itemName] == 0) // not <= because negative is infinite
-                {
+                if (--this[itemName] == 0) // not <= because negative is infinite
                     Remove(itemName);
-                    LastUsedItemKey = null;
-                }
-                else
-                {
-                    LastUsedItemKey = itemName;
-                    if (this[itemName] < 0)
-                        this[itemName] = -1;
-                }
+                else if (this[itemName] < 0)
+                    this[itemName] = -1;
+                lastUsedItemKeys.AddOrReplace(user, itemName);
             }
         }
 
@@ -49,19 +45,23 @@ namespace SuperFantasticSteampunk
                 Add(itemName, 1);
         }
 
-        public List<InventoryItem> GetSortedItems()
+        public List<InventoryItem> GetSortedItems(PartyMember partyMember)
         {
             List<InventoryItem> result = new List<InventoryItem>(Count);
-            if (LastUsedItemKey != null)
-                result.Add(new InventoryItem(LastUsedItemKey, this[LastUsedItemKey]));
+
+            string lastUsedItemKey = null;
+            bool pushLastUsedItemKeyToTop = lastUsedItemKeys.TryGetValue(partyMember, out lastUsedItemKey) && ContainsKey(lastUsedItemKey);
 
             foreach (InventoryItem item in this)
             {
-                if (item.Key != LastUsedItemKey)
+                if (item.Key != lastUsedItemKey) // if pushLastUsedItemKeyToTop is false, lastUsedItemKey will be null anyway
                     result.Add(item);
             }
 
-            result.Sort();
+            result.Sort((a, b) => String.Compare(a.Key, b.Key));
+            if (pushLastUsedItemKeyToTop)
+                result.Insert(0, new InventoryItem(lastUsedItemKey, this[lastUsedItemKey]));
+
             return result;
         }
         #endregion
