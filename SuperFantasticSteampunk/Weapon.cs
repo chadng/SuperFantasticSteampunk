@@ -5,7 +5,7 @@ namespace SuperFantasticSteampunk
     class Weapon
     {
         #region Instance Properties
-        public WeaponData WeaponData { get; private set; }
+        public WeaponData Data { get; private set; }
         #endregion
 
         #region Constructors
@@ -13,7 +13,7 @@ namespace SuperFantasticSteampunk
         {
             if (weaponData == null)
                 throw new Exception("WeaponData cannot be null");
-            WeaponData = weaponData;
+            Data = weaponData;
         }
         #endregion
     }

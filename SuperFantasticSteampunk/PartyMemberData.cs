@@ -13,6 +13,7 @@
         public int Defence { get; private set; }
         public int Speed { get; private set; }
         public int Charm { get; private set; }
+        public int ExperienceMultiplier { get; private set; }
         public string SkeletonName { get; private set; }
         public string SkeletonSkinName { get; private set; }
         #endregion

@@ -5,7 +5,7 @@ namespace SuperFantasticSteampunk
     class Shield
     {
         #region Instance Properties
-        public ShieldData ShieldData { get; private set; }
+        public ShieldData Data { get; private set; }
         #endregion
 
         #region Constructors
@@ -13,7 +13,7 @@ namespace SuperFantasticSteampunk
         {
             if (shieldData == null)
                 throw new Exception("ShieldData cannot be null");
-            ShieldData = shieldData;
+            Data = shieldData;
         }
         #endregion
     }
