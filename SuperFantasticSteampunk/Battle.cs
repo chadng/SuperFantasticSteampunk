@@ -21,6 +21,9 @@ namespace SuperFantasticSteampunk
 
         public Party PlayerParty { get; private set; }
         public Party EnemyParty { get; private set; }
+
+        public PartyBattleLayout PlayerPartyLayout { get; private set; }
+        public PartyBattleLayout EnemyPartyLayout { get; private set; }
         #endregion
 
         #region Constructors
@@ -33,24 +36,13 @@ namespace SuperFantasticSteampunk
 
             PlayerParty = playerParty.Tap(party => party.StartBattle(this));
             EnemyParty = enemyParty.Tap(party => party.StartBattle(this));
+
+            PlayerPartyLayout = new PartyBattleLayout(PlayerParty);
+            EnemyPartyLayout = new PartyBattleLayout(EnemyParty);
+
             states = new Stack<BattleState>();
             states.Push(new BattleStates.Intro(this));
             stateChanged = true;
-
-            Vector2 pos = new Vector2(400.0f);
-            foreach (PartyMember partyMember in PlayerParty)
-            {
-                partyMember.BattleEntity.Position = pos;
-                pos.Y += 150.0f;
-                pos.X -= 100.0f;
-            }
-            pos = new Vector2(700.0f, 400.0f);
-            foreach (PartyMember partyMember in EnemyParty)
-            {
-                partyMember.BattleEntity.Position = pos;
-                pos.Y += 150.0f;
-                pos.X += 100.0f;
-            }
         }
         #endregion
 
@@ -105,6 +97,7 @@ namespace SuperFantasticSteampunk
 
             CurrentBattleState.Update(gameTime);
             base.update(gameTime);
+            repositionPartyMembers();
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.Update(gameTime);
         }
@@ -116,6 +109,33 @@ namespace SuperFantasticSteampunk
             base.draw(renderer);
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.AfterDraw(renderer);
+        }
+
+        private void repositionPartyMembers()
+        {
+            Vector2 position = new Vector2(400.0f);
+            PlayerPartyLayout.ForEachList(list =>
+            {
+                position.X = 400.0f;
+                for (int i = list.Count - 1; i >= 0; --i)
+                {
+                    list[i].BattleEntity.Position = position;
+                    position.X += 150.0f;
+                }
+                position.Y += 150.0f;
+            });
+
+            position = new Vector2(1000.0f, 400.0f);
+            EnemyPartyLayout.ForEachList(list =>
+            {
+                position.X = 1000.0f;
+                for (int i = 0; i < list.Count; ++i)
+                {
+                    list[i].BattleEntity.Position = position;
+                    position.X -= 150.0f;
+                }
+                position.Y += 150.0f;
+            });
         }
         #endregion
     }

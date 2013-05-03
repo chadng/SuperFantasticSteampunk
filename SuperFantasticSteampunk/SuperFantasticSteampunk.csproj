@@ -73,6 +73,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Party.cs" />
+    <Compile Include="PartyBattleLayout.cs" />
     <Compile Include="PartyMember.cs" />
     <Compile Include="PartyMemberData.cs" />
     <Compile Include="Program.cs" />

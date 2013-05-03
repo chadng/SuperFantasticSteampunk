@@ -60,9 +60,18 @@ namespace SuperFantasticSteampunk.BattleStates
         private void drawOptionNamesSubMenu(Renderer renderer)
         {
             Vector2 position = new Vector2(200, 100);
-            for (int i = 0; i < battleState.OptionNames.Count; ++i)
+            for (int i = 0; i < battleState.MenuOptions.Count; ++i)
             {
-                renderer.DrawText(battleState.OptionNames[i], position, i == battleState.CurrentOptionNameIndex ? Color.Blue : Color.White);
+                ThinkMenuOption menuOption = battleState.MenuOptions[i];
+                string text = menuOption.Name;
+                if (i > 0)
+                    text += " x " + (menuOption.Amount < 0 ? "*" : menuOption.Amount.ToString());
+                Color color;
+                if (menuOption.Disabled)
+                    color = i == battleState.CurrentOptionNameIndex ? Color.DarkRed : Color.Gray;
+                else
+                    color = i == battleState.CurrentOptionNameIndex ? Color.Blue : Color.White;
+                renderer.DrawText(text, position, color);
                 position.Y += 20.0f;
             }
         }

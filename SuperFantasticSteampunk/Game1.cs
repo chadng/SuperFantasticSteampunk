@@ -36,7 +36,7 @@ namespace SuperFantasticSteampunk
             renderer = new Renderer(GraphicsDevice);
             renderer.SpriteFont = ResourceManager.GetSpriteFont("verdana10");
 
-            new Battle(new Party().Tap(p => p.Add(new PartyMember(ResourceManager.GetPartyMemberData("player")))).Tap(p => p.Add(new PartyMember(ResourceManager.GetPartyMemberData("player")))),
+            new Battle(new Party().Tap(p => p.Add(new PartyMember(ResourceManager.GetPartyMemberData("player1")))).Tap(p => p.Add(new PartyMember(ResourceManager.GetPartyMemberData("player2")))),
                 new Party().Tap(p => p.Add(new PartyMember(ResourceManager.GetPartyMemberData("enemy")))));
         }
 
