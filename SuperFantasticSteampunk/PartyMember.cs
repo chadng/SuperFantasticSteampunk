@@ -25,6 +25,16 @@ namespace SuperFantasticSteampunk
         public int Experience { get; private set; }
         public Entity BattleEntity { get; private set; }
 
+        public Weapon EquippedWeapon { get; private set; }
+        public Shield EquippedShield { get; private set; }
+
+        public Party Party { get; set; }
+
+        public bool Alive
+        {
+            get { return Health > 0; }
+        }
+
         public CharacterClass CharacterClass
         {
             get { return Data.CharacterClass; }
@@ -54,6 +64,36 @@ namespace SuperFantasticSteampunk
         public void FinishBattle()
         {
             BattleEntity = null;
+            EquippedWeapon = null;
+            EquippedShield = null;
+        }
+
+        public void Kill(Battle battle)
+        {
+            if (BattleEntity != null)
+                BattleEntity.Kill();
+            if (Party != null)
+            {
+                if (Party == battle.PlayerParty)
+                    battle.PlayerPartyLayout.RemovePartyMember(this);
+                else
+                    battle.EnemyPartyLayout.RemovePartyMember(this);
+                Party.RemovePartyMember(this);
+            }
+        }
+
+        public void EquipWeapon(string name)
+        {
+            EquippedShield = null;
+            if (EquippedWeapon == null)
+                EquippedWeapon = ResourceManager.GetNewWeapon(name);
+        }
+
+        public void EquipShield(string name)
+        {
+            EquippedWeapon = null;
+            if (EquippedShield == null)
+                EquippedShield = ResourceManager.GetNewShield(name);
         }
 
         public void DoDamage(int amount)
@@ -63,7 +103,19 @@ namespace SuperFantasticSteampunk
                 Health = 0;
         }
 
-        public void AddExperience(int amount)
+        public int CalculateDamageTaken(PartyMember enemy)
+        {
+            int damageToDo = enemy.calculateFinalAttackStat() * (enemy.criticalHit() ? 2 : 1);
+            int damageToBlock = calcuateFinalDefenceStat();
+            return Math.Min(damageToDo - damageToBlock, 1);
+        }
+
+        public void AddExperience(PartyMember enemy)
+        {
+            addExperience(calculateExperienceGained(enemy.Level, enemy.Data.ExperienceMultiplier));
+        }
+
+        private void addExperience(int amount)
         {
             Experience += amount;
             while (Experience >= ExperienceNeededToLevelUp)
@@ -79,14 +131,40 @@ namespace SuperFantasticSteampunk
             resetStatsFromLevel();
         }
 
-        public void AddExperience(PartyMember enemy)
-        {
-            AddExperience(calculateExperienceGained(enemy.Level, enemy.Data.ExperienceMultiplier));
-        }
-
         private int calculateExperienceGained(int enemyLevel, int enemyExperienceMultiplier)
         {
             return (int)Math.Round((enemyLevel / (double)Level) * enemyExperienceMultiplier * experienceConstant);
+        }
+
+        private int calculateFinalAttackStat()
+        {
+            //TODO: take into account stat stacking
+            int result = 0;
+            if (EquippedWeapon == null)
+                result = Attack;
+            else
+            {
+                result += EquippedWeapon.Data.Power;
+                if (EquippedWeapon.Data.WeaponType == WeaponType.Melee)
+                    result += Attack;
+                else
+                    result += SpecialAttack;
+            }
+            return result;
+        }
+
+        private int calcuateFinalDefenceStat()
+        {
+            //TODO: take into account stat stacking
+            int result = Defence;
+            if (EquippedShield != null)
+                result += EquippedShield.Data.Defence;
+            return result;
+        }
+
+        private bool criticalHit()
+        {
+            return Game1.Random.Next(MaxStat) < Charm;
         }
 
         private void resetStatsFromLevel()

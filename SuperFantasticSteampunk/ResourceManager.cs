@@ -43,12 +43,30 @@ namespace SuperFantasticSteampunk
             return null;
         }
 
+        public static Weapon GetNewWeapon(string name)
+        {
+            WeaponData weaponData = GetWeaponData(name);
+            if (weaponData == null)
+                return null;
+            else
+                return new Weapon(weaponData);
+        }
+
         public static WeaponData GetWeaponData(string name)
         {
             WeaponData weaponData;
             if (weaponDataDictionary.TryGetValue(name, out weaponData))
                 return weaponData;
             return null;
+        }
+
+        public static Shield GetNewShield(string name)
+        {
+            ShieldData shieldData = GetShieldData(name);
+            if (shieldData == null)
+                return null;
+            else
+                return new Shield(shieldData);
         }
 
         public static ShieldData GetShieldData(string name)

@@ -12,9 +12,23 @@ namespace SuperFantasticSteampunk
 {
     public class Game1 : Game
     {
+        #region Static Properties
+        public static Random Random { get; private set; }
+        #endregion
+
+        #region Static Constructors
+        static Game1()
+        {
+            Random = new Random();
+        }
+        #endregion
+
+        #region Instance Fields
         private GraphicsDeviceManager graphics;
         private Renderer renderer;
-        
+        #endregion
+
+        #region Constructors
         public Game1()
             : base()
         {
@@ -24,7 +38,9 @@ namespace SuperFantasticSteampunk
             graphics.PreferredBackBufferHeight = 1080;
             Content.RootDirectory = "Content";
         }
+        #endregion
 
+        #region Instance Methods
         protected override void Initialize()
         {
             base.Initialize();
@@ -36,8 +52,8 @@ namespace SuperFantasticSteampunk
             renderer = new Renderer(GraphicsDevice);
             renderer.SpriteFont = ResourceManager.GetSpriteFont("verdana10");
 
-            new Battle(new Party().Tap(p => p.Add(new PartyMember(ResourceManager.GetPartyMemberData("player1")))).Tap(p => p.Add(new PartyMember(ResourceManager.GetPartyMemberData("player2")))),
-                new Party().Tap(p => p.Add(new PartyMember(ResourceManager.GetPartyMemberData("enemy")))));
+            new Battle(new Party().Tap(p => p.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("player1")))).Tap(p => p.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("player2")))),
+                new Party().Tap(p => p.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("enemy")))));
         }
 
         protected override void UnloadContent()
@@ -53,7 +69,7 @@ namespace SuperFantasticSteampunk
                 Exit();
             }
 
-            Scene.Update(gameTime);
+            Scene.UpdateCurrent(gameTime);
 
             base.Update(gameTime);
         }
@@ -62,10 +78,11 @@ namespace SuperFantasticSteampunk
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Scene.Draw(renderer);
+            Scene.DrawCurrent(renderer);
             renderer.End();
 
             base.Draw(gameTime);
         }
+        #endregion
     }
 }

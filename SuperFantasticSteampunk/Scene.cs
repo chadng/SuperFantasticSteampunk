@@ -37,22 +37,27 @@ namespace SuperFantasticSteampunk
                 Current.removeEntity(entity);
         }
 
-        public static void Finish()
+        public static void FinishCurrent()
+        {
+            if (Current != null)
+                Current.Finish();
+        }
+
+        public static void UpdateCurrent(GameTime gameTime)
         {
             if (Current != null)
             {
-                Current.finish();
-                sceneStack.Pop();
+                if (Current.finished)
+                {
+                    Current.finishCleanup();
+                    sceneStack.Pop();
+                }
+                else
+                    Current.update(gameTime);
             }
         }
 
-        public static void Update(GameTime gameTime)
-        {
-            if (Current != null)
-                Current.update(gameTime);
-        }
-
-        public static void Draw(Renderer renderer)
+        public static void DrawCurrent(Renderer renderer)
         {
             if (Current != null)
                 Current.draw(renderer);
@@ -61,17 +66,25 @@ namespace SuperFantasticSteampunk
 
         #region Instance Fields
         private List<Entity> entities;
+        private bool finished;
         #endregion
 
         #region Constructors
         protected Scene()
         {
             entities = new List<Entity>();
+            finished = false;
             sceneStack.Push(this);
         }
         #endregion
 
         #region Instance Methods
+        public void Finish()
+        {
+            Logger.Log("Finishing scene");
+            finished = true;
+        }
+
         protected virtual void addEntity(Entity entity)
         {
             entities.Add(entity);
@@ -80,11 +93,6 @@ namespace SuperFantasticSteampunk
         protected virtual void removeEntity(Entity entity)
         {
             entities.Remove(entity);
-        }
-
-        protected virtual void finish()
-        {
-            entities.Clear();
         }
 
         protected virtual void update(GameTime gameTime)
@@ -97,6 +105,11 @@ namespace SuperFantasticSteampunk
         {
             foreach (Entity entity in entities)
                 entity.Draw(renderer);
+        }
+
+        protected virtual void finishCleanup()
+        {
+            entities.Clear();
         }
         #endregion
     }

@@ -31,6 +31,18 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
+        public void AddPartyMember(PartyMember partyMember)
+        {
+            Add(partyMember);
+            partyMember.Party = this;
+        }
+
+        public void RemovePartyMember(PartyMember partyMember)
+        {
+            if (Remove(partyMember))
+                partyMember.Party = null;
+        }
+
         public bool SetPrimaryPartyMember(PartyMember partyMember)
         {
             if (Contains(partyMember))

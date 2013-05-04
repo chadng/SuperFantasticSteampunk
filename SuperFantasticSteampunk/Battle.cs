@@ -79,13 +79,6 @@ namespace SuperFantasticSteampunk
             removeEntity(entity);
         }
 
-        protected override void finish()
-        {
-            PlayerParty.FinishBattle(this);
-            EnemyParty.FinishBattle(this);
-            base.finish();
-        }
-
         protected override void update(GameTime gameTime)
         {
             if (stateChanged)
@@ -109,6 +102,14 @@ namespace SuperFantasticSteampunk
             base.draw(renderer);
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.AfterDraw(renderer);
+        }
+
+        protected override void finishCleanup()
+        {
+            Logger.Log("Finishing battle");
+            PlayerParty.FinishBattle(this);
+            EnemyParty.FinishBattle(this);
+            base.finishCleanup();
         }
 
         private void repositionPartyMembers()
