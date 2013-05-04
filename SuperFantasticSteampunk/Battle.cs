@@ -79,6 +79,24 @@ namespace SuperFantasticSteampunk
             removeEntity(entity);
         }
 
+        public Party GetPartyForPartyMember(PartyMember partyMember)
+        {
+            if (PlayerParty.Contains(partyMember))
+                return PlayerParty;
+            if (EnemyParty.Contains(partyMember))
+                return EnemyParty;
+            return null;
+        }
+
+        public PartyBattleLayout GetPartyBattleLayoutForPartyMember(PartyMember partyMember)
+        {
+            if (PlayerParty.Contains(partyMember))
+                return PlayerPartyLayout;
+            if (EnemyParty.Contains(partyMember))
+                return EnemyPartyLayout;
+            return null;
+        }
+
         protected override void update(GameTime gameTime)
         {
             if (stateChanged)

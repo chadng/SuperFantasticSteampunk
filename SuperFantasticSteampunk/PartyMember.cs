@@ -28,8 +28,6 @@ namespace SuperFantasticSteampunk
         public Weapon EquippedWeapon { get; private set; }
         public Shield EquippedShield { get; private set; }
 
-        public Party Party { get; set; }
-
         public bool Alive
         {
             get { return Health > 0; }
@@ -72,14 +70,9 @@ namespace SuperFantasticSteampunk
         {
             if (BattleEntity != null)
                 BattleEntity.Kill();
-            if (Party != null)
-            {
-                if (Party == battle.PlayerParty)
-                    battle.PlayerPartyLayout.RemovePartyMember(this);
-                else
-                    battle.EnemyPartyLayout.RemovePartyMember(this);
-                Party.RemovePartyMember(this);
-            }
+
+            battle.GetPartyBattleLayoutForPartyMember(this).Try(pbl => pbl.RemovePartyMember(this));
+            battle.GetPartyForPartyMember(this).Try(pbl => pbl.RemovePartyMember(this));
         }
 
         public void EquipWeapon(string name)

@@ -34,13 +34,11 @@ namespace SuperFantasticSteampunk
         public void AddPartyMember(PartyMember partyMember)
         {
             Add(partyMember);
-            partyMember.Party = this;
         }
 
         public void RemovePartyMember(PartyMember partyMember)
         {
-            if (Remove(partyMember))
-                partyMember.Party = null;
+            Remove(partyMember);
         }
 
         public bool SetPrimaryPartyMember(PartyMember partyMember)

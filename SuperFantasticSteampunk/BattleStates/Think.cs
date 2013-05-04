@@ -377,7 +377,11 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void thinkAboutEnemyPartyActions()
         {
-            //TODO: Move and add actions for enemy party
+            foreach (PartyMember partyMember in Battle.EnemyParty)
+            {
+                //TODO: improve this
+                actions.Add(new ThinkAction(ThinkActionType.Attack, "default", partyMember, Battle.PlayerParty.Sample()));
+            }
         }
         #endregion
     }

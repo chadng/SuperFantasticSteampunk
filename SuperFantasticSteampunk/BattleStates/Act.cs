@@ -60,18 +60,19 @@ namespace SuperFantasticSteampunk.BattleStates
                 thinkAction.Actor.EquipWeapon(thinkAction.OptionName);
                 Logger.Log(thinkAction.Actor.Data.Name + " equipped '" + thinkAction.OptionName + "' weapon");
 
+                PartyMember target = Battle.GetPartyBattleLayoutForPartyMember(thinkAction.Target).FirstInPartyMembersList(thinkAction.Target);
+
                 if (thinkAction.Target.Alive)
                 {
-                    int damage = thinkAction.Target.CalculateDamageTaken(thinkAction.Actor);
-                    thinkAction.Target.DoDamage(damage);
-                    Logger.Log(thinkAction.Actor.Data.Name + " did " + damage.ToString() + " damage to " + thinkAction.Target.Data.Name);
+                    int damage = target.CalculateDamageTaken(thinkAction.Actor);
+                    target.DoDamage(damage);
+                    Logger.Log(thinkAction.Actor.Data.Name + " did " + damage.ToString() + " damage to " + target.Data.Name);
                 }
 
-                if (!thinkAction.Target.Alive)
+                if (!target.Alive)
                 {
-                    Logger.Log(thinkAction.Actor.Data.Name + " target " + thinkAction.Target.Data.Name + " is not alive");
-                    thinkAction.Target.Kill(Battle);
-                    thinkAction.Target = null;
+                    Logger.Log(thinkAction.Actor.Data.Name + " target " + target.Data.Name + " is not alive");
+                    target.Kill(Battle);
                     //TODO: choose new target
                 }
             }

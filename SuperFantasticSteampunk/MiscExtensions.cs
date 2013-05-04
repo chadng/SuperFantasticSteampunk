@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -10,6 +11,12 @@ namespace SuperFantasticSteampunk
         {
             action(self);
             return self;
+        }
+
+        public static void Try<T>(this T self, Action<T> action)
+        {
+            if (self != null)
+                action(self);
         }
 
         public static void WriteLineProperties(this Object self)
@@ -26,6 +33,14 @@ namespace SuperFantasticSteampunk
             if (self.TryGetValue(key, out tempValue))
                 self.Remove(key);
             self.Add(key, value);
+        }
+
+        public static T Sample<T>(this List<T> self)
+            where T : class
+        {
+            if (self.Count == 0)
+                return null;
+            return self[Game1.Random.Next(self.Count)];
         }
     }
 }

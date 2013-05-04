@@ -55,6 +55,11 @@ namespace SuperFantasticSteampunk
             }
         }
 
+        public PartyMember FirstInPartyMembersList(PartyMember partyMember)
+        {
+            return getListWithPartyMember(partyMember)[0];
+        }
+
         public bool PartyMemberInFrontLine(PartyMember partyMember)
         {
             if (party.Contains(partyMember))
