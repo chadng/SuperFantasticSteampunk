@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Spine;
 
 namespace SuperFantasticSteampunk
 {
@@ -57,6 +58,11 @@ namespace SuperFantasticSteampunk
             BattleEntity = new Entity(ResourceManager.GetNewSkeleton(Data.SkeletonName), new Vector2());
             BattleEntity.Skeleton.SetSkin(Data.SkeletonSkinName);
             BattleEntity.Skeleton.SetSlotsToBindPose();
+            Animation animation = BattleEntity.Skeleton.Data.FindAnimation("battle_stance");
+            if (animation != null)
+                BattleEntity.AnimationState.SetAnimation(animation, true);
+            BattleEntity.Skeleton.RootBone.Tap(b => { b.ScaleX = b.ScaleY = 0.75f; });
+            BattleEntity.AnimationState.Time = Game1.Random.Next(100) / 100.0f;
         }
 
         public void FinishBattle()

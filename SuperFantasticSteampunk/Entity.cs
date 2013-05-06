@@ -8,11 +8,11 @@ namespace SuperFantasticSteampunk
     {
         #region Instance Fields
         private Texture2D texture;
-        private AnimationState animationState;
         #endregion
 
         #region Instance Properties
         public Skeleton Skeleton { get; private set; }
+        public AnimationState AnimationState { get; private set; }
         public Vector2 Position { get; set; }
         public Color Tint { get; set; }
         #endregion
@@ -22,7 +22,7 @@ namespace SuperFantasticSteampunk
             : this((Texture2D)null, position)
         {
             Skeleton = skeleton;
-            animationState = new AnimationState(new AnimationStateData(skeleton.Data));
+            AnimationState = new AnimationState(new AnimationStateData(skeleton.Data));
         }
 
         public Entity(Texture2D texture, Vector2 position)
@@ -57,8 +57,8 @@ namespace SuperFantasticSteampunk
         {
             Skeleton.RootBone.X = Position.X;
             Skeleton.RootBone.Y = Position.Y;
-            animationState.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-            animationState.Apply(Skeleton);
+            AnimationState.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            AnimationState.Apply(Skeleton);
             Skeleton.UpdateWorldTransform();
         }
         #endregion
