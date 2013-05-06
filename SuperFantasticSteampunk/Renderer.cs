@@ -23,6 +23,7 @@ namespace SuperFantasticSteampunk
         {
             spriteBatch = new SpriteBatch(graphicsDevice);
             skeletonRenderer = new SkeletonRenderer(graphicsDevice);
+            skeletonRenderer.BlendState = BlendState.NonPremultiplied;
             state = RendererState.NoneBegan;
         }
         #endregion

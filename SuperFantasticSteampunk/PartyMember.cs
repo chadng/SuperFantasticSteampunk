@@ -57,7 +57,6 @@ namespace SuperFantasticSteampunk
         {
             BattleEntity = new Entity(ResourceManager.GetNewSkeleton(Data.SkeletonName), new Vector2());
             BattleEntity.Skeleton.SetSkin(Data.SkeletonSkinName);
-            BattleEntity.Skeleton.SetSlotsToBindPose();
             Animation animation = BattleEntity.Skeleton.Data.FindAnimation("battle_stance");
             if (animation != null)
                 BattleEntity.AnimationState.SetAnimation(animation, true);
