@@ -43,12 +43,6 @@ namespace SuperFantasticSteampunk.BattleStates
         public override void Update(GameTime gameTime)
         {
             //TODO: Change these to individual states
-            foreach (ThinkAction thinkAction in defendThinkActions)
-            {
-                thinkAction.Actor.EquipShield(thinkAction.OptionName);
-                Logger.Log(thinkAction.Actor.Data.Name + " equipped '" + thinkAction.OptionName + "' shield");
-            }
-
             foreach (ThinkAction thinkAction in useItemThinkActions)
             {
                 Logger.Log(thinkAction.Actor.Data.Name + " used '" + thinkAction.OptionName + "' item");

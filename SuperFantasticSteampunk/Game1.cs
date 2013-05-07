@@ -72,6 +72,7 @@ namespace SuperFantasticSteampunk
         {
             if (Input.Pause())
             {
+                ResourceManager.UnloadContent();
                 Logger.Log("Game exited");
                 Exit();
             }

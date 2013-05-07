@@ -7,7 +7,7 @@ namespace SuperFantasticSteampunk
     class Entity
     {
         #region Instance Fields
-        private Texture2D texture;
+        private TextureData textureData;
         #endregion
 
         #region Instance Properties
@@ -19,21 +19,38 @@ namespace SuperFantasticSteampunk
 
         #region Constructors
         public Entity(Skeleton skeleton, Vector2 position)
-            : this((Texture2D)null, position)
+            : this((TextureData)null, position)
         {
             Skeleton = skeleton;
             AnimationState = new AnimationState(new AnimationStateData(skeleton.Data));
         }
 
-        public Entity(Texture2D texture, Vector2 position)
+        public Entity(TextureData textureData, Vector2 position)
         {
-            this.texture = texture;
+            this.textureData = textureData;
             Position = position;
             Tint = Color.White;
         }
         #endregion
 
         #region Instance Methods
+        public void SetSkeletonAttachment(string slotName, string attachmentName, TextureData textureData = null)
+        {
+            if (Skeleton == null || Skeleton.FindSlot(slotName) == null)
+                return;
+
+            if (Skeleton.GetAttachment(slotName, attachmentName) == null)
+            {
+                if (textureData != null)
+                {
+                    addSkeletonAttachment(slotName, attachmentName, textureData);
+                    Skeleton.SetAttachment(slotName, attachmentName);
+                }
+            }
+            else
+                Skeleton.SetAttachment(slotName, attachmentName);
+        }
+
         public virtual void Kill()
         {
             Scene.RemoveEntity(this);
@@ -50,7 +67,7 @@ namespace SuperFantasticSteampunk
             if (Skeleton != null)
                 renderer.Draw(Skeleton);
             else
-                renderer.Draw(texture, Position, Tint);
+                renderer.Draw(textureData, Position, Tint);
         }
 
         private void updateSkeleton(GameTime gameTime)
@@ -60,6 +77,22 @@ namespace SuperFantasticSteampunk
             AnimationState.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             AnimationState.Apply(Skeleton);
             Skeleton.UpdateWorldTransform();
+        }
+
+        private void addSkeletonAttachment(string slotName, string attachmentName, TextureData textureData)
+        {
+            RegionAttachment regionAttachment = new RegionAttachment(attachmentName);
+
+            regionAttachment.RendererObject = textureData.Texture;
+            regionAttachment.Width = regionAttachment.RegionWidth = regionAttachment.RegionOriginalWidth = textureData.Texture.Width;
+            regionAttachment.Height = regionAttachment.RegionHeight = regionAttachment.RegionOriginalHeight = textureData.Texture.Height;
+            regionAttachment.RegionOffsetX = textureData.OriginX;
+            regionAttachment.RegionOffsetY = textureData.OriginY;
+            regionAttachment.Rotation = textureData.Rotation;
+            regionAttachment.SetUVs(0, 0, 1, 1, false);
+            regionAttachment.UpdateOffset();
+
+            Skeleton.Data.FindSkin("default").AddAttachment(Skeleton.FindSlotIndex(slotName), attachmentName, regionAttachment);
         }
         #endregion
     }

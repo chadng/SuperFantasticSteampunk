@@ -11,6 +11,7 @@
         public WeaponUseAgainst WeaponUseAgainst { get; private set; }
         public CharacterClass CharacterClass { get; private set; }
         public int Power { get; private set; }
+        public string TextureName { get; private set; }
         #endregion
     }
 }

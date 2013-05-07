@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Spine;
 
 namespace SuperFantasticSteampunk
@@ -57,7 +58,7 @@ namespace SuperFantasticSteampunk
         {
             BattleEntity = new Entity(ResourceManager.GetNewSkeleton(Data.SkeletonName), new Vector2());
             BattleEntity.Skeleton.SetSkin(Data.SkeletonSkinName);
-            Animation animation = BattleEntity.Skeleton.Data.FindAnimation("battle_stance");
+            Animation animation = BattleEntity.Skeleton.Data.FindAnimation("idle");
             if (animation != null)
                 BattleEntity.AnimationState.SetAnimation(animation, true);
             BattleEntity.Skeleton.RootBone.Tap(b => { b.ScaleX = b.ScaleY = 0.75f; });
@@ -83,15 +84,17 @@ namespace SuperFantasticSteampunk
         public void EquipWeapon(string name)
         {
             EquippedShield = null;
-            if (EquippedWeapon == null)
+            if (EquippedWeapon == null || EquippedWeapon.Data.Name != name)
                 EquippedWeapon = ResourceManager.GetNewWeapon(name);
+            updateBattleEntitySkeleton();
         }
 
         public void EquipShield(string name)
         {
             EquippedWeapon = null;
-            if (EquippedShield == null)
+            if (EquippedShield == null || EquippedShield.Data.Name != name)
                 EquippedShield = ResourceManager.GetNewShield(name);
+            updateBattleEntitySkeleton();
         }
 
         public void DoDamage(int amount)
@@ -174,6 +177,22 @@ namespace SuperFantasticSteampunk
             Speed = (int)Math.Round(Level * (Data.Speed / (double)MaxLevel));
             Charm = (int)Math.Round(Level * (Data.Charm / (double)MaxLevel));
             Health = MaxHealth;
+        }
+
+        private void updateBattleEntitySkeleton()
+        {
+            if (BattleEntity == null)
+                return;
+
+            if (EquippedWeapon != null && EquippedWeapon.TextureData != null)
+                BattleEntity.SetSkeletonAttachment("weapon", EquippedWeapon.Data.Name, EquippedWeapon.TextureData);
+            else
+                BattleEntity.SetSkeletonAttachment("weapon", "none");
+
+            if (EquippedShield != null && EquippedShield.TextureData != null)
+                BattleEntity.SetSkeletonAttachment("shield", EquippedShield.Data.Name, EquippedShield.TextureData);
+            else
+                BattleEntity.SetSkeletonAttachment("shield", "none");
         }
         #endregion
     }

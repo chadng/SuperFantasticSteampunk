@@ -8,7 +8,7 @@ namespace SuperFantasticSteampunk.BattleStates
     class ThinkRenderer : BattleStateRenderer
     {
         #region Instance Fields
-        Texture2D arrowTexture;
+        TextureData arrowTextureData;
         #endregion
 
         #region Instance Properties
@@ -22,7 +22,7 @@ namespace SuperFantasticSteampunk.BattleStates
         public ThinkRenderer(BattleState battleState)
             : base(battleState)
         {
-            arrowTexture = ResourceManager.GetTexture("arrow_down");
+            arrowTextureData = ResourceManager.GetTextureData("arrow_down");
         }
         #endregion
 
@@ -80,7 +80,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             Vector2 position = battleState.CurrentPartyMember.BattleEntity.Position;
             position.Y -= 400.0f;
-            renderer.Draw(arrowTexture, position, Color.White);
+            renderer.Draw(arrowTextureData, position, Color.White);
         }
         #endregion
     }

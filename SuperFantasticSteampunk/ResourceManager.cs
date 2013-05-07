@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
@@ -14,7 +15,7 @@ namespace SuperFantasticSteampunk
         private static SortedDictionary<string, WeaponData> weaponDataDictionary;
         private static SortedDictionary<string, ShieldData> shieldDataDictionary;
         private static SortedDictionary<string, PartyMemberData> partyMemberDataDictionary;
-        private static SortedDictionary<string, Texture2D> textureDictionary;
+        private static SortedDictionary<string, TextureData> textureDataDictionary;
         private static SortedDictionary<string, SpriteFont> spriteFontDictionary;
         #endregion
 
@@ -29,10 +30,16 @@ namespace SuperFantasticSteampunk
             populateShieldDataDictionary(contentManager);
             partyMemberDataDictionary = new SortedDictionary<string, PartyMemberData>();
             populatePartyMemberDataDictionary(contentManager);
-            textureDictionary = new SortedDictionary<string, Texture2D>();
-            populateTextureDictionary(contentManager);
+            textureDataDictionary = new SortedDictionary<string, TextureData>();
+            populateTextureDataDictionary(contentManager);
             spriteFontDictionary = new SortedDictionary<string, SpriteFont>();
             populateSpriteFontDictionary(contentManager);
+        }
+
+        public static void UnloadContent()
+        {
+            foreach (var pair in textureDataDictionary)
+                pair.Value.Texture.Dispose();
         }
 
         public static Skeleton GetNewSkeleton(string name)
@@ -85,11 +92,11 @@ namespace SuperFantasticSteampunk
             return null;
         }
 
-        public static Texture2D GetTexture(string name)
+        public static TextureData GetTextureData(string name)
         {
-            Texture2D texture;
-            if (textureDictionary.TryGetValue(name, out texture))
-                return texture;
+            TextureData textureData;
+            if (textureDataDictionary.TryGetValue(name, out textureData))
+                return textureData;
             return null;
         }
 
@@ -153,6 +160,19 @@ namespace SuperFantasticSteampunk
             }
         }
 
+        private static void populateTextureDataDictionary(ContentManager contentManager)
+        {
+            List<Dictionary<string, object>> textureDataList = loadItemData(contentManager.RootDirectory + @"\Textures\Textures.txt");
+            foreach (var data in textureDataList)
+            {
+                TextureData textureData = newObjectFromItemData<TextureData>(data);
+                typeof(TextureData).GetProperty("Texture").SetValue(textureData, contentManager.Load<Texture2D>(@"Textures\" + textureData.FileName), null);
+                textureDataDictionary.Add(textureData.Name, textureData);
+                Logger.Log("Loaded texture data '" + textureData.Name + "'");
+            }
+        }
+
+
         private static List<Dictionary<string, object>> loadItemData(string itemsFilePath)
         {
             List<Dictionary<string, object>> result = new List<Dictionary<string, object>>();
@@ -212,40 +232,21 @@ namespace SuperFantasticSteampunk
             switch (typeName)
             {
             case "string": return (object)valueString;
-            case "int": return parseItemDataInt(valueString);
-            case "WeaponType": return parseItemDataEnum<WeaponType>(valueString);
-            case "WeaponUseAgainst": return parseItemDataEnum<WeaponUseAgainst>(valueString);
-            case "CharacterClass": return parseItemDataEnum<CharacterClass>(valueString);
+            case "int": return parseItemData<int>(valueString);
+            case "float": return parseItemData<float>(valueString);
+            case "WeaponType": return parseItemData<WeaponType>(valueString);
+            case "WeaponUseAgainst": return parseItemData<WeaponUseAgainst>(valueString);
+            case "CharacterClass": return parseItemData<CharacterClass>(valueString);
             }
             return null;
         }
 
-        private static object parseItemDataInt(string valueString)
+        private static object parseItemData<T>(string valueString)
         {
-            int result;
-            if (int.TryParse(valueString, out result))
-                return (object)result;
-            return (object)0;
-        }
-
-        private static object parseItemDataEnum<T>(string valueString) where T : struct
-        {
-            T result;
-            if (Enum.TryParse<T>(valueString, out result))
-                return (object)result;
-            return (object)0;
-        }
-
-        private static void populateTextureDictionary(ContentManager contentManager)
-        {
-            string textureDirectory = contentManager.RootDirectory + @"\Textures\";
-            IEnumerable<string> textureFileNames = Directory.EnumerateFiles(textureDirectory, "*.png");
-            foreach (string textureFileName in textureFileNames)
-            {
-                string textureName = textureFileName.Replace(textureDirectory, "").Replace(".png", "");
-                textureDictionary.Add(textureName, contentManager.Load<Texture2D>(@"Textures\" + textureName));
-                Logger.Log("Loaded texture '" + textureName + "'");
-            }
+            TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(T));
+            if (typeConverter != null)
+                return typeConverter.ConvertFromString(valueString);
+            return default(T);
         }
 
         private static void populateSpriteFontDictionary(ContentManager contentManager)

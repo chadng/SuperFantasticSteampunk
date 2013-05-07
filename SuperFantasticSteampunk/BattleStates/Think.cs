@@ -150,7 +150,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 checkUsabilityOfWeaponMenuOptions();
             }
             else
-                choosePreviousOption();
+                chooseRelativeOption(-1);
         }
 
         private void moveDown()
@@ -161,7 +161,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 checkUsabilityOfWeaponMenuOptions();
             }
             else
-                chooseNextOption();
+                chooseRelativeOption(1);
         }
 
         private void moveLeft()
@@ -233,26 +233,28 @@ namespace SuperFantasticSteampunk.BattleStates
             }
         }
 
-        private void choosePreviousOption()
+        private void chooseRelativeOption(int relativeIndex)
         {
             if (CurrentThinkActionType == ThinkActionType.None || MenuOptions == null)
                 return;
 
-            if (--CurrentOptionNameIndex < 0)
+            CurrentOptionNameIndex += relativeIndex;
+            if (CurrentOptionNameIndex >= MenuOptions.Count)
+                CurrentOptionNameIndex = MenuOptions.Count - 1;
+            else if (CurrentOptionNameIndex < 0)
                 CurrentOptionNameIndex = 0;
+
+            equipCurrentOption();
 
             Logger.Log("Selected option: " + MenuOptions[CurrentOptionNameIndex].Name);
         }
 
-        private void chooseNextOption()
+        private void equipCurrentOption()
         {
-            if (CurrentThinkActionType == ThinkActionType.None || MenuOptions == null)
-                return;
-
-            if (++CurrentOptionNameIndex >= MenuOptions.Count)
-                CurrentOptionNameIndex = MenuOptions.Count - 1;
-
-            Logger.Log("Selected option: " + MenuOptions[CurrentOptionNameIndex].Name);
+            if (CurrentThinkActionType == ThinkActionType.Attack)
+                CurrentPartyMember.EquipWeapon(MenuOptions[CurrentOptionNameIndex].Name);
+            else if (CurrentThinkActionType == ThinkActionType.Defend)
+                CurrentPartyMember.EquipShield(MenuOptions[CurrentOptionNameIndex].Name);
         }
 
         private void initThinkActionTypeMenu(ThinkActionType thinkActionType)

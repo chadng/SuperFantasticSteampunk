@@ -29,10 +29,10 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public void Draw(Texture2D texture, Vector2 position, Color color)
+        public void Draw(TextureData textureData, Vector2 position, Color color)
         {
             beginSpriteBatch();
-            spriteBatch.Draw(texture, position, color);
+            spriteBatch.Draw(textureData.Texture, position, color);
         }
 
         public void Draw(Skeleton skeleton)
