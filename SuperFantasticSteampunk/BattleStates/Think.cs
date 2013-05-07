@@ -388,7 +388,10 @@ namespace SuperFantasticSteampunk.BattleStates
             foreach (PartyMember partyMember in Battle.EnemyParty)
             {
                 //TODO: improve this
-                actions.Add(new ThinkAction(ThinkActionType.Attack, "default", partyMember, Battle.PlayerParty.Sample()));
+                ThinkAction thinkAction = new ThinkAction(ThinkActionType.Attack, "default", partyMember, Battle.PlayerParty.Sample());
+                if (thinkAction.Actor.EquippedWeapon == null)
+                    thinkAction.Actor.EquipWeapon(thinkAction.OptionName);
+                actions.Add(thinkAction);
             }
         }
         #endregion
