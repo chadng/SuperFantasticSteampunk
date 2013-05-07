@@ -108,6 +108,21 @@ namespace SuperFantasticSteampunk
             return null;
         }
 
+        public static object ParseItemDataValue(string typeName, string valueString)
+        {
+            switch (typeName)
+            {
+            case "string": return (object)valueString;
+            case "int": return parseItemData<int>(valueString);
+            case "float": return parseItemData<float>(valueString);
+            case "WeaponType": return parseItemData<WeaponType>(valueString);
+            case "WeaponUseAgainst": return parseItemData<WeaponUseAgainst>(valueString);
+            case "CharacterClass": return parseItemData<CharacterClass>(valueString);
+            case "Script": return new Script(valueString);
+            }
+            return null;
+        }
+
         private static void populateSkeletonDataDictionary(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             string skeletonDirectory = contentManager.RootDirectory + @"\Skeletons\";
@@ -224,21 +239,7 @@ namespace SuperFantasticSteampunk
             string key = line.Substring(0, firstColonIndex);
             string valueType = line.Substring(firstColonIndex + 1, secondColonIndex - firstColonIndex - 1);
             string valueString = line.Substring(secondColonIndex + 1);
-            return new KeyValuePair<string, object>(key, parseItemDataValue(valueType, valueString));
-        }
-
-        private static object parseItemDataValue(string typeName, string valueString)
-        {
-            switch (typeName)
-            {
-            case "string": return (object)valueString;
-            case "int": return parseItemData<int>(valueString);
-            case "float": return parseItemData<float>(valueString);
-            case "WeaponType": return parseItemData<WeaponType>(valueString);
-            case "WeaponUseAgainst": return parseItemData<WeaponUseAgainst>(valueString);
-            case "CharacterClass": return parseItemData<CharacterClass>(valueString);
-            }
-            return null;
+            return new KeyValuePair<string, object>(key, ParseItemDataValue(valueType, valueString));
         }
 
         private static object parseItemData<T>(string valueString)
