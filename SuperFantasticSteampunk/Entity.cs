@@ -14,6 +14,10 @@ namespace SuperFantasticSteampunk
         public Skeleton Skeleton { get; private set; }
         public AnimationState AnimationState { get; private set; }
         public Vector2 Position { get; set; }
+        public Vector2 Velocity { get; set; }
+        public Vector2 Scale { get; set; }
+        public float Rotation { get; set; }
+        public float RadialVelocity { get; set; }
         public Color Tint { get; set; }
         #endregion
 
@@ -29,6 +33,10 @@ namespace SuperFantasticSteampunk
         {
             this.textureData = textureData;
             Position = position;
+            Velocity = new Vector2(0.0f);
+            Scale = new Vector2(1.0f);
+            Rotation = 0.0f;
+            RadialVelocity = 0.0f;
             Tint = Color.White;
         }
         #endregion
@@ -58,6 +66,9 @@ namespace SuperFantasticSteampunk
 
         public virtual void Update(GameTime gameTime)
         {
+            Position += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Rotation += RadialVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            
             if (Skeleton != null)
                 updateSkeleton(gameTime);
         }
@@ -74,6 +85,9 @@ namespace SuperFantasticSteampunk
         {
             Skeleton.RootBone.X = Position.X;
             Skeleton.RootBone.Y = Position.Y;
+            Skeleton.RootBone.ScaleX = Scale.X;
+            Skeleton.RootBone.ScaleY = Scale.Y;
+            Skeleton.RootBone.Rotation = Rotation;
             AnimationState.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             AnimationState.Apply(Skeleton);
             Skeleton.UpdateWorldTransform();
