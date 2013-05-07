@@ -7,6 +7,22 @@ namespace SuperFantasticSteampunk
 {
     using ScriptAction = Tuple<float, string, object[]>;
 
+    class NestedScriptRunner
+    {
+        #region Instance Properties
+        public float Time { get; set; }
+        public ScriptRunner ScriptRunner { get; private set; }
+        #endregion
+
+        #region Constructors
+        public NestedScriptRunner(float time, ScriptRunner scriptRunner)
+        {
+            Time = time;
+            ScriptRunner = scriptRunner;
+        }
+        #endregion
+    }
+
     class ScriptRunner
     {
         #region Instance Fields
@@ -16,6 +32,7 @@ namespace SuperFantasticSteampunk
         private PartyMember actor;
         private PartyMember target;
         private float time;
+        private List<NestedScriptRunner> nestedScriptRunners;
         #endregion
 
         #region Constructors
@@ -27,6 +44,7 @@ namespace SuperFantasticSteampunk
             this.actor = actor;
             this.target = target;
             time = 0.0f;
+            nestedScriptRunners = new List<NestedScriptRunner>();
         }
         #endregion
 
@@ -36,17 +54,32 @@ namespace SuperFantasticSteampunk
             if (scriptActionIndex >= script.Actions.Count)
                 return;
             
-            time += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float elapsedGameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            time += elapsedGameTime;
             ScriptAction action = script.Actions[scriptActionIndex];
             if (time >= action.Item1)
             {
                 executeAction(action);
                 ++scriptActionIndex;
             }
+
+            foreach (NestedScriptRunner nestedScriptRunner in nestedScriptRunners)
+            {
+                if (nestedScriptRunner.Time <= 0.0f)
+                    nestedScriptRunner.ScriptRunner.Update(gameTime);
+                else
+                    nestedScriptRunner.Time -= elapsedGameTime;
+            }
         }
 
         public bool IsFinished()
         {
+            foreach (NestedScriptRunner nestedScriptRunner in nestedScriptRunners)
+            {
+                if (!nestedScriptRunner.ScriptRunner.IsFinished())
+                    return false;
+            }
             return scriptActionIndex >= script.Actions.Count;
         }
 
@@ -55,32 +88,37 @@ namespace SuperFantasticSteampunk
             object[] args = action.Item3;
             switch (action.Item2)
             {
-            case "playAnimation": playAnimation(args); break;
-            case "doDamage": doDamage(args); break;
+            case "playAnimation": _playAnimation(args); break;
+            case "doDamage": _doDamage(args); break;
             case "nop": break;
             default: break;
             }
         }
 
-        private void playAnimation(object[] args)
-        { // playAnimation(string partyMemberId, string animationName, bool playNow)
+        private void _playAnimation(object[] args)
+        { // playAnimation(string partyMemberId, string animationName, bool playNow, Script onStartCallback)
             string partyMemberId = (string)args[0];
             string animationName = (string)args[1];
             bool playNow = (bool)args[2];
+            Script onStartCallback = (Script)args[3];
 
             PartyMember partyMember = getPartyMemberFromStringId(partyMemberId);
             AnimationState animationState = partyMember.BattleEntity.AnimationState;
             Animation originalAnimation = animationState.Animation;
 
+            float animationStateTime = animationState.Time;
             float timeToAnimationEnd = 0.0f;
             if (!playNow)
-                timeToAnimationEnd = animationState.Time + animationState.Animation.Duration - (animationState.Time % animationState.Animation.Duration);
+                timeToAnimationEnd = animationStateTime + animationState.Animation.Duration - (animationStateTime % animationState.Animation.Duration);
 
             animationState.AddAnimation(animationName, false, timeToAnimationEnd);
             animationState.AddAnimation(originalAnimation, true);
+
+            if (onStartCallback != null)
+                addNestedScriptRunner(onStartCallback, playNow ? 0.0f : timeToAnimationEnd - animationStateTime);
         }
 
-        private void doDamage(object[] args)
+        private void _doDamage(object[] args)
         { // doDamage(string actorPartyMemberId, string targetPartyMemberId)
             string actorPartyMemberId = (string)args[0];
             string targetPartyMemberId = (string)args[1];
@@ -103,6 +141,11 @@ namespace SuperFantasticSteampunk
             case "target": return target;
             default: return null;
             }
+        }
+
+        private void addNestedScriptRunner(Script script, float delay)
+        {
+            nestedScriptRunners.Add(new NestedScriptRunner(delay, new ScriptRunner(script, battle, actor, target)));
         }
         #endregion
     }
