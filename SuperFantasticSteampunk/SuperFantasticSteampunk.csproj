@@ -57,6 +57,7 @@
     <Compile Include="BattleState.cs" />
     <Compile Include="BattleStateRenderer.cs" />
     <Compile Include="BattleStates\Act.cs" />
+    <Compile Include="BattleStates\Attack.cs" />
     <Compile Include="BattleStates\EndTurn.cs" />
     <Compile Include="BattleStates\Intro.cs" />
     <Compile Include="BattleStates\Lose.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="BattleStates\SelectTargetRenderer.cs" />
     <Compile Include="BattleStates\Think.cs" />
     <Compile Include="BattleStates\ThinkRenderer.cs" />
+    <Compile Include="BattleStates\UseItem.cs" />
     <Compile Include="BattleStates\Win.cs" />
     <Compile Include="InputButtonListener.cs" />
     <Compile Include="Inventory.cs" />

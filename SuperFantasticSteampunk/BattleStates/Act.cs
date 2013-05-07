@@ -34,7 +34,7 @@ namespace SuperFantasticSteampunk.BattleStates
             Comparison<ThinkAction> speedComparer = new Comparison<ThinkAction>((a, b) => b.Actor.Speed.CompareTo(a.Actor.Speed));
             attackThinkActions.Sort(speedComparer);
             useItemThinkActions.Sort(speedComparer);
-            currentThinkActionType = ThinkActionType.Attack; // change to use item first
+            currentThinkActionType = ThinkActionType.UseItem;
         }
 
         public override void Finish()
@@ -51,11 +51,18 @@ namespace SuperFantasticSteampunk.BattleStates
         public override void Resume(BattleState previousBattleState)
         {
             base.Resume(previousBattleState);
-            // if previousBattleState is action then increment currentThinkActionIndex
+            if (previousBattleState is Attack || previousBattleState is UseItem)
+                ++currentThinkActionIndex;
         }
 
         public override void Update(GameTime gameTime)
         {
+            if (Battle.PlayerParty.Count == 0 || Battle.EnemyParty.Count == 0)
+            {
+                Finish();
+                return;
+            }
+
             ThinkAction thinkAction = null;
 
             if (currentThinkActionType == ThinkActionType.UseItem)
@@ -80,18 +87,20 @@ namespace SuperFantasticSteampunk.BattleStates
                 thinkAction = attackThinkActions[currentThinkActionIndex];
             }
 
+            pushStateForThinkAction(thinkAction);
+        }
+
+        private void pushStateForThinkAction(ThinkAction thinkAction)
+        {
             if (thinkAction == null)
                 return;
 
             if (thinkAction.Target.Alive)
             {
-                PartyMember target = Battle.GetPartyBattleLayoutForPartyMember(thinkAction.Target).FirstInPartyMembersList(thinkAction.Target);
-                int damage = target.CalculateDamageTaken(thinkAction.Actor);
-                target.DoDamage(damage);
-                Logger.Log(thinkAction.Actor.Data.Name + " did " + damage.ToString() + " damage to " + target.Data.Name);
-                ++currentThinkActionIndex;
-                if (!target.Alive)
-                    target.Kill(Battle);
+                if (thinkAction.Type == ThinkActionType.Attack)
+                    PushState(new Attack(Battle, thinkAction));
+                else
+                    PushState(new UseItem(Battle, thinkAction));
             }
             else
             {
@@ -100,37 +109,6 @@ namespace SuperFantasticSteampunk.BattleStates
                 else
                     Finish();
             }
-
-            ////TODO: Change these to individual states
-            //foreach (ThinkAction thinkAction in useItemThinkActions)
-            //{
-            //    Logger.Log(thinkAction.Actor.Data.Name + " used '" + thinkAction.OptionName + "' item");
-            //    Logger.Log("TODO: use item"); //TODO: use item
-            //}
-
-            //foreach (ThinkAction thinkAction in attackThinkActions)
-            //{
-            //    thinkAction.Actor.EquipWeapon(thinkAction.OptionName);
-            //    Logger.Log(thinkAction.Actor.Data.Name + " equipped '" + thinkAction.OptionName + "' weapon");
-
-            //    PartyMember target = Battle.GetPartyBattleLayoutForPartyMember(thinkAction.Target).FirstInPartyMembersList(thinkAction.Target);
-
-            //    if (thinkAction.Target.Alive)
-            //    {
-            //        int damage = target.CalculateDamageTaken(thinkAction.Actor);
-            //        target.DoDamage(damage);
-            //        Logger.Log(thinkAction.Actor.Data.Name + " did " + damage.ToString() + " damage to " + target.Data.Name);
-            //    }
-
-            //    if (!target.Alive)
-            //    {
-            //        Logger.Log(thinkAction.Actor.Data.Name + " target " + target.Data.Name + " is not alive");
-            //        target.Kill(Battle);
-            //        //TODO: choose new target
-            //    }
-            //}
-
-            //Finish();
         }
         #endregion
     }
