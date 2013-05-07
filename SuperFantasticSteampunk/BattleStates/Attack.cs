@@ -8,6 +8,10 @@ namespace SuperFantasticSteampunk.BattleStates
     {
         #region Instance Fields
         private ThinkAction thinkAction;
+        private ScriptRunner scriptRunner;
+        private bool scriptStarted;
+        private float scriptStartTime;
+        private float scriptStartTimer;
         private Entity battleEntity;
         private Animation originalAnimation;
         private Animation attackAnimation;
@@ -23,6 +27,9 @@ namespace SuperFantasticSteampunk.BattleStates
             if (thinkAction == null)
                 throw new Exception("ThinkAction cannot be null");
             this.thinkAction = thinkAction;
+            scriptStarted = false;
+            scriptStartTime = 0.0f;
+            scriptStartTimer = 0.0f;
             battleEntity = thinkAction.Actor.BattleEntity;
             playAttackAnimation = false;
             timeTilHurt = 0.0f;
@@ -33,24 +40,16 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
-            originalAnimation = battleEntity.AnimationState.Animation;
             Weapon weapon = thinkAction.Actor.EquippedWeapon;
-            if (weapon == null)
-                return;
+            Script script;
+            if (weapon == null || weapon.Data.Script == null)
+                script = new Script("0.0 doDamage string:actor string:target");
+            else
+                script = weapon.Data.Script;
+            scriptRunner = new ScriptRunner(script, Battle, thinkAction.Actor, thinkAction.Target);
 
-            string animationName = weapon.Data.AttackAnimationName;
-            if (animationName != null)
-            {
-                attackAnimation = battleEntity.Skeleton.Data.FindAnimation(animationName);
-                if (attackAnimation != null)
-                {
-                    float timeToAnimationEnd = battleEntity.AnimationState.Animation.Duration - (battleEntity.AnimationState.Time % battleEntity.AnimationState.Animation.Duration);
-                    battleEntity.AnimationState.AddAnimation(attackAnimation, false, battleEntity.AnimationState.Time + timeToAnimationEnd);
-                    battleEntity.AnimationState.AddAnimation(originalAnimation, true);
-                    playAttackAnimation = true;
-                    timeTilHurt = weapon.Data.AttackHurtTime;
-                }
-            }
+            AnimationState animationState = battleEntity.AnimationState;
+            scriptStartTime = animationState.Animation.Duration - (animationState.Time % animationState.Animation.Duration);
         }
 
         public override void Finish()
@@ -60,29 +59,13 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(GameTime gameTime)
         {
-            if (playAttackAnimation)
+            scriptStartTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (scriptStartTimer >= scriptStartTime)
             {
-                if (attackAnimation != null) // if attack animation has not started
-                {
-                    if (battleEntity.AnimationState.Animation.Name == attackAnimation.Name)
-                        attackAnimation = null; // indicate that the attack animation has started
-                    return;
-                }
-                else if (battleEntity.AnimationState.Animation.Name != originalAnimation.Name) // if the attack animation is playing/original animation not resumed
-                {
-                    timeTilHurt -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (timeTilHurt <= 0.0f)
-                        hurt();
-                    return;
-                }
-
-                if (timeTilHurt <= 0.0f)
+                scriptRunner.Update(gameTime);
+                if (scriptRunner.IsFinished())
                     Finish();
-                return;
             }
-
-            hurt();
-            Finish();
         }
 
         private void hurt()

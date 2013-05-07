@@ -84,6 +84,7 @@
     <Compile Include="ResourceManager.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Script.cs" />
+    <Compile Include="ScriptRunner.cs" />
     <Compile Include="Shield.cs" />
     <Compile Include="ShieldData.cs" />
     <Compile Include="TextureData.cs" />

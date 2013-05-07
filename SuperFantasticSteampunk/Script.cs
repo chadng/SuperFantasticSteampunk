@@ -8,17 +8,17 @@ namespace SuperFantasticSteampunk
     class Script
     {
         #region Instance Fields
-        private List<ScriptAction> actions;
+        public List<ScriptAction> Actions { get; private set; }
         #endregion
 
         #region Constructors
         public Script(string scriptString)
         {
             string[] statements = scriptString.Split(';');
-            actions = new List<ScriptAction>(statements.Length);
+            Actions = new List<ScriptAction>(statements.Length);
             foreach (string statement in statements)
-                actions.Add(stringToScriptAction(statement));
-            actions.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+                Actions.Add(stringToScriptAction(statement));
+            Actions.Sort((a, b) => a.Item1.CompareTo(b.Item1));
         }
         #endregion
 

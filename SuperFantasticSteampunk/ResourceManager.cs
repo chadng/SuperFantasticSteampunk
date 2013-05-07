@@ -115,6 +115,7 @@ namespace SuperFantasticSteampunk
             case "string": return (object)valueString;
             case "int": return parseItemData<int>(valueString);
             case "float": return parseItemData<float>(valueString);
+            case "bool": return parseItemData<bool>(valueString);
             case "WeaponType": return parseItemData<WeaponType>(valueString);
             case "WeaponUseAgainst": return parseItemData<WeaponUseAgainst>(valueString);
             case "CharacterClass": return parseItemData<CharacterClass>(valueString);
