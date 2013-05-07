@@ -13,6 +13,7 @@
         public int Power { get; private set; }
         public string TextureName { get; private set; }
         public string AttackAnimationName { get; private set; }
+        public float AttackHurtTime { get; private set; }
         #endregion
     }
 }
