@@ -65,14 +65,13 @@ namespace SuperFantasticSteampunk
 
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            ResourceManager.UnloadContent();
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (Input.Pause())
             {
-                ResourceManager.UnloadContent();
                 Logger.Log("Game exited");
                 Exit();
             }
