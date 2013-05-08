@@ -36,10 +36,9 @@ namespace SuperFantasticSteampunk
         }
 
         public static T Sample<T>(this List<T> self)
-            where T : class
         {
             if (self.Count == 0)
-                return null;
+                return default(T);
             return self[Game1.Random.Next(self.Count)];
         }
     }

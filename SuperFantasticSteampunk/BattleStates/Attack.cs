@@ -31,7 +31,7 @@ namespace SuperFantasticSteampunk.BattleStates
             Weapon weapon = thinkAction.Actor.EquippedWeapon;
             Script script;
             if (weapon == null || weapon.Data.Script == null)
-                script = new Script("0.0 doDamage string:actor string:target");
+                script = new Script("0.0 doDamage string:actor string:target>list>front bool:false");
             else
                 script = weapon.Data.Script;
             scriptRunner = new ScriptRunner(script, Battle, thinkAction.Actor, thinkAction.Target);

@@ -22,6 +22,7 @@ namespace SuperFantasticSteampunk
             layout = new List<List<PartyMember>>(party.Count);
             foreach (PartyMember partyMember in party)
                 layout.Add(newListWithPartyMember(partyMember));
+            MovePartyMemberUp(party[party.Count - 1]);
         }
         #endregion
 
@@ -55,9 +56,9 @@ namespace SuperFantasticSteampunk
             }
         }
 
-        public PartyMember FirstInPartyMembersList(PartyMember partyMember)
+        public List<PartyMember> PartyMembersList(PartyMember partyMember)
         {
-            return getListWithPartyMember(partyMember)[0];
+            return getListWithPartyMember(partyMember);
         }
 
         public bool PartyMemberInFrontLine(PartyMember partyMember)
@@ -70,6 +71,15 @@ namespace SuperFantasticSteampunk
         public void ForEachList(Action<List<PartyMember>> action)
         {
             layout.ForEach(action);
+        }
+
+        public List<PartyMember> RelativeList(List<PartyMember> list, int relativeIndex)
+        {
+            int index = layout.IndexOf(list) + relativeIndex;
+            if (index < 0 || index >= layout.Count)
+                return null;
+            else
+                return layout[index];
         }
 
         private List<PartyMember> newListWithPartyMember(PartyMember partyMember)

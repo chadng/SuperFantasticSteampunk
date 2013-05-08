@@ -105,12 +105,12 @@ namespace SuperFantasticSteampunk
         }
 
         private void _queueAnimation(object[] args)
-        { // queueAnimation(string partyMemberId, string animationName, Script onStartCallback)
-            string partyMemberId = (string)args[0];
+        { // queueAnimation(string partyMemberSelector, string animationName, Script onStartCallback)
+            string partyMemberSelector = (string)args[0];
             string animationName = (string)args[1];
             Script onStartCallback = (Script)args[2];
 
-            PartyMember partyMember = getPartyMemberFromStringId(partyMemberId);
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
             AnimationState animationState = partyMember.BattleEntity.AnimationState;
 
             float animationStateTime = animationState.Time;
@@ -124,11 +124,11 @@ namespace SuperFantasticSteampunk
         }
 
         private void _playAnimation(object[] args)
-        { // playAnimation(string partyMemberId, string animationName)
-            string partyMemberId = (string)args[0];
+        { // playAnimation(string partyMemberSelector, string animationName)
+            string partyMemberSelector = (string)args[0];
             string animationName = (string)args[1];
 
-            PartyMember partyMember = getPartyMemberFromStringId(partyMemberId);
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
             AnimationState animationState = partyMember.BattleEntity.AnimationState;
 
             animationState.SetAnimation(animationName, false);
@@ -136,65 +136,64 @@ namespace SuperFantasticSteampunk
         }
 
         private void _doDamage(object[] args)
-        { // doDamage(string actorPartyMemberId, string targetPartyMemberId)
-            string actorPartyMemberId = (string)args[0];
-            string targetPartyMemberId = (string)args[1];
+        { // doDamage(string actorPartyMemberSelector, string targetPartyMemberSelector)
+            string actorPartyMemberSelector = (string)args[0];
+            string targetPartyMemberSelector = (string)args[1];
 
-            PartyMember actor = getPartyMemberFromStringId(actorPartyMemberId);
-            PartyMember target = getPartyMemberFromStringId(targetPartyMemberId);
+            PartyMember actor = getPartyMemberFromSelector(actorPartyMemberSelector);
+            PartyMember target = getPartyMemberFromSelector(targetPartyMemberSelector);
 
-            PartyMember actualTarget = battle.GetPartyBattleLayoutForPartyMember(target).FirstInPartyMembersList(target);
-            int damage = actualTarget.CalculateDamageTaken(actor);
-            actualTarget.DoDamage(damage);
+            int damage = target.CalculateDamageTaken(actor);
+            target.DoDamage(damage);
 
-            if (actualTarget.EquippedShield != null)
-                addNestedScriptRunner(actualTarget.EquippedShield.Data.Script, 0.0f);
+            if (target.EquippedShield != null)
+                addNestedScriptRunner(target.EquippedShield.Data.Script, 0.0f);
 
-            if (!actualTarget.Alive)
-                actualTarget.Kill(battle);
+            if (!target.Alive)
+                target.Kill(battle);
         }
 
         private void _setVelocity(object[] args)
-        { // setVelocity(string partyMemberId, float x, float y)
-            string partyMemberId = (string)args[0];
+        { // setVelocity(string partyMemberSelector, float x, float y)
+            string partyMemberSelector = (string)args[0];
             float x = (float)args[1];
             float y = (float)args[2];
 
-            getPartyMemberFromStringId(partyMemberId).BattleEntity.Velocity = new Vector2(x, y);
+            getPartyMemberFromSelector(partyMemberSelector).BattleEntity.Velocity = new Vector2(x, y);
         }
 
         private void _setVelocityX(object[] args)
-        { // setVelocityX(string partyMemberId, float x)
-            string partyMemberId = (string)args[0];
+        { // setVelocityX(string partyMemberSelector, float x)
+            string partyMemberSelector = (string)args[0];
             float x = (float)args[1];
 
-            Entity battleEntity = getPartyMemberFromStringId(partyMemberId).BattleEntity;
+            Entity battleEntity = getPartyMemberFromSelector(partyMemberSelector).BattleEntity;
             battleEntity.Velocity = new Vector2(x, battleEntity.Velocity.Y);
         }
 
         private void _setVelocityY(object[] args)
-        { // setVelocityY(string partyMemberId, float y)
-            string partyMemberId = (string)args[0];
+        { // setVelocityY(string partyMemberSelector, float y)
+            string partyMemberSelector = (string)args[0];
             float y = (float)args[1];
 
-            Entity battleEntity = getPartyMemberFromStringId(partyMemberId).BattleEntity;
+            Entity battleEntity = getPartyMemberFromSelector(partyMemberSelector).BattleEntity;
             battleEntity.Velocity = new Vector2(battleEntity.Velocity.X, y);
         }
 
         private void _setRotation(object[] args)
-        { // setRotation(string partyMemberId, float amount)
-            string partyMemberId = (string)args[0];
+        { // setRotation(string partyMemberSelector, float amount)
+            string partyMemberSelector = (string)args[0];
             float amount = (float)args[1];
 
-            getPartyMemberFromStringId(partyMemberId).BattleEntity.Rotation = amount;
+            getPartyMemberFromSelector(partyMemberSelector).BattleEntity.Rotation = amount;
         }
 
         private void _setAngularVelocity(object[] args)
-        { // setAngularVelocity(string partyMemberId, float amount)
-            string partyMemberId = (string)args[0];
+        { // setAngularVelocity(string partyMemberSelector, float amount)
+            string partyMemberSelector = (string)args[0];
             float amount = (float)args[1];
 
-            getPartyMemberFromStringId(partyMemberId).BattleEntity.AngularVelocity = amount;
+            getPartyMemberFromSelector(partyMemberSelector).BattleEntity.AngularVelocity = amount;
         }
 
         private void _log(object[] args)
@@ -204,13 +203,48 @@ namespace SuperFantasticSteampunk
             Logger.Log("Script log at " + time.ToString() + ": " + message);
         }
 
-        private PartyMember getPartyMemberFromStringId(string id)
+        private PartyMember getPartyMemberFromSelector(string selector)
         {
-            switch (id)
+            string[] selectorParts = selector.Split('>');
+            object result;
+            switch (selectorParts[0])
             {
-            case "actor": return actor;
-            case "target": return target;
-            default: return null;
+            case "actor": result = actor; break;
+            case "target": result = target; break;
+            default: result = null; break;
+            }
+
+            for (int i = 1; i < selectorParts.Length; ++i)
+                result = getNextPartyMemberOrListFromSelectorPart(result, selectorParts[i]);
+
+            return result as PartyMember;
+        }
+
+        private object getNextPartyMemberOrListFromSelectorPart(object partyMemberOrList, string selectorPart)
+        {
+            if (partyMemberOrList == null)
+                return null;
+
+            PartyMember partyMember = partyMemberOrList as PartyMember;
+            if (partyMember != null)
+            {
+                switch (selectorPart)
+                {
+                case "list": return battle.GetPartyBattleLayoutForPartyMember(partyMember).PartyMembersList(partyMember);
+                default: return null;
+                }
+            }
+            else
+            {
+                List<PartyMember> list = partyMemberOrList as List<PartyMember>;
+                switch (selectorPart)
+                {
+                case "front": return list[0];
+                case "back": return list[list.Count - 1];
+                case "up": return battle.GetPartyBattleLayoutForPartyMember(list[0]).RelativeList(list, -1);
+                case "down": return battle.GetPartyBattleLayoutForPartyMember(list[0]).RelativeList(list, 1);
+                default: return null;
+                }
             }
         }
 
