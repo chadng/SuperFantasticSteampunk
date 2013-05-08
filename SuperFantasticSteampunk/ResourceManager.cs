@@ -14,6 +14,7 @@ namespace SuperFantasticSteampunk
         private static SortedDictionary<string, SkeletonData> skeletonDataDictionary;
         private static SortedDictionary<string, WeaponData> weaponDataDictionary;
         private static SortedDictionary<string, ShieldData> shieldDataDictionary;
+        private static SortedDictionary<string, ItemData> itemDataDictionary;
         private static SortedDictionary<string, PartyMemberData> partyMemberDataDictionary;
         private static SortedDictionary<string, TextureData> textureDataDictionary;
         private static SortedDictionary<string, SpriteFont> spriteFontDictionary;
@@ -28,6 +29,8 @@ namespace SuperFantasticSteampunk
             populateWeaponDataDictionary(contentManager);
             shieldDataDictionary = new SortedDictionary<string, ShieldData>();
             populateShieldDataDictionary(contentManager);
+            itemDataDictionary = new SortedDictionary<string, ItemData>();
+            populateItemDataDictionary(contentManager);
             partyMemberDataDictionary = new SortedDictionary<string, PartyMemberData>();
             populatePartyMemberDataDictionary(contentManager);
             textureDataDictionary = new SortedDictionary<string, TextureData>();
@@ -81,6 +84,23 @@ namespace SuperFantasticSteampunk
             ShieldData shieldData;
             if (shieldDataDictionary.TryGetValue(name, out shieldData))
                 return shieldData;
+            return null;
+        }
+
+        public static Item GetNewItem(string name)
+        {
+            ItemData itemData = GetItemData(name);
+            if (itemData == null)
+                return null;
+            else
+                return new Item(itemData);
+        }
+
+        public static ItemData GetItemData(string name)
+        {
+            ItemData itemData;
+            if (itemDataDictionary.TryGetValue(name, out itemData))
+                return itemData;
             return null;
         }
 
@@ -162,6 +182,17 @@ namespace SuperFantasticSteampunk
                 ShieldData shieldData = newObjectFromItemData<ShieldData>(data);
                 shieldDataDictionary.Add(shieldData.Name, shieldData);
                 Logger.Log("Loaded shield '" + shieldData.Name + "'");
+            }
+        }
+
+        private static void populateItemDataDictionary(ContentManager contentManager)
+        {
+            List<Dictionary<string, object>> itemDataList = loadItemData(contentManager.RootDirectory + @"\Items\Items.txt");
+            foreach (var data in itemDataList)
+            {
+                ItemData itemData = newObjectFromItemData<ItemData>(data);
+                itemDataDictionary.Add(itemData.Name, itemData);
+                Logger.Log("Loaded item '" + itemData.Name + "'");
             }
         }
 

@@ -35,7 +35,7 @@ namespace SuperFantasticSteampunk
                     i.Add("shield2", 5);
                 }));
             }
-            ItemInventory = new Inventory();
+            ItemInventory = new Inventory().Tap(i => i.Add("item1", 5));
         }
         #endregion
 

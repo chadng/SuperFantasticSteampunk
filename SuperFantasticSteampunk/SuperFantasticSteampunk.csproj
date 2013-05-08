@@ -69,6 +69,8 @@
     <Compile Include="BattleStates\Win.cs" />
     <Compile Include="InputButtonListener.cs" />
     <Compile Include="Inventory.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="ItemData.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MiscExtensions.cs" />
     <Compile Include="Entity.cs" />
@@ -105,6 +107,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Items\Items.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Items\Shields.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

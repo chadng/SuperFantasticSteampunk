@@ -7,6 +7,8 @@ namespace SuperFantasticSteampunk.BattleStates
     {
         #region Instance Fields
         private ThinkAction thinkAction;
+        private ScriptRunner scriptRunner;
+        private Item item;
         #endregion
 
         #region Constructors
@@ -16,13 +18,17 @@ namespace SuperFantasticSteampunk.BattleStates
             if (thinkAction == null)
                 throw new Exception("ThinkAction cannot be null");
             this.thinkAction = thinkAction;
+            scriptRunner = null;
+            item = null;
         }
         #endregion
 
         #region Instance Methods
         public override void Start()
         {
-            //TODO: something
+            item = ResourceManager.GetNewItem(thinkAction.OptionName);
+            if (item != null)
+                scriptRunner = new ScriptRunner(item.Data.Script, Battle, thinkAction.Actor, thinkAction.Target);
         }
 
         public override void Finish()
@@ -32,9 +38,14 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(GameTime gameTime)
         {
-            Logger.Log(thinkAction.Actor.Data.Name + " used '" + thinkAction.OptionName + "' item");
-            Logger.Log("TODO: use item");
-            Finish();
+            if (scriptRunner == null)
+                Finish();
+            else
+            {
+                scriptRunner.Update(gameTime);
+                if (scriptRunner.IsFinished())
+                    Finish();
+            }
         }
         #endregion
     }
