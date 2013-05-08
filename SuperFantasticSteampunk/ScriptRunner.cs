@@ -98,6 +98,7 @@ namespace SuperFantasticSteampunk
             case "setVelocityY": _setVelocityY(args); break;
             case "setRotation": _setRotation(args); break;
             case "setAngularVelocity": _setAngularVelocity(args); break;
+            case "log": _log(args); break;
             case "nop": break;
             default: break;
             }
@@ -154,6 +155,7 @@ namespace SuperFantasticSteampunk
             string partyMemberId = (string)args[0];
             float x = (float)args[1];
             float y = (float)args[2];
+
             getPartyMemberFromStringId(partyMemberId).BattleEntity.Velocity = new Vector2(x, y);
         }
 
@@ -179,6 +181,7 @@ namespace SuperFantasticSteampunk
         { // setRotation(string partyMemberId, float amount)
             string partyMemberId = (string)args[0];
             float amount = (float)args[1];
+
             getPartyMemberFromStringId(partyMemberId).BattleEntity.Rotation = amount;
         }
 
@@ -186,7 +189,15 @@ namespace SuperFantasticSteampunk
         { // setAngularVelocity(string partyMemberId, float amount)
             string partyMemberId = (string)args[0];
             float amount = (float)args[1];
+
             getPartyMemberFromStringId(partyMemberId).BattleEntity.AngularVelocity = amount;
+        }
+
+        private void _log(object[] args)
+        { // log(string message)
+            string message = (string)args[0];
+
+            Logger.Log("Script log at " + time.ToString() + ": " + message);
         }
 
         private PartyMember getPartyMemberFromStringId(string id)
