@@ -23,8 +23,17 @@ namespace SuperFantasticSteampunk
             ShieldInventories = new Dictionary<CharacterClass, Inventory>();
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
             {
-                WeaponInventories.Add(characterClass, new Inventory());
-                ShieldInventories.Add(characterClass, new Inventory());
+                WeaponInventories.Add(characterClass, new Inventory().Tap(i =>
+                {
+                    i.Add("test1", 5);
+                    i.Add("test2", 5);
+                    i.Add("default", -1);
+                }));
+                ShieldInventories.Add(characterClass, new Inventory().Tap(i =>
+                {
+                    i.Add("shield1", 5);
+                    i.Add("shield2", 5);
+                }));
             }
             ItemInventory = new Inventory();
         }

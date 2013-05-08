@@ -16,9 +16,6 @@ namespace SuperFantasticSteampunk
         public Inventory()
         {
             lastUsedItemKeys = new ConditionalWeakTable<PartyMember, string>();
-            this.Add("test1", 5);
-            this.Add("test2", 5);
-            this.Add("default", -1);
         }
         #endregion
 

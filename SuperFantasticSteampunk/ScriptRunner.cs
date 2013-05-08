@@ -146,6 +146,10 @@ namespace SuperFantasticSteampunk
             PartyMember actualTarget = battle.GetPartyBattleLayoutForPartyMember(target).FirstInPartyMembersList(target);
             int damage = actualTarget.CalculateDamageTaken(actor);
             actualTarget.DoDamage(damage);
+
+            if (actualTarget.EquippedShield != null)
+                addNestedScriptRunner(actualTarget.EquippedShield.Data.Script, 0.0f);
+
             if (!actualTarget.Alive)
                 actualTarget.Kill(battle);
         }
