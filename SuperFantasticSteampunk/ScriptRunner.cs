@@ -93,6 +93,13 @@ namespace SuperFantasticSteampunk
             case "queueAnimation": _queueAnimation(args); break;
             case "playAnimation": _playAnimation(args); break;
             case "doDamage": _doDamage(args); break;
+            case "addHealth": _addHealth(args); break;
+            case "addMaxHealthStatModifier": _addMaxHealthStatModifier(args); break;
+            case "addAttackStatModifier": _addAttackStatModifier(args); break;
+            case "addSpecialAttackStatModifier": _addSpecialAttackStatModifier(args); break;
+            case "addDefenceStatModifier": _addDefenceStatModifier(args); break;
+            case "addSpeedStatModifier": _addSpeedStatModifier(args); break;
+            case "addCharmStatModifier": _addCharmStatModifier(args); break;
             case "setVelocity": _setVelocity(args); break;
             case "setVelocityX": _setVelocityX(args); break;
             case "setVelocityY": _setVelocityY(args); break;
@@ -148,6 +155,75 @@ namespace SuperFantasticSteampunk
 
             if (target.EquippedShield != null)
                 addNestedScriptRunner(target.EquippedShield.Data.Script, 0.0f);
+        }
+
+        private void _addHealth(object[] args)
+        { // addHealth(string partyMemberSelector, int amount)
+            string partyMemberSelector = (string)args[0];
+            int amount = (int)args[1];
+
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+            partyMember.DoDamage(-amount);
+        }
+
+        private void _addMaxHealthStatModifier(object[] args)
+        { // addMaxHealthStatModifier(string partyMemberSelector, int turns, float percentage)
+            string partyMemberSelector = (string)args[0];
+            int turns = (int)args[1];
+            float percentage = (float)args[2];
+
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+            partyMember.AddStatModifier(new StatModifier(turns, maxHealth: percentage));
+        }
+
+        private void _addAttackStatModifier(object[] args)
+        { // addAttackStatModifier(string partyMemberSelector, int turns, float percentage)
+            string partyMemberSelector = (string)args[0];
+            int turns = (int)args[1];
+            float percentage = (float)args[2];
+
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+            partyMember.AddStatModifier(new StatModifier(turns, attack: percentage));
+        }
+
+        private void _addSpecialAttackStatModifier(object[] args)
+        { // addSpecialAttackStatModifier(string partyMemberSelector, int turns, float percentage)
+            string partyMemberSelector = (string)args[0];
+            int turns = (int)args[1];
+            float percentage = (float)args[2];
+
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+            partyMember.AddStatModifier(new StatModifier(turns, specialAttack: percentage));
+        }
+
+        private void _addDefenceStatModifier(object[] args)
+        { // addDefenceStatModifier(string partyMemberSelector, int turns, float percentage)
+            string partyMemberSelector = (string)args[0];
+            int turns = (int)args[1];
+            float percentage = (float)args[2];
+
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+            partyMember.AddStatModifier(new StatModifier(turns, defence: percentage));
+        }
+
+        private void _addSpeedStatModifier(object[] args)
+        { // addSpeedStatModifier(string partyMemberSelector, int turns, float percentage)
+            string partyMemberSelector = (string)args[0];
+            int turns = (int)args[1];
+            float percentage = (float)args[2];
+
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+            partyMember.AddStatModifier(new StatModifier(turns, speed: percentage));
+        }
+
+        private void _addCharmStatModifier(object[] args)
+        { // addCharmStatModifier(string partyMemberSelector, int turns, float percentage)
+            string partyMemberSelector = (string)args[0];
+            int turns = (int)args[1];
+            float percentage = (float)args[2];
+
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+            partyMember.AddStatModifier(new StatModifier(turns, charm: percentage));
         }
 
         private void _setVelocity(object[] args)

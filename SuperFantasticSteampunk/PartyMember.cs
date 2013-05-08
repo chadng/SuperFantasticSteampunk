@@ -138,6 +138,8 @@ namespace SuperFantasticSteampunk
             Health -= amount;
             if (Health < 0)
                 Health = 0;
+            else if (Health > MaxHealth)
+                Health = MaxHealth;
         }
 
         public int CalculateDamageTaken(PartyMember enemy)
@@ -222,6 +224,9 @@ namespace SuperFantasticSteampunk
                 Speed += (int)(BaseSpeed * statModifier.Speed);
                 Charm += (int)(BaseCharm * statModifier.Charm);
             }
+
+            if (Health > MaxHealth)
+                Health = MaxHealth;
         }
 
         private void resetBaseStatsFromLevel()
