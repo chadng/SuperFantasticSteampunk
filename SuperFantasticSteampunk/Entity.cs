@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
 
@@ -31,17 +32,32 @@ namespace SuperFantasticSteampunk
 
         public Entity(TextureData textureData, Vector2 position)
         {
+            ResetManipulation();
             this.textureData = textureData;
             Position = position;
-            Velocity = new Vector2(0.0f);
-            Scale = new Vector2(1.0f);
-            Rotation = 0.0f;
-            AngularVelocity = 0.0f;
-            Tint = Color.White;
         }
         #endregion
 
         #region Instance Methods
+        public void ResetManipulation(List<string> exclude = null)
+        {
+            if (exclude == null)
+                exclude = new List<string>();
+
+            if (!exclude.Contains("Position"))
+                Position = new Vector2(0.0f);
+            if (!exclude.Contains("Velocity"))
+                Velocity = new Vector2(0.0f);
+            if (!exclude.Contains("Scale"))
+                Scale = new Vector2(1.0f);
+            if (!exclude.Contains("Rotation"))
+                Rotation = 0.0f;
+            if (!exclude.Contains("AngularVelocity"))
+                AngularVelocity = 0.0f;
+            if (!exclude.Contains("Tint"))
+                Tint = Color.White;
+        }
+
         public void SetSkeletonAttachment(string slotName, string attachmentName, TextureData textureData = null)
         {
             if (Skeleton == null || Skeleton.FindSlot(slotName) == null)

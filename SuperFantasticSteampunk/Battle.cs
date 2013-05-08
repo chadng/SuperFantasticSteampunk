@@ -107,10 +107,11 @@ namespace SuperFantasticSteampunk
             }
 
             CurrentBattleState.Update(gameTime);
-            base.update(gameTime);
 
             if (CurrentBattleState is BattleStates.Think)
                 repositionPartyMembers();
+
+            base.update(gameTime);
 
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.Update(gameTime);

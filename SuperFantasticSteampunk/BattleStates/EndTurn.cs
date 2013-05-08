@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk.BattleStates
 {
@@ -19,6 +20,12 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
+            List<string> exclude = new List<string> { "Scale" };
+            foreach (PartyMember partyMember in Battle.PlayerParty)
+                partyMember.BattleEntity.ResetManipulation(exclude);
+            foreach (PartyMember partyMember in Battle.EnemyParty)
+                partyMember.BattleEntity.ResetManipulation(exclude);
+
             if (Battle.PlayerParty.Count == 0)
                 ChangeState(new Lose(Battle));
             else if (Battle.EnemyParty.Count == 0)
