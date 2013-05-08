@@ -7,10 +7,10 @@ namespace SuperFantasticSteampunk
 {
     class Battle : Scene
     {
-
         #region Instance Fields
         private Stack<BattleState> states;
         private bool stateChanged;
+        private TextureData whitePixelTextureData;
         #endregion
 
         #region Instance Properties
@@ -120,6 +120,7 @@ namespace SuperFantasticSteampunk
         {
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.BeforeDraw(renderer);
+            drawPersistentGui(renderer);
             base.draw(renderer);
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.AfterDraw(renderer);
@@ -158,6 +159,29 @@ namespace SuperFantasticSteampunk
                 }
                 position.Y += 150.0f;
             });
+        }
+
+        private void drawPersistentGui(Renderer renderer)
+        {
+            foreach (PartyMember partyMember in PlayerParty)
+                drawHealthBar(partyMember, renderer);
+            foreach (PartyMember partyMember in EnemyParty)
+                drawHealthBar(partyMember, renderer);
+        }
+
+        private void drawHealthBar(PartyMember partyMember, Renderer renderer)
+        {
+            if (whitePixelTextureData == null)
+                whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
+            if (whitePixelTextureData == null)
+                return;
+
+            float percentageHealth = partyMember.Health / (float)partyMember.MaxHealth;
+            Color color = Color.Lerp(Color.Red, Color.Green, percentageHealth);
+            float width = 200.0f * percentageHealth;
+            float height = 20.0f;
+
+            renderer.Draw(whitePixelTextureData, partyMember.BattleEntity.Position + new Vector2(20.0f), color, 0.0f, new Vector2(width, height));
         }
         #endregion
     }

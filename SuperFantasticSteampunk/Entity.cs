@@ -78,7 +78,7 @@ namespace SuperFantasticSteampunk
             if (Skeleton != null)
                 renderer.Draw(Skeleton);
             else
-                renderer.Draw(textureData, Position, Tint);
+                renderer.Draw(textureData, Position, Tint, Rotation, Scale);
         }
 
         private void updateSkeleton(GameTime gameTime)
