@@ -136,27 +136,21 @@ namespace SuperFantasticSteampunk
 
         private void repositionPartyMembers()
         {
-            Vector2 position = new Vector2(400.0f);
+            Vector2 position = new Vector2(600.0f, 400.0f);
             PlayerPartyLayout.ForEachList(list =>
             {
-                position.X = 400.0f;
-                for (int i = list.Count - 1; i >= 0; --i)
-                {
-                    list[i].BattleEntity.Position = position;
-                    position.X += 150.0f;
-                }
+                for (int i = 0; i < list.Count; ++i)
+                    list[i].BattleEntity.Position = new Vector2(position.X - (200.0f * i), position.Y);
+                position.X -= 150.0f;
                 position.Y += 150.0f;
             });
 
-            position = new Vector2(1000.0f, 400.0f);
+            position = new Vector2(1200.0f, 400.0f);
             EnemyPartyLayout.ForEachList(list =>
             {
-                position.X = 1000.0f;
                 for (int i = 0; i < list.Count; ++i)
-                {
-                    list[i].BattleEntity.Position = position;
-                    position.X -= 150.0f;
-                }
+                    list[i].BattleEntity.Position = new Vector2(position.X + (200.0f * i), position.Y);
+                position.X += 150.0f;
                 position.Y += 150.0f;
             });
         }

@@ -103,6 +103,7 @@ namespace SuperFantasticSteampunk
 
         protected virtual void draw(Renderer renderer)
         {
+            entities.Sort((a, b) => a.Position.Y.CompareTo(b.Position.Y));
             foreach (Entity entity in entities)
                 entity.Draw(renderer);
         }

@@ -61,7 +61,7 @@ namespace SuperFantasticSteampunk
             Animation animation = BattleEntity.Skeleton.Data.FindAnimation("idle");
             if (animation != null)
                 BattleEntity.AnimationState.SetAnimation(animation, true);
-            BattleEntity.Scale = new Vector2(0.75f);
+            BattleEntity.Scale = new Vector2(0.6f);
             BattleEntity.AnimationState.Time = Game1.Random.Next(100) / 100.0f;
         }
 
