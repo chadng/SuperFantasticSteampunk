@@ -99,24 +99,9 @@ namespace SuperFantasticSteampunk
             List<PartyMember> list = getListWithPartyMember(partyMember);
             int listIndex = layout.IndexOf(list);
             if (listIndex == (edgeListIndexIsZero ? 0 : layout.Count - 1)) // if the edge list
-            {
-                if (list.Count > 1) // if this is not the only PartyMember in this list
-                {
-                    list.Remove(partyMember);
-                    List<PartyMember> newList = newListWithPartyMember(partyMember);
-                    if (edgeListIndexIsZero)
-                        layout.Insert(0, newList);
-                    else
-                        layout.Add(newList);
-                }
-            }
-            else // somewhere in the middle or opposite edge
-            {
-                list.Remove(partyMember);
-                layout[listIndex + nextListRelativeIndex].Add(partyMember);
-                if (list.Count == 0)
-                    layout.RemoveAt(listIndex);
-            }
+                return;
+            list.Remove(partyMember);
+            layout[listIndex + nextListRelativeIndex].Add(partyMember);
         }
 
         private void movePartyMemberWithinList(PartyMember partyMember, bool edgeIndexIsZero, int nextRelativeIndex)
