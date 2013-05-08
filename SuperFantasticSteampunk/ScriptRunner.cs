@@ -51,17 +51,17 @@ namespace SuperFantasticSteampunk
         #region Instance Methods
         public void Update(GameTime gameTime)
         {
-            if (scriptActionIndex >= script.Actions.Count)
-                return;
-            
             float elapsedGameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            time += elapsedGameTime;
-            ScriptAction action = script.Actions[scriptActionIndex];
-            if (time >= action.Item1)
+            if (scriptActionIndex < script.Actions.Count)
             {
-                executeAction(action);
-                ++scriptActionIndex;
+                time += elapsedGameTime;
+                ScriptAction action = script.Actions[scriptActionIndex];
+                if (time >= action.Item1)
+                {
+                    executeAction(action);
+                    ++scriptActionIndex;
+                }
             }
 
             foreach (NestedScriptRunner nestedScriptRunner in nestedScriptRunners)
@@ -88,6 +88,7 @@ namespace SuperFantasticSteampunk
             object[] args = action.Item3;
             switch (action.Item2)
             {
+            case "queueAnimation": _queueAnimation(args); break;
             case "playAnimation": _playAnimation(args); break;
             case "doDamage": _doDamage(args); break;
             case "nop": break;
@@ -95,27 +96,35 @@ namespace SuperFantasticSteampunk
             }
         }
 
-        private void _playAnimation(object[] args)
-        { // playAnimation(string partyMemberId, string animationName, bool playNow, Script onStartCallback)
+        private void _queueAnimation(object[] args)
+        { // queueAnimation(string partyMemberId, string animationName, Script onStartCallback)
             string partyMemberId = (string)args[0];
             string animationName = (string)args[1];
-            bool playNow = (bool)args[2];
-            Script onStartCallback = (Script)args[3];
+            Script onStartCallback = (Script)args[2];
 
             PartyMember partyMember = getPartyMemberFromStringId(partyMemberId);
             AnimationState animationState = partyMember.BattleEntity.AnimationState;
-            Animation originalAnimation = animationState.Animation;
 
             float animationStateTime = animationState.Time;
-            float timeToAnimationEnd = 0.0f;
-            if (!playNow)
-                timeToAnimationEnd = animationStateTime + animationState.Animation.Duration - (animationStateTime % animationState.Animation.Duration);
+            float timeToAnimationEnd = animationStateTime + animationState.Animation.Duration - (animationStateTime % animationState.Animation.Duration);
 
             animationState.AddAnimation(animationName, false, timeToAnimationEnd);
-            animationState.AddAnimation(originalAnimation, true);
+            animationState.AddAnimation("idle", true);
 
             if (onStartCallback != null)
-                addNestedScriptRunner(onStartCallback, playNow ? 0.0f : timeToAnimationEnd - animationStateTime);
+                addNestedScriptRunner(onStartCallback, timeToAnimationEnd - animationStateTime);
+        }
+
+        private void _playAnimation(object[] args)
+        { // playAnimation(string partyMemberId, string animationName)
+            string partyMemberId = (string)args[0];
+            string animationName = (string)args[1];
+
+            PartyMember partyMember = getPartyMemberFromStringId(partyMemberId);
+            AnimationState animationState = partyMember.BattleEntity.AnimationState;
+
+            animationState.SetAnimation(animationName, false);
+            animationState.AddAnimation("idle", true);
         }
 
         private void _doDamage(object[] args)
