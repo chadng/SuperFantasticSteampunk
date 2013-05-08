@@ -22,9 +22,15 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             List<string> exclude = new List<string> { "Scale" };
             foreach (PartyMember partyMember in Battle.PlayerParty)
+            {
+                partyMember.EndTurn();
                 partyMember.BattleEntity.ResetManipulation(exclude);
+            }
             foreach (PartyMember partyMember in Battle.EnemyParty)
+            {
+                partyMember.EndTurn();
                 partyMember.BattleEntity.ResetManipulation(exclude);
+            }
 
             if (Battle.PlayerParty.Count == 0)
                 ChangeState(new Lose(Battle));

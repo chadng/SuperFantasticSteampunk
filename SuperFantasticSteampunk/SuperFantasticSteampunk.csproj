@@ -89,6 +89,7 @@
     <Compile Include="ScriptRunner.cs" />
     <Compile Include="Shield.cs" />
     <Compile Include="ShieldData.cs" />
+    <Compile Include="StatModifier.cs" />
     <Compile Include="TextureData.cs" />
     <Compile Include="Weapon.cs" />
     <Compile Include="WeaponData.cs" />

@@ -53,6 +53,8 @@ namespace SuperFantasticSteampunk.BattleStates
             base.Resume(previousBattleState);
             if (previousBattleState is Attack || previousBattleState is UseItem)
                 ++currentThinkActionIndex;
+            removeDeadPartyMembers(Battle.PlayerParty);
+            removeDeadPartyMembers(Battle.EnemyParty);
         }
 
         public override void Update(GameTime gameTime)
@@ -95,6 +97,12 @@ namespace SuperFantasticSteampunk.BattleStates
             if (thinkAction == null)
                 return;
 
+            if (!thinkAction.Actor.Alive)
+            {
+                ++currentThinkActionIndex;
+                return;
+            }
+
             if (thinkAction.Target.Alive)
             {
                 if (thinkAction.Type == ThinkActionType.Attack)
@@ -108,6 +116,15 @@ namespace SuperFantasticSteampunk.BattleStates
                     PushState(new SelectTarget(Battle, thinkAction));
                 else
                     Finish();
+            }
+        }
+
+        private void removeDeadPartyMembers(Party party)
+        {
+            for (int i = party.Count - 1; i >= 0; --i)
+            {
+                if (!party[i].Alive)
+                    party[i].Kill(Battle);
             }
         }
         #endregion

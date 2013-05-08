@@ -22,7 +22,6 @@ namespace SuperFantasticSteampunk
             layout = new List<List<PartyMember>>(party.Count);
             foreach (PartyMember partyMember in party)
                 layout.Add(newListWithPartyMember(partyMember));
-            MovePartyMemberUp(party[party.Count - 1]);
         }
         #endregion
 

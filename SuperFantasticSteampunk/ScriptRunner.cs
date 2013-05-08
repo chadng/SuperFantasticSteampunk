@@ -148,9 +148,6 @@ namespace SuperFantasticSteampunk
 
             if (target.EquippedShield != null)
                 addNestedScriptRunner(target.EquippedShield.Data.Script, 0.0f);
-
-            if (!target.Alive)
-                target.Kill(battle);
         }
 
         private void _setVelocity(object[] args)
