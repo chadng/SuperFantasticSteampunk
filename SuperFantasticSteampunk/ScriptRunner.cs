@@ -114,13 +114,13 @@ namespace SuperFantasticSteampunk
             AnimationState animationState = partyMember.BattleEntity.AnimationState;
 
             float animationStateTime = animationState.Time;
-            float timeToAnimationEnd = animationStateTime + animationState.Animation.Duration - (animationStateTime % animationState.Animation.Duration);
+            float timeToAnimationEnd = animationState.Animation.Duration - (animationStateTime % animationState.Animation.Duration);
 
-            animationState.AddAnimation(animationName, false, timeToAnimationEnd);
+            animationState.AddAnimation(animationName, false, animationStateTime + timeToAnimationEnd);
             animationState.AddAnimation("idle", true);
 
             if (onStartCallback != null)
-                addNestedScriptRunner(onStartCallback, timeToAnimationEnd - animationStateTime);
+                addNestedScriptRunner(onStartCallback, timeToAnimationEnd);
         }
 
         private void _playAnimation(object[] args)
