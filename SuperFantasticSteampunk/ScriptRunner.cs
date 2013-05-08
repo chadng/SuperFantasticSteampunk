@@ -53,11 +53,13 @@ namespace SuperFantasticSteampunk
         {
             float elapsedGameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (scriptActionIndex < script.Actions.Count)
+            time += elapsedGameTime;
+            while (scriptActionIndex < script.Actions.Count)
             {
-                time += elapsedGameTime;
                 ScriptAction action = script.Actions[scriptActionIndex];
-                if (time >= action.Item1)
+                if (time < action.Item1)
+                    break;
+                else
                 {
                     executeAction(action);
                     ++scriptActionIndex;
@@ -91,6 +93,11 @@ namespace SuperFantasticSteampunk
             case "queueAnimation": _queueAnimation(args); break;
             case "playAnimation": _playAnimation(args); break;
             case "doDamage": _doDamage(args); break;
+            case "setVelocity": _setVelocity(args); break;
+            case "setVelocityX": _setVelocityX(args); break;
+            case "setVelocityY": _setVelocityY(args); break;
+            case "setRotation": _setRotation(args); break;
+            case "setAngularVelocity": _setAngularVelocity(args); break;
             case "nop": break;
             default: break;
             }
@@ -140,6 +147,46 @@ namespace SuperFantasticSteampunk
             actualTarget.DoDamage(damage);
             if (!actualTarget.Alive)
                 actualTarget.Kill(battle);
+        }
+
+        private void _setVelocity(object[] args)
+        { // setVelocity(string partyMemberId, float x, float y)
+            string partyMemberId = (string)args[0];
+            float x = (float)args[1];
+            float y = (float)args[2];
+            getPartyMemberFromStringId(partyMemberId).BattleEntity.Velocity = new Vector2(x, y);
+        }
+
+        private void _setVelocityX(object[] args)
+        { // setVelocityX(string partyMemberId, float x)
+            string partyMemberId = (string)args[0];
+            float x = (float)args[1];
+
+            Entity battleEntity = getPartyMemberFromStringId(partyMemberId).BattleEntity;
+            battleEntity.Velocity = new Vector2(x, battleEntity.Velocity.Y);
+        }
+
+        private void _setVelocityY(object[] args)
+        { // setVelocityY(string partyMemberId, float y)
+            string partyMemberId = (string)args[0];
+            float y = (float)args[1];
+
+            Entity battleEntity = getPartyMemberFromStringId(partyMemberId).BattleEntity;
+            battleEntity.Velocity = new Vector2(battleEntity.Velocity.X, y);
+        }
+
+        private void _setRotation(object[] args)
+        { // setRotation(string partyMemberId, float amount)
+            string partyMemberId = (string)args[0];
+            float amount = (float)args[1];
+            getPartyMemberFromStringId(partyMemberId).BattleEntity.Rotation = amount;
+        }
+
+        private void _setAngularVelocity(object[] args)
+        { // setAngularVelocity(string partyMemberId, float amount)
+            string partyMemberId = (string)args[0];
+            float amount = (float)args[1];
+            getPartyMemberFromStringId(partyMemberId).BattleEntity.AngularVelocity = amount;
         }
 
         private PartyMember getPartyMemberFromStringId(string id)

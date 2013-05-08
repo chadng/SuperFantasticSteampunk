@@ -17,7 +17,7 @@ namespace SuperFantasticSteampunk
         public Vector2 Velocity { get; set; }
         public Vector2 Scale { get; set; }
         public float Rotation { get; set; }
-        public float RadialVelocity { get; set; }
+        public float AngularVelocity { get; set; }
         public Color Tint { get; set; }
         #endregion
 
@@ -36,7 +36,7 @@ namespace SuperFantasticSteampunk
             Velocity = new Vector2(0.0f);
             Scale = new Vector2(1.0f);
             Rotation = 0.0f;
-            RadialVelocity = 0.0f;
+            AngularVelocity = 0.0f;
             Tint = Color.White;
         }
         #endregion
@@ -67,7 +67,7 @@ namespace SuperFantasticSteampunk
         public virtual void Update(GameTime gameTime)
         {
             Position += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Rotation += RadialVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Rotation += AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             
             if (Skeleton != null)
                 updateSkeleton(gameTime);

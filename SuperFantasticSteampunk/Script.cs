@@ -14,11 +14,6 @@ namespace SuperFantasticSteampunk
         #region Constructors
         public Script(string scriptString)
         {
-            if (scriptString[0] == '{')
-                scriptString = scriptString.Substring(1);
-            if (scriptString[scriptString.Length - 1] == '}')
-                scriptString = scriptString.Substring(0, scriptString.Length - 1);
-
             List<string> statements = splitString(scriptString, ';');
             Actions = new List<ScriptAction>(statements.Count);
             foreach (string statement in statements)
@@ -53,7 +48,8 @@ namespace SuperFantasticSteampunk
                 {
                     if (str[i] == separator)
                     {
-                        result.Add(str.Substring(lastColonIndex + 1, i - (lastColonIndex + 1)));
+                        string strToAdd = removeOuterBraces(str.Substring(lastColonIndex + 1, i - (lastColonIndex + 1)));
+                        result.Add(strToAdd);
                         lastColonIndex = i;
                         continue;
                     }
@@ -70,15 +66,26 @@ namespace SuperFantasticSteampunk
             if (braceDepth > 0)
                 throw new Exception("Too many opening braces in Script");
 
-            result.Add(str.Substring(lastColonIndex + 1));
+            result.Add(removeOuterBraces(str.Substring(lastColonIndex + 1)));
 
             return result;
+        }
+
+        private string removeOuterBraces(string str)
+        {
+            if (str[0] == '{')
+            {
+                str = str.Substring(1);
+                if (str[str.Length - 1] == '}')
+                    str = str.Substring(0, str.Length - 1);
+            }
+            return str;
         }
 
         private object parseArgumentString(string str)
         {
             int colonIndex = str.IndexOf(':'); // use index instead of Split so that colons can be part of a string
-            return ResourceManager.ParseItemDataValue(str.Substring(0, colonIndex), str.Substring(colonIndex + 1));
+            return ResourceManager.ParseItemDataValue(str.Substring(0, colonIndex), removeOuterBraces(str.Substring(colonIndex + 1)));
         }
         #endregion
     }
