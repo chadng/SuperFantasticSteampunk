@@ -100,11 +100,13 @@ namespace SuperFantasticSteampunk
             case "addDefenceStatModifier": _addDefenceStatModifier(args); break;
             case "addSpeedStatModifier": _addSpeedStatModifier(args); break;
             case "addCharmStatModifier": _addCharmStatModifier(args); break;
+            case "addStatusEffect": _addStatusEffect(args); break;
             case "setVelocity": _setVelocity(args); break;
             case "setVelocityX": _setVelocityX(args); break;
             case "setVelocityY": _setVelocityY(args); break;
             case "setRotation": _setRotation(args); break;
             case "setAngularVelocity": _setAngularVelocity(args); break;
+            case "random": _random(args); break;
             case "log": _log(args); break;
             case "nop": break;
             default: break;
@@ -112,10 +114,10 @@ namespace SuperFantasticSteampunk
         }
 
         private void _queueAnimation(object[] args)
-        { // queueAnimation(string partyMemberSelector, string animationName, Script onStartCallback)
+        { // queueAnimation(string partyMemberSelector, string animationName, [Script onStartCallback])
             string partyMemberSelector = (string)args[0];
             string animationName = (string)args[1];
-            Script onStartCallback = (Script)args[2];
+            Script onStartCallback = args.Length == 2 ? null : (Script)args[2];
 
             PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
             AnimationState animationState = partyMember.BattleEntity.AnimationState;
@@ -226,6 +228,26 @@ namespace SuperFantasticSteampunk
             partyMember.AddStatModifier(new StatModifier(turns, charm: percentage));
         }
 
+        private void _addStatusEffect(object[] args)
+        { // addStatusEffect(string partyMemberSelector, StatusEffectType statusEffectType)
+            string partyMemberSelector = (string)args[0];
+            StatusEffectType statusEffectType = (StatusEffectType)args[1];
+
+            StatusEffect statusEffect;
+            switch (statusEffectType)
+            {
+            case StatusEffectType.Poison: statusEffect = new StatusEffects.Poison(); break;
+            case StatusEffectType.Paralysis: statusEffect = new StatusEffects.Paralysis(); break;
+            default: statusEffect = null; break;
+            }
+
+            if (statusEffect != null)
+            {
+                PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+                partyMember.AddStatusEffect(statusEffect);
+            }
+        }
+
         private void _setVelocity(object[] args)
         { // setVelocity(string partyMemberSelector, float x, float y)
             string partyMemberSelector = (string)args[0];
@@ -267,6 +289,18 @@ namespace SuperFantasticSteampunk
             float amount = (float)args[1];
 
             getPartyMemberFromSelector(partyMemberSelector).BattleEntity.AngularVelocity = amount;
+        }
+
+        private void _random(object[] args)
+        { // random(float chance, Script successScript, [Script failScript])
+            float chance = (float)args[0];
+            Script successScript = (Script)args[1];
+            Script failScript = args.Length == 2 ? null : (Script)args[2];
+
+            if (Game1.Random.NextDouble() <= chance)
+                addNestedScriptRunner(successScript, 0.0f);
+            else if (failScript != null)
+                addNestedScriptRunner(failScript, 0.0f);
         }
 
         private void _log(object[] args)

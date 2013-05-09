@@ -140,6 +140,7 @@ namespace SuperFantasticSteampunk
             case "WeaponType": return parseItemData<WeaponType>(valueString);
             case "WeaponUseAgainst": return parseItemData<WeaponUseAgainst>(valueString);
             case "CharacterClass": return parseItemData<CharacterClass>(valueString);
+            case "StatusEffectType": return parseItemData<StatusEffectType>(valueString);
             case "Script": return valueString.Length == 0 ? null : new Script(valueString);
             }
             return null;
