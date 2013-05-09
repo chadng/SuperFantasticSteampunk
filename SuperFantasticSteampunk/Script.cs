@@ -40,7 +40,7 @@ namespace SuperFantasticSteampunk
         {
             List<string> result = new List<string>();
 
-            int lastColonIndex = -1;
+            int lastSeparatorIndex = -1;
             int braceDepth = 0;
             for (int i = 0; i < str.Length; ++i)
             {
@@ -48,9 +48,9 @@ namespace SuperFantasticSteampunk
                 {
                     if (str[i] == separator)
                     {
-                        string strToAdd = removeOuterBraces(str.Substring(lastColonIndex + 1, i - (lastColonIndex + 1)));
+                        string strToAdd = removeOuterBraces(str.Substring(lastSeparatorIndex + 1, i - (lastSeparatorIndex + 1)));
                         result.Add(strToAdd);
-                        lastColonIndex = i;
+                        lastSeparatorIndex = i;
                         continue;
                     }
                 }
@@ -66,7 +66,8 @@ namespace SuperFantasticSteampunk
             if (braceDepth > 0)
                 throw new Exception("Too many opening braces in Script");
 
-            result.Add(removeOuterBraces(str.Substring(lastColonIndex + 1)));
+            if (lastSeparatorIndex + 1 < str.Length)
+                result.Add(removeOuterBraces(str.Substring(lastSeparatorIndex + 1)));
 
             return result;
         }

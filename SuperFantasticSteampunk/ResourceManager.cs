@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -229,7 +230,10 @@ namespace SuperFantasticSteampunk
                 return result;
             }
 
-            Dictionary<string, object> currentData = new Dictionary<string,object>();
+            Dictionary<string, object> currentData = new Dictionary<string, object>();
+            bool blockOpened = false;
+            StringBuilder blockText = new StringBuilder();
+
             foreach (string line in File.ReadAllLines(itemsFilePath))
             {
                 if (line.Length == 0)
@@ -237,8 +241,25 @@ namespace SuperFantasticSteampunk
                     if (currentData.Count > 0)
                     {
                         result.Add(currentData);
-                        currentData = new Dictionary<string,object>();
+                        currentData = new Dictionary<string, object>();
                     }
+                }
+                else if (blockOpened)
+                {
+                    if (line[0] == '}')
+                    {
+                        KeyValuePair<string, object> pair = parseItemDataLine(blockText.ToString());
+                        currentData.Add(pair.Key, pair.Value);
+                        blockText.Clear();
+                        blockOpened = false;
+                    }
+                    else
+                        blockText.Append(line.Trim());
+                }
+                else if (line[line.Length - 1] == '{')
+                {
+                    blockText.Append(line.Substring(0, line.Length - 1));
+                    blockOpened = true;
                 }
                 else
                 {
