@@ -28,22 +28,26 @@ namespace SuperFantasticSteampunk
         #region Instance Methods
         public void MovePartyMemberUp(PartyMember partyMember)
         {
-            movePartyMemberAcrossLists(partyMember, true, -1);
+            if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
+                movePartyMemberAcrossLists(partyMember, true, -1);
         }
 
         public void MovePartyMemberDown(PartyMember partyMember)
         {
-            movePartyMemberAcrossLists(partyMember, false, 1);
+            if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
+                movePartyMemberAcrossLists(partyMember, false, 1);
         }
 
         public void MovePartyMemberBack(PartyMember partyMember) // last item/back is towards edge of screen
         {
-            movePartyMemberWithinList(partyMember, false, 1);
+            if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
+                movePartyMemberWithinList(partyMember, false, 1);
         }
 
         public void MovePartyMemberForward(PartyMember partyMember) // first item/forward is towards middle of screen
         {
-            movePartyMemberWithinList(partyMember, true, -1);
+            if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
+                movePartyMemberWithinList(partyMember, true, -1);
         }
 
         public void RemovePartyMember(PartyMember partyMember)

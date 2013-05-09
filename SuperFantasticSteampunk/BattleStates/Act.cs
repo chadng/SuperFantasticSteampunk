@@ -12,6 +12,7 @@ namespace SuperFantasticSteampunk.BattleStates
         private List<ThinkAction> useItemThinkActions;
         private ThinkActionType currentThinkActionType;
         private int currentThinkActionIndex;
+        private bool statusEffectsCompleteForAction;
         #endregion
 
         #region Constructors
@@ -25,6 +26,7 @@ namespace SuperFantasticSteampunk.BattleStates
             useItemThinkActions = new List<ThinkAction>(thinkActions.Where(thinkAction => thinkAction.Type == ThinkActionType.UseItem));
             currentThinkActionIndex = 0;
             currentThinkActionType = ThinkActionType.None;
+            statusEffectsCompleteForAction = false;
         }
         #endregion
 
@@ -35,6 +37,7 @@ namespace SuperFantasticSteampunk.BattleStates
             attackThinkActions.Sort(speedComparer);
             useItemThinkActions.Sort(speedComparer);
             currentThinkActionType = ThinkActionType.UseItem;
+            statusEffectsCompleteForAction = false;
         }
 
         public override void Finish()
@@ -43,18 +46,14 @@ namespace SuperFantasticSteampunk.BattleStates
             ChangeState(new EndTurn(Battle));
         }
 
-        public override void Pause()
-        {
-            base.Pause();
-        }
-
         public override void Resume(BattleState previousBattleState)
         {
             base.Resume(previousBattleState);
             if (previousBattleState is Attack || previousBattleState is UseItem)
-                ++currentThinkActionIndex;
-            removeDeadPartyMembers(Battle.PlayerParty);
-            removeDeadPartyMembers(Battle.EnemyParty);
+                getNextThinkAction();
+            else if (previousBattleState is HandleStatusEffects)
+                statusEffectsCompleteForAction = true;
+            removeDeadPartyMembers();
         }
 
         public override void Update(GameTime gameTime)
@@ -72,6 +71,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 if (currentThinkActionIndex >= useItemThinkActions.Count)
                 {
                     currentThinkActionIndex = 0;
+                    statusEffectsCompleteForAction = false;
                     currentThinkActionType = ThinkActionType.Attack;
                     return;
                 }
@@ -97,9 +97,15 @@ namespace SuperFantasticSteampunk.BattleStates
             if (thinkAction == null)
                 return;
 
-            if (!thinkAction.Actor.Alive)
+            if (!statusEffectsCompleteForAction && thinkAction.Actor.Alive)
             {
-                ++currentThinkActionIndex;
+                PushState(new HandleStatusEffects(Battle, StatusEffectEvent.BeforeAct, thinkAction: thinkAction));
+                return;
+            }
+
+            if (!thinkAction.Actor.Alive || !thinkAction.Active)
+            {
+                getNextThinkAction();
                 return;
             }
 
@@ -119,13 +125,10 @@ namespace SuperFantasticSteampunk.BattleStates
             }
         }
 
-        private void removeDeadPartyMembers(Party party)
+        private void getNextThinkAction()
         {
-            for (int i = party.Count - 1; i >= 0; --i)
-            {
-                if (!party[i].Alive)
-                    party[i].Kill(Battle);
-            }
+            ++currentThinkActionIndex;
+            statusEffectsCompleteForAction = false;
         }
         #endregion
     }

@@ -16,6 +16,7 @@ namespace SuperFantasticSteampunk.BattleStates
         public string OptionName { get; private set; }
         public PartyMember Actor { get; set; }
         public PartyMember Target { get; set; }
+        public bool Active { get; set; }
         #endregion
 
         #region Constructors
@@ -25,6 +26,7 @@ namespace SuperFantasticSteampunk.BattleStates
             OptionName = optionName;
             Actor = actor;
             Target = target;
+            Active = true;
         }
         #endregion
     }

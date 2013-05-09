@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
+using SuperFantasticSteampunk.BattleStates;
 
 namespace SuperFantasticSteampunk
 {
@@ -17,6 +18,7 @@ namespace SuperFantasticSteampunk
 
         #region Instance Fields
         private List<StatModifier> statModifiers;
+        private List<StatusEffect> statusEffects;
         #endregion
 
         #region Instance Properties
@@ -60,6 +62,7 @@ namespace SuperFantasticSteampunk
             if (partyMemberData == null)
                 throw new Exception("PartyMemberData cannot be null");
             statModifiers = new List<StatModifier>();
+            statusEffects = new List<StatusEffect>();
             Data = partyMemberData;
             BattleEntity = null;
             Level = 50;
@@ -71,6 +74,7 @@ namespace SuperFantasticSteampunk
         public void StartBattle()
         {
             statModifiers.Clear();
+            statusEffects.Clear();
             resetBaseStatsFromLevel();
             calculateStatsFromModifiers();
 
@@ -86,6 +90,7 @@ namespace SuperFantasticSteampunk
         public void FinishBattle()
         {
             statModifiers.Clear();
+            statusEffects.Clear();
             BattleEntity = null;
             EquippedWeapon = null;
             EquippedShield = null;
@@ -93,6 +98,11 @@ namespace SuperFantasticSteampunk
 
         public void EndTurn()
         {
+            for (int i = statusEffects.Count - 1; i >= 0; --i)
+            {
+                if (!statusEffects[i].Active)
+                    statusEffects.RemoveAt(i);
+            }
             for (int i = statModifiers.Count - 1; i >= 0; --i)
             {
                 statModifiers[i].DecrementTurnsLeft();
@@ -115,6 +125,27 @@ namespace SuperFantasticSteampunk
         {
             statModifiers.Add(statModifier);
             calculateStatsFromModifiers();
+        }
+
+        public void AddStatusEffect(StatusEffect statusEffect)
+        {
+            if (!HasStatusEffect(statusEffect.Type))
+                statusEffects.Add(statusEffect);
+        }
+
+        public void ForEachStatusEffect(Action<StatusEffect> action)
+        {
+            statusEffects.ForEach(action);
+        }
+
+        public bool HasStatusEffect(StatusEffectType statusEffectType)
+        {
+            foreach (StatusEffect statusEffect in statusEffects)
+            {
+                if (statusEffect.Type == statusEffectType)
+                    return true;
+            }
+            return false;
         }
 
         public void EquipWeapon(string name)

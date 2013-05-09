@@ -51,6 +51,21 @@ namespace SuperFantasticSteampunk
             if (Battle.CurrentBattleState == this)
                 Battle.PopState();
         }
+
+        protected void removeDeadPartyMembers()
+        {
+            removeDeadPartyMembers(Battle.PlayerParty);
+            removeDeadPartyMembers(Battle.EnemyParty);
+        }
+
+        private void removeDeadPartyMembers(Party party)
+        {
+            for (int i = party.Count - 1; i >= 0; --i)
+            {
+                if (!party[i].Alive)
+                    party[i].Kill(Battle);
+            }
+        }
         #endregion
     }
 }
