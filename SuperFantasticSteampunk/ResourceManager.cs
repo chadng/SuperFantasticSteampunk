@@ -44,6 +44,13 @@ namespace SuperFantasticSteampunk
         {
             foreach (var pair in textureDataDictionary)
                 pair.Value.Texture.Dispose();
+            skeletonDataDictionary.Clear();
+            weaponDataDictionary.Clear();
+            shieldDataDictionary.Clear();
+            itemDataDictionary.Clear();
+            partyMemberDataDictionary.Clear();
+            textureDataDictionary.Clear();
+            spriteFontDictionary.Clear();
         }
 
         public static Skeleton GetNewSkeleton(string name)

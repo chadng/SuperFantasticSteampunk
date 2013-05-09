@@ -58,16 +58,21 @@ namespace SuperFantasticSteampunk
                 Tint = Color.White;
         }
 
-        public void SetSkeletonAttachment(string slotName, string attachmentName, TextureData textureData = null)
+        public void SetSkeletonAttachment(string slotName, string attachmentName, TextureData textureData = null, bool forceNoTextureData = false)
         {
             if (Skeleton == null || Skeleton.FindSlot(slotName) == null)
                 return;
-
+            
             if (Skeleton.GetAttachment(slotName, attachmentName) == null)
             {
                 if (textureData != null)
                 {
                     addSkeletonAttachment(slotName, attachmentName, textureData);
+                    Skeleton.SetAttachment(slotName, attachmentName);
+                }
+                else if (forceNoTextureData)
+                {
+                    Skeleton.Data.FindSkin("default").AddAttachment(Skeleton.FindSlotIndex(slotName), attachmentName, new RegionAttachment(attachmentName));
                     Skeleton.SetAttachment(slotName, attachmentName);
                 }
             }

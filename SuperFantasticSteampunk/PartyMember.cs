@@ -151,7 +151,9 @@ namespace SuperFantasticSteampunk
         public void EquipWeapon(string name)
         {
             EquippedShield = null;
-            if (EquippedWeapon == null || EquippedWeapon.Data.Name != name)
+            if (name == null)
+                EquippedWeapon = null;
+            else if (EquippedWeapon == null || EquippedWeapon.Data.Name != name)
                 EquippedWeapon = ResourceManager.GetNewWeapon(name);
             updateBattleEntitySkeleton();
         }
@@ -159,7 +161,9 @@ namespace SuperFantasticSteampunk
         public void EquipShield(string name)
         {
             EquippedWeapon = null;
-            if (EquippedShield == null || EquippedShield.Data.Name != name)
+            if (name == null)
+                EquippedShield = null;
+            else if (EquippedShield == null || EquippedShield.Data.Name != name)
                 EquippedShield = ResourceManager.GetNewShield(name);
             updateBattleEntitySkeleton();
         }
@@ -279,12 +283,12 @@ namespace SuperFantasticSteampunk
             if (EquippedWeapon != null && EquippedWeapon.TextureData != null)
                 BattleEntity.SetSkeletonAttachment("weapon", EquippedWeapon.Data.Name, EquippedWeapon.TextureData);
             else
-                BattleEntity.SetSkeletonAttachment("weapon", "none");
+                BattleEntity.SetSkeletonAttachment("weapon", "none", forceNoTextureData: true);
 
             if (EquippedShield != null && EquippedShield.TextureData != null)
                 BattleEntity.SetSkeletonAttachment("shield", EquippedShield.Data.Name, EquippedShield.TextureData);
             else
-                BattleEntity.SetSkeletonAttachment("shield", "none");
+                BattleEntity.SetSkeletonAttachment("shield", "none", forceNoTextureData: true);
         }
         #endregion
     }

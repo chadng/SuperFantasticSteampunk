@@ -35,6 +35,8 @@ namespace SuperFantasticSteampunk.BattleStates
     {
         #region Static Fields
         public static readonly ThinkMenuOption Cancel;
+        public static readonly ThinkMenuOption NoWeapon;
+        public static readonly ThinkMenuOption NoShield;
         #endregion
 
         #region Instance Properties
@@ -47,6 +49,21 @@ namespace SuperFantasticSteampunk.BattleStates
         static ThinkMenuOption()
         {
             Cancel = new ThinkMenuOption("Cancel", -1, false);
+            NoWeapon = new ThinkMenuOption("No weapon", -1, false);
+            NoShield = new ThinkMenuOption("No shield", -1, false);
+        }
+        #endregion
+
+        #region Static Methods
+        public static bool IsDefaultOption(ThinkMenuOption option)
+        {
+            return IsDefaultOptionName(option.Name);
+        }
+
+
+        public static bool IsDefaultOptionName(string name)
+        {
+            return NoWeapon.Name == name || NoShield.Name == name;
         }
         #endregion
 
@@ -227,9 +244,12 @@ namespace SuperFantasticSteampunk.BattleStates
                 ThinkAction lastAction = actions[actions.Count - 1];
                 actions.RemoveAt(actions.Count - 1);
                 CurrentPartyMember = lastAction.Actor;
-                Inventory inventory = getInventoryFromThinkActionType(lastAction.Type);
-                if (inventory != null)
-                    inventory.AddItem(lastAction.OptionName);
+                if (!ThinkMenuOption.IsDefaultOptionName(lastAction.OptionName))
+                {
+                    Inventory inventory = getInventoryFromThinkActionType(lastAction.Type);
+                    if (inventory != null)
+                        inventory.AddItem(lastAction.OptionName);
+                }
                 repopulateMenuOptions();
                 Logger.Log("Back to action selection for party member " + (actions.Count + 1).ToString());
             }
@@ -253,15 +273,16 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void equipCurrentOption()
         {
+            ThinkMenuOption option = MenuOptions[CurrentOptionNameIndex];
             if (CurrentThinkActionType == ThinkActionType.Attack)
             {
-                CurrentPartyMember.EquipWeapon(MenuOptions[CurrentOptionNameIndex].Name);
-                Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + MenuOptions[CurrentOptionNameIndex].Name + "' weapon");
+                CurrentPartyMember.EquipWeapon(ThinkMenuOption.IsDefaultOption(option) ? null : option.Name);
+                Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + option.Name + "' weapon");
             }
             else if (CurrentThinkActionType == ThinkActionType.Defend)
             {
-                CurrentPartyMember.EquipShield(MenuOptions[CurrentOptionNameIndex].Name);
-                Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + MenuOptions[CurrentOptionNameIndex].Name + "' shield");
+                CurrentPartyMember.EquipShield(ThinkMenuOption.IsDefaultOption(option) ? null : option.Name);
+                Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + option.Name + "' shield");
             }
         }
 
@@ -336,8 +357,18 @@ namespace SuperFantasticSteampunk.BattleStates
             itemMenuOptions.Add(ThinkMenuOption.Cancel);
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
             {
-                weaponMenuOptions[characterClass].Tap(names => names.Clear()).Add(ThinkMenuOption.Cancel);
-                shieldMenuOptions[characterClass].Tap(names => names.Clear()).Add(ThinkMenuOption.Cancel);
+                weaponMenuOptions[characterClass].Tap(menuOptions =>
+                {
+                    menuOptions.Clear();
+                    menuOptions.Add(ThinkMenuOption.Cancel);
+                    menuOptions.Add(ThinkMenuOption.NoWeapon);
+                });
+                shieldMenuOptions[characterClass].Tap(menuOptions =>
+                {
+                    menuOptions.Clear();
+                    menuOptions.Add(ThinkMenuOption.Cancel);
+                    menuOptions.Add(ThinkMenuOption.NoShield);
+                });
             }
 
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
@@ -358,7 +389,7 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 foreach (ThinkMenuOption menuOption in weaponMenuOptions[characterClass])
                 {
-                    if (menuOption.Name == "Cancel")
+                    if (menuOption.Name == ThinkMenuOption.Cancel.Name || ThinkMenuOption.IsDefaultOption(menuOption))
                     {
                         menuOption.Disabled = false;
                         continue;

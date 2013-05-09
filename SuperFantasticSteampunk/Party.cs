@@ -27,7 +27,6 @@ namespace SuperFantasticSteampunk
                 {
                     i.Add("test1", 5);
                     i.Add("test2", 5);
-                    i.Add("default", -1);
                 }));
                 ShieldInventories.Add(characterClass, new Inventory().Tap(i =>
                 {
