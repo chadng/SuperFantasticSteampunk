@@ -114,34 +114,47 @@ namespace SuperFantasticSteampunk
         }
 
         private void _queueAnimation(object[] args)
-        { // queueAnimation(string partyMemberSelector, string animationName, [Script onStartCallback])
+        { // queueAnimation(string partyMemberSelector, string animationName, [Script onStartCallback], [Script onFinishCallback])
             string partyMemberSelector = (string)args[0];
             string animationName = (string)args[1];
-            Script onStartCallback = args.Length == 2 ? null : (Script)args[2];
+            Script onStartCallback = args.Length <= 2 ? null : (Script)args[2];
+            Script onFinishCallback = args.Length <= 3 ? null : (Script)args[3]; 
 
             PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
             AnimationState animationState = partyMember.BattleEntity.AnimationState;
+            Animation animation = animationState.Data.SkeletonData.FindAnimation(animationName);
+            if (animation == null)
+                throw new Exception("Animation '" + animationName + "' could not be found");
 
             float animationStateTime = animationState.Time;
-            float timeToAnimationEnd = animationState.Animation.Duration - (animationStateTime % animationState.Animation.Duration);
+            float timeToCurrentAnimationEnd = animationState.Animation.Duration - (animationStateTime % animationState.Animation.Duration);
 
-            animationState.AddAnimation(animationName, false, animationStateTime + timeToAnimationEnd);
+            animationState.AddAnimation(animation, false, animationStateTime + timeToCurrentAnimationEnd);
             animationState.AddAnimation("idle", true);
 
             if (onStartCallback != null)
-                addNestedScriptRunner(onStartCallback, timeToAnimationEnd);
+                addNestedScriptRunner(onStartCallback, timeToCurrentAnimationEnd);
+            if (onFinishCallback != null)
+                addNestedScriptRunner(onFinishCallback, timeToCurrentAnimationEnd + animation.Duration);
         }
 
         private void _playAnimation(object[] args)
-        { // playAnimation(string partyMemberSelector, string animationName)
+        { // playAnimation(string partyMemberSelector, string animationName, [Script onFinishCallback])
             string partyMemberSelector = (string)args[0];
             string animationName = (string)args[1];
+            Script onFinishCallback = args.Length <= 2 ? null : (Script)args[2];
 
             PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
             AnimationState animationState = partyMember.BattleEntity.AnimationState;
+            Animation animation = animationState.Data.SkeletonData.FindAnimation(animationName);
+            if (animation == null)
+                throw new Exception("Animation '" + animationName + "' could not be found");
 
-            animationState.SetAnimation(animationName, false);
+            animationState.SetAnimation(animation, false);
             animationState.AddAnimation("idle", true);
+
+            if (onFinishCallback != null)
+                addNestedScriptRunner(onFinishCallback, animation.Duration);
         }
 
         private void _doDamage(object[] args)
@@ -295,7 +308,7 @@ namespace SuperFantasticSteampunk
         { // random(float chance, Script successScript, [Script failScript])
             float chance = (float)args[0];
             Script successScript = (Script)args[1];
-            Script failScript = args.Length == 2 ? null : (Script)args[2];
+            Script failScript = args.Length <= 2 ? null : (Script)args[2];
 
             if (Game1.Random.NextDouble() <= chance)
                 addNestedScriptRunner(successScript, 0.0f);
