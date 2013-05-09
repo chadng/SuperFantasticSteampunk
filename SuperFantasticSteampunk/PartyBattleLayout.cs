@@ -109,8 +109,11 @@ namespace SuperFantasticSteampunk
             int listIndex = layout.IndexOf(list);
             if (listIndex == (edgeListIndexIsZero ? 0 : layout.Count - 1)) // if the edge list
                 return;
+
+            List<PartyMember> nextList = layout[listIndex + nextListRelativeIndex];
+            int partyMemberPosition = Math.Min(list.IndexOf(partyMember), nextList.Count);
             list.Remove(partyMember);
-            layout[listIndex + nextListRelativeIndex].Add(partyMember);
+            nextList.Insert(partyMemberPosition, partyMember);
         }
 
         private void movePartyMemberWithinList(PartyMember partyMember, bool edgeIndexIsZero, int nextRelativeIndex)
