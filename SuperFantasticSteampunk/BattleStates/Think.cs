@@ -324,10 +324,10 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void selectDefaultOptionName()
         {
-            if (MenuOptions == null || MenuOptions.Count == 1)
+            if (MenuOptions == null || MenuOptions.Count <= 2)
                 CurrentOptionNameIndex = 0;
             else
-                CurrentOptionNameIndex = 1;                
+                CurrentOptionNameIndex = 2;                
         }
 
         private void getNextPartyMember()
