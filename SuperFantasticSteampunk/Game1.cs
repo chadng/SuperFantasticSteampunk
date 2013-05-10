@@ -48,6 +48,7 @@ namespace SuperFantasticSteampunk
 
         protected override void LoadContent()
         {
+            Input.Initialize(Content);
             ResourceManager.Initialize(Content, GraphicsDevice);
             renderer = new Renderer(GraphicsDevice);
             renderer.SpriteFont = ResourceManager.GetSpriteFont("verdana10");

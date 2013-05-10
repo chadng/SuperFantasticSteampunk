@@ -141,21 +141,29 @@ namespace SuperFantasticSteampunk
             switch (typeName)
             {
             case "string": return (object)valueString;
-            case "int": return parseItemData<int>(valueString);
-            case "float": return parseItemData<float>(valueString);
-            case "bool": return parseItemData<bool>(valueString);
-            case "WeaponType": return parseItemData<WeaponType>(valueString);
-            case "WeaponUseAgainst": return parseItemData<WeaponUseAgainst>(valueString);
-            case "CharacterClass": return parseItemData<CharacterClass>(valueString);
-            case "StatusEffectType": return parseItemData<StatusEffectType>(valueString);
+            case "int": return ParseItemData<int>(valueString);
+            case "float": return ParseItemData<float>(valueString);
+            case "bool": return ParseItemData<bool>(valueString);
+            case "WeaponType": return ParseItemData<WeaponType>(valueString);
+            case "WeaponUseAgainst": return ParseItemData<WeaponUseAgainst>(valueString);
+            case "CharacterClass": return ParseItemData<CharacterClass>(valueString);
+            case "StatusEffectType": return ParseItemData<StatusEffectType>(valueString);
             case "Script": return valueString.Length == 0 ? null : new Script(valueString);
             }
             return null;
         }
 
+        public static object ParseItemData<T>(string valueString)
+        {
+            TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(T));
+            if (typeConverter != null)
+                return typeConverter.ConvertFromString(valueString);
+            return default(T);
+        }
+
         private static void populateSkeletonDataDictionary(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
-            string skeletonDirectory = contentManager.RootDirectory + @"\Skeletons\";
+            string skeletonDirectory = contentManager.RootDirectory + "/Skeletons/";
             IEnumerable<string> atlasFileNames = Directory.EnumerateFiles(skeletonDirectory, "*.atlas");
             foreach (string atlasFileName in atlasFileNames)
             {
@@ -174,7 +182,7 @@ namespace SuperFantasticSteampunk
 
         private static void populateWeaponDataDictionary(ContentManager contentManager)
         {
-            List<Dictionary<string, object>> weaponDataList = loadItemData(contentManager.RootDirectory + @"\Items\Weapons.txt");
+            List<Dictionary<string, object>> weaponDataList = loadItemData(contentManager.RootDirectory + "/Items/Weapons.txt");
             foreach (var data in weaponDataList)
             {
                 WeaponData weaponData = newObjectFromItemData<WeaponData>(data);
@@ -185,7 +193,7 @@ namespace SuperFantasticSteampunk
 
         private static void populateShieldDataDictionary(ContentManager contentManager)
         {
-            List<Dictionary<string, object>> shieldDataList = loadItemData(contentManager.RootDirectory + @"\Items\Shields.txt");
+            List<Dictionary<string, object>> shieldDataList = loadItemData(contentManager.RootDirectory + "/Items/Shields.txt");
             foreach (var data in shieldDataList)
             {
                 ShieldData shieldData = newObjectFromItemData<ShieldData>(data);
@@ -196,7 +204,7 @@ namespace SuperFantasticSteampunk
 
         private static void populateItemDataDictionary(ContentManager contentManager)
         {
-            List<Dictionary<string, object>> itemDataList = loadItemData(contentManager.RootDirectory + @"\Items\Items.txt");
+            List<Dictionary<string, object>> itemDataList = loadItemData(contentManager.RootDirectory + "/Items/Items.txt");
             foreach (var data in itemDataList)
             {
                 ItemData itemData = newObjectFromItemData<ItemData>(data);
@@ -207,7 +215,7 @@ namespace SuperFantasticSteampunk
 
         private static void populatePartyMemberDataDictionary(ContentManager contentManager)
         {
-            List<Dictionary<string, object>> partyMemberDataList = loadItemData(contentManager.RootDirectory + @"\Items\PartyMembers.txt");
+            List<Dictionary<string, object>> partyMemberDataList = loadItemData(contentManager.RootDirectory + "/Items/PartyMembers.txt");
             foreach (var data in partyMemberDataList)
             {
                 PartyMemberData partyMemberData = newObjectFromItemData<PartyMemberData>(data);
@@ -218,11 +226,11 @@ namespace SuperFantasticSteampunk
 
         private static void populateTextureDataDictionary(ContentManager contentManager)
         {
-            List<Dictionary<string, object>> textureDataList = loadItemData(contentManager.RootDirectory + @"\Textures\Textures.txt");
+            List<Dictionary<string, object>> textureDataList = loadItemData(contentManager.RootDirectory + "/Textures/Textures.txt");
             foreach (var data in textureDataList)
             {
                 TextureData textureData = newObjectFromItemData<TextureData>(data);
-                typeof(TextureData).GetProperty("Texture").SetValue(textureData, contentManager.Load<Texture2D>(@"Textures\" + textureData.FileName), null);
+                typeof(TextureData).GetProperty("Texture").SetValue(textureData, contentManager.Load<Texture2D>("Textures/" + textureData.FileName), null);
                 textureDataDictionary.Add(textureData.Name, textureData);
                 Logger.Log("Loaded texture data '" + textureData.Name + "'");
             }
@@ -303,22 +311,14 @@ namespace SuperFantasticSteampunk
             return new KeyValuePair<string, object>(key, ParseItemDataValue(valueType, valueString));
         }
 
-        private static object parseItemData<T>(string valueString)
-        {
-            TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(T));
-            if (typeConverter != null)
-                return typeConverter.ConvertFromString(valueString);
-            return default(T);
-        }
-
         private static void populateSpriteFontDictionary(ContentManager contentManager)
         {
-            string spriteFontDirectory = contentManager.RootDirectory + @"\Fonts\";
+            string spriteFontDirectory = contentManager.RootDirectory + "/Fonts/";
             IEnumerable<string> spriteFontFileNames = Directory.EnumerateFiles(spriteFontDirectory, "*.xnb");
             foreach (string spriteFontFileName in spriteFontFileNames)
             {
                 string spriteFontName = spriteFontFileName.Replace(spriteFontDirectory, "").Replace(".xnb", "");
-                spriteFontDictionary.Add(spriteFontName, contentManager.Load<SpriteFont>(@"Fonts\" + spriteFontName));
+                spriteFontDictionary.Add(spriteFontName, contentManager.Load<SpriteFont>("Fonts/" + spriteFontName));
                 Logger.Log("Loaded font '" + spriteFontName + "'");
             }
         }
