@@ -17,6 +17,7 @@ namespace SuperFantasticSteampunk
         private static SortedDictionary<string, ShieldData> shieldDataDictionary;
         private static SortedDictionary<string, ItemData> itemDataDictionary;
         private static SortedDictionary<string, PartyMemberData> partyMemberDataDictionary;
+        private static SortedDictionary<string, SpriteData> spriteDataDictionary;
         private static SortedDictionary<string, TextureData> textureDataDictionary;
         private static SortedDictionary<string, SpriteFont> spriteFontDictionary;
         #endregion
@@ -34,6 +35,8 @@ namespace SuperFantasticSteampunk
             populateItemDataDictionary(contentManager);
             partyMemberDataDictionary = new SortedDictionary<string, PartyMemberData>();
             populatePartyMemberDataDictionary(contentManager);
+            spriteDataDictionary = new SortedDictionary<string, SpriteData>();
+            populateSpriteDataDictionary(contentManager);
             textureDataDictionary = new SortedDictionary<string, TextureData>();
             populateTextureDataDictionary(contentManager);
             spriteFontDictionary = new SortedDictionary<string, SpriteFont>();
@@ -49,6 +52,7 @@ namespace SuperFantasticSteampunk
             shieldDataDictionary.Clear();
             itemDataDictionary.Clear();
             partyMemberDataDictionary.Clear();
+            spriteDataDictionary.Clear();
             textureDataDictionary.Clear();
             spriteFontDictionary.Clear();
         }
@@ -117,6 +121,23 @@ namespace SuperFantasticSteampunk
             PartyMemberData partyMemberData;
             if (partyMemberDataDictionary.TryGetValue(name, out partyMemberData))
                 return partyMemberData;
+            return null;
+        }
+
+        public static Sprite GetNewSprite(string name)
+        {
+            SpriteData spriteData = GetSpriteData(name);
+            if (spriteData == null)
+                return null;
+            else
+                return new Sprite(spriteData);
+        }
+
+        public static SpriteData GetSpriteData(string name)
+        {
+            SpriteData spriteData;
+            if (spriteDataDictionary.TryGetValue(name, out spriteData))
+                return spriteData;
             return null;
         }
 
@@ -221,6 +242,17 @@ namespace SuperFantasticSteampunk
                 PartyMemberData partyMemberData = newObjectFromItemData<PartyMemberData>(data);
                 partyMemberDataDictionary.Add(partyMemberData.Name, partyMemberData);
                 Logger.Log("Loaded party member '" + partyMemberData.Name + "'");
+            }
+        }
+
+        private static void populateSpriteDataDictionary(ContentManager contentManager)
+        {
+            List<Dictionary<string, object>> spriteDataList = loadItemData(contentManager.RootDirectory + "/Items/Sprites.txt");
+            foreach (var data in spriteDataList)
+            {
+                SpriteData spriteData = newObjectFromItemData<SpriteData>(data);
+                spriteDataDictionary.Add(spriteData.Name, spriteData);
+                Logger.Log("Loaded sprite '" + spriteData.Name + "'");
             }
         }
 

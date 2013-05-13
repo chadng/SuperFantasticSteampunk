@@ -8,7 +8,7 @@ namespace SuperFantasticSteampunk
     class Entity
     {
         #region Instance Fields
-        private TextureData textureData;
+        private Sprite sprite;
         #endregion
 
         #region Instance Properties
@@ -24,16 +24,16 @@ namespace SuperFantasticSteampunk
 
         #region Constructors
         public Entity(Skeleton skeleton, Vector2 position)
-            : this((TextureData)null, position)
+            : this((Sprite)null, position)
         {
             Skeleton = skeleton;
             AnimationState = new AnimationState(new AnimationStateData(skeleton.Data));
         }
 
-        public Entity(TextureData textureData, Vector2 position)
+        public Entity(Sprite sprite, Vector2 position)
         {
             ResetManipulation();
-            this.textureData = textureData;
+            this.sprite = sprite;
             Position = position;
         }
         #endregion
@@ -89,9 +89,11 @@ namespace SuperFantasticSteampunk
         {
             Position += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             Rotation += AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            
+
             if (Skeleton != null)
                 updateSkeleton(gameTime);
+            else
+                sprite.Update(gameTime);
         }
 
         public virtual void Draw(Renderer renderer)
@@ -99,7 +101,7 @@ namespace SuperFantasticSteampunk
             if (Skeleton != null)
                 renderer.Draw(Skeleton);
             else
-                renderer.Draw(textureData, Position, Tint, Rotation, Scale);
+                renderer.Draw(sprite, Position, Tint, Rotation, Scale);
         }
 
         private void updateSkeleton(GameTime gameTime)

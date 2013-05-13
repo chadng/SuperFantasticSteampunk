@@ -29,6 +29,13 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
+        public void Draw(Sprite sprite, Vector2 position, Color color, float rotation, Vector2 scale)
+        {
+            beginSpriteBatch();
+            Vector2 origin = new Vector2(sprite.OriginX, sprite.OriginY);
+            spriteBatch.Draw(sprite.Texture, position, sprite.GetSourceRectangle(), color, rotation, origin, scale, SpriteEffects.None, 0.0f);
+        }
+
         public void Draw(TextureData textureData, Vector2 position, Color color, float rotation, Vector2 scale)
         {
             beginSpriteBatch();

@@ -94,6 +94,8 @@
     <Compile Include="ScriptRunner.cs" />
     <Compile Include="Shield.cs" />
     <Compile Include="ShieldData.cs" />
+    <Compile Include="Sprite.cs" />
+    <Compile Include="SpriteData.cs" />
     <Compile Include="StatModifier.cs" />
     <Compile Include="StatusEffect.cs" />
     <Compile Include="StatusEffects\Paralysis.cs" />
@@ -123,6 +125,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Items\PartyMembers.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Items\Sprites.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Items\Weapons.txt">
