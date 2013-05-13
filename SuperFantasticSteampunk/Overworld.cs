@@ -9,6 +9,7 @@ namespace SuperFantasticSteampunk
         #region Instance Fields
         private Stack<OverworldState> states;
         private bool stateChanged;
+        private Map map;
         #endregion
 
         #region Instance Properties
@@ -33,6 +34,8 @@ namespace SuperFantasticSteampunk
             states = new Stack<OverworldState>();
             states.Push(new OverworldStates.Play(this));
             stateChanged = true;
+
+            map = new Map(500, 500, 5, 5);
 
             PlayerParty.PrimaryPartyMember.StartOverworld(new Vector2(100.0f));
             addEntity(PlayerParty.PrimaryPartyMember.OverworldEntity);
@@ -82,7 +85,11 @@ namespace SuperFantasticSteampunk
         {
             if (CurrentOverworldState.OverworldStateRenderer != null)
                 CurrentOverworldState.OverworldStateRenderer.BeforeDraw(renderer);
+
             base.draw(renderer);
+
+            drawMap(renderer);
+
             if (CurrentOverworldState.OverworldStateRenderer != null)
                 CurrentOverworldState.OverworldStateRenderer.AfterDraw(renderer);
         }
@@ -94,6 +101,20 @@ namespace SuperFantasticSteampunk
                 party.PrimaryPartyMember.FinishOverworld();
 
             base.finishCleanup();
+        }
+
+        private void drawMap(Renderer renderer)
+        {
+            TextureData pixelTexture = ResourceManager.GetTextureData("white_pixel");
+
+            for (int x = 0; x < map.Width; ++x)
+            {
+                for (int y = 0; y < map.Height; ++y)
+                {
+                    if (map.CollisionMap[x, y])
+                        renderer.Draw(pixelTexture, new Vector2(x, y), Color.Black);
+                }
+            }
         }
         #endregion
     }
