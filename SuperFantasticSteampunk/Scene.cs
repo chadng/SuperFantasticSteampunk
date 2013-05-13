@@ -8,6 +8,7 @@ namespace SuperFantasticSteampunk
     {
         #region Static Fields
         private static Stack<Scene> sceneStack;
+        private static Scene nextScene;
         #endregion
 
         #region Static Properties
@@ -21,6 +22,7 @@ namespace SuperFantasticSteampunk
         static Scene()
         {
             sceneStack = new Stack<Scene>();
+            nextScene = null;
         }
         #endregion
 
@@ -53,14 +55,26 @@ namespace SuperFantasticSteampunk
                     sceneStack.Pop();
                 }
                 else
+                {
+                    if (nextScene != null)
+                        pushNextScene();
                     Current.update(gameTime);
+                }
             }
+            else if (nextScene != null)
+                pushNextScene();
         }
 
         public static void DrawCurrent(Renderer renderer)
         {
             if (Current != null)
                 Current.draw(renderer);
+        }
+
+        private static void pushNextScene()
+        {
+            sceneStack.Push(nextScene);
+            nextScene = null;
         }
         #endregion
 
@@ -74,7 +88,7 @@ namespace SuperFantasticSteampunk
         {
             entities = new List<Entity>();
             finished = false;
-            sceneStack.Push(this);
+            nextScene = this;
         }
         #endregion
 

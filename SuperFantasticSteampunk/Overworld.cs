@@ -31,7 +31,11 @@ namespace SuperFantasticSteampunk
             EnemyParties = new List<Party>();
 
             states = new Stack<OverworldState>();
+            states.Push(new OverworldStates.Play(this));
             stateChanged = true;
+
+            PlayerParty.PrimaryPartyMember.StartOverworld(new Vector2(100.0f));
+            addEntity(PlayerParty.PrimaryPartyMember.OverworldEntity);
         }
         #endregion
 

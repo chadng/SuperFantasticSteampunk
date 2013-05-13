@@ -40,7 +40,9 @@ namespace SuperFantasticSteampunk
         public int Charm { get; private set; }
         public int Level { get; private set; }
         public int Experience { get; private set; }
+
         public Entity BattleEntity { get; private set; }
+        public Entity OverworldEntity { get; private set; }
 
         public Weapon EquippedWeapon { get; private set; }
         public Shield EquippedShield { get; private set; }
@@ -71,6 +73,16 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
+        public void StartOverworld(Vector2 entityPosition)
+        {
+            OverworldEntity = new Entity(ResourceManager.GetTextureData(Data.OverworldSpriteName), entityPosition);
+        }
+
+        public void FinishOverworld()
+        {
+            OverworldEntity = null;
+        }
+        
         public void StartBattle()
         {
             statModifiers.Clear();
@@ -78,8 +90,8 @@ namespace SuperFantasticSteampunk
             resetBaseStatsFromLevel();
             calculateStatsFromModifiers();
 
-            BattleEntity = new Entity(ResourceManager.GetNewSkeleton(Data.SkeletonName), new Vector2());
-            BattleEntity.Skeleton.SetSkin(Data.SkeletonSkinName);
+            BattleEntity = new Entity(ResourceManager.GetNewSkeleton(Data.BattleSkeletonName), new Vector2());
+            BattleEntity.Skeleton.SetSkin(Data.BattleSkeletonSkinName);
             Animation animation = BattleEntity.Skeleton.Data.FindAnimation("idle");
             if (animation != null)
                 BattleEntity.AnimationState.SetAnimation(animation, true);

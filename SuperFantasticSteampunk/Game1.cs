@@ -58,13 +58,9 @@ namespace SuperFantasticSteampunk
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("player1")));
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("player1")));
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("player1")));
-            Party enemyParty = new Party();
-            enemyParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("enemy")));
-            enemyParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("enemy")));
-            enemyParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("enemy")));
-            enemyParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("enemy")));
 
-            new Battle(playerParty, enemyParty);
+            //new Battle(playerParty, enemyParty);
+            new Overworld(playerParty);
         }
 
         protected override void UnloadContent()
