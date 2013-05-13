@@ -204,7 +204,10 @@ namespace SuperFantasticSteampunk.BattleStates
         private void showAttackMenu()
         {
             if (CurrentThinkActionType == ThinkActionType.None)
+            {
                 initThinkActionTypeMenu(ThinkActionType.Attack);
+                equipCurrentOption();
+            }
         }
 
         private void hideAttackMenu()
@@ -216,7 +219,10 @@ namespace SuperFantasticSteampunk.BattleStates
         private void showDefendMenu()
         {
             if (CurrentThinkActionType == ThinkActionType.None)
+            {
                 initThinkActionTypeMenu(ThinkActionType.Defend);
+                equipCurrentOption();
+            }
         }
 
         private void hideDefendMenu()
@@ -228,7 +234,10 @@ namespace SuperFantasticSteampunk.BattleStates
         private void showItemMenu()
         {
             if (CurrentThinkActionType == ThinkActionType.None)
+            {
                 initThinkActionTypeMenu(ThinkActionType.UseItem);
+                equipCurrentOption();
+            }
         }
 
         private void hideItemMenu()
@@ -283,6 +292,11 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 CurrentPartyMember.EquipShield(ThinkMenuOption.IsDefaultOption(option) ? null : option.Name);
                 Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + option.Name + "' shield");
+            }
+            else
+            {
+                CurrentPartyMember.EquipWeapon(null);
+                CurrentPartyMember.EquipShield(null);
             }
         }
 
