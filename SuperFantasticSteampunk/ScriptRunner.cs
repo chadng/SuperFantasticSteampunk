@@ -6,6 +6,8 @@ using Spine;
 namespace SuperFantasticSteampunk
 {
     using ScriptAction = Tuple<float, string, object[]>;
+    
+    enum ScriptRunnerMode { Normal, CatchFunction, CatchScript }
 
     class NestedScriptRunner
     {
@@ -33,10 +35,11 @@ namespace SuperFantasticSteampunk
         private PartyMember target;
         private float time;
         private List<NestedScriptRunner> nestedScriptRunners;
+        private ScriptRunnerMode mode;
         #endregion
 
         #region Constructors
-        public ScriptRunner(Script script, Battle battle, PartyMember actor, PartyMember target)
+        public ScriptRunner(Script script, Battle battle, PartyMember actor, PartyMember target, ScriptRunnerMode mode = ScriptRunnerMode.Normal)
         {
             this.script = script;
             scriptActionIndex = 0;
@@ -45,6 +48,7 @@ namespace SuperFantasticSteampunk
             this.target = target;
             time = 0.0f;
             nestedScriptRunners = new List<NestedScriptRunner>();
+            this.mode = mode;
         }
         #endregion
 
@@ -87,29 +91,42 @@ namespace SuperFantasticSteampunk
 
         private void executeAction(ScriptAction action)
         {
-            object[] args = action.Item3;
-            switch (action.Item2)
+            try
             {
-            case "queueAnimation": _queueAnimation(args); break;
-            case "playAnimation": _playAnimation(args); break;
-            case "doDamage": _doDamage(args); break;
-            case "addHealth": _addHealth(args); break;
-            case "addMaxHealthStatModifier": _addMaxHealthStatModifier(args); break;
-            case "addAttackStatModifier": _addAttackStatModifier(args); break;
-            case "addSpecialAttackStatModifier": _addSpecialAttackStatModifier(args); break;
-            case "addDefenceStatModifier": _addDefenceStatModifier(args); break;
-            case "addSpeedStatModifier": _addSpeedStatModifier(args); break;
-            case "addCharmStatModifier": _addCharmStatModifier(args); break;
-            case "addStatusEffect": _addStatusEffect(args); break;
-            case "setVelocity": _setVelocity(args); break;
-            case "setVelocityX": _setVelocityX(args); break;
-            case "setVelocityY": _setVelocityY(args); break;
-            case "setRotation": _setRotation(args); break;
-            case "setAngularVelocity": _setAngularVelocity(args); break;
-            case "random": _random(args); break;
-            case "log": _log(args); break;
-            case "nop": break;
-            default: break;
+                object[] args = action.Item3;
+                switch (action.Item2)
+                {
+                case "queueAnimation": _queueAnimation(args); break;
+                case "playAnimation": _playAnimation(args); break;
+                case "doDamage": _doDamage(args); break;
+                case "addHealth": _addHealth(args); break;
+                case "addMaxHealthStatModifier": _addMaxHealthStatModifier(args); break;
+                case "addAttackStatModifier": _addAttackStatModifier(args); break;
+                case "addSpecialAttackStatModifier": _addSpecialAttackStatModifier(args); break;
+                case "addDefenceStatModifier": _addDefenceStatModifier(args); break;
+                case "addSpeedStatModifier": _addSpeedStatModifier(args); break;
+                case "addCharmStatModifier": _addCharmStatModifier(args); break;
+                case "addStatusEffect": _addStatusEffect(args); break;
+                case "setVelocity": _setVelocity(args); break;
+                case "setVelocityX": _setVelocityX(args); break;
+                case "setVelocityY": _setVelocityY(args); break;
+                case "setRotation": _setRotation(args); break;
+                case "setAngularVelocity": _setAngularVelocity(args); break;
+                case "random": _random(args); break;
+                case "log": _log(args); break;
+                case "safe": _safe(args); break;
+                case "nop": break;
+                default: break;
+                }
+            }
+            catch (Exception e)
+            {
+                switch (mode)
+                {
+                case ScriptRunnerMode.CatchFunction: break;
+                case ScriptRunnerMode.CatchScript: scriptActionIndex = script.Actions.Count; break;
+                default: throw e;
+                }
             }
         }
 
@@ -323,6 +340,14 @@ namespace SuperFantasticSteampunk
             Logger.Log("Script log at " + time.ToString() + ": " + message);
         }
 
+        private void _safe(object[] args)
+        { // safe(Script script, [bool catchFunctions = false])
+            Script script = (Script)args[0];
+            bool catchFunctions = args.Length <= 1 ? false : (bool)args[1];
+
+            addNestedScriptRunner(script, 0.0f, catchFunctions ? ScriptRunnerMode.CatchFunction : ScriptRunnerMode.CatchScript);
+        }
+
         private PartyMember getPartyMemberFromSelector(string selector)
         {
             string[] selectorParts = selector.Split('>');
@@ -368,9 +393,11 @@ namespace SuperFantasticSteampunk
             }
         }
 
-        private void addNestedScriptRunner(Script script, float delay)
+        private void addNestedScriptRunner(Script script, float delay, ScriptRunnerMode newMode = ScriptRunnerMode.Normal)
         {
-            nestedScriptRunners.Add(new NestedScriptRunner(delay, new ScriptRunner(script, battle, actor, target)));
+            if (newMode == ScriptRunnerMode.Normal && mode != ScriptRunnerMode.Normal)
+                newMode = ScriptRunnerMode.CatchScript;
+            nestedScriptRunners.Add(new NestedScriptRunner(delay, new ScriptRunner(script, battle, actor, target, newMode)));
         }
         #endregion
     }
