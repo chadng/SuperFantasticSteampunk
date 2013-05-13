@@ -86,6 +86,15 @@ namespace SuperFantasticSteampunk
             if (CurrentOverworldState.OverworldStateRenderer != null)
                 CurrentOverworldState.OverworldStateRenderer.AfterDraw(renderer);
         }
+
+        protected override void finishCleanup()
+        {
+            PlayerParty.PrimaryPartyMember.Try(p => p.FinishOverworld());
+            foreach (Party party in EnemyParties)
+                party.PrimaryPartyMember.FinishOverworld();
+
+            base.finishCleanup();
+        }
         #endregion
     }
 }

@@ -12,7 +12,6 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Fields
-        private SortedDictionary<string, int[]> animations;
         private int currentAnimationFrameIndex;
         private TextureData textureData;
         #endregion
@@ -45,7 +44,6 @@ namespace SuperFantasticSteampunk
                 throw new Exception("SpriteData cannot be null");
             Data = spriteData;
             textureData = ResourceManager.GetTextureData(spriteData.TextureName);
-            animations = new SortedDictionary<string, int[]>();
             currentAnimationFrameIndex = 0;
             CurrentAnimation = null;
             Time = 0.0f;
@@ -53,18 +51,9 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public void AddAnimation(string name, int[] animation)
-        {
-            animations.Add(name, animation);
-        }
-
         public void SetAnimation(string name)
         {
-            int[] animation;
-            if (animations.TryGetValue(name, out animation))
-                SetAnimation(animation);
-            else
-                SetAnimation(Data.Animations[name]);
+            SetAnimation(Data.Animations[name]);
         }
 
         public void SetAnimation(int[] animation)
@@ -76,6 +65,9 @@ namespace SuperFantasticSteampunk
 
         public void Update(GameTime gameTime)
         {
+            if (CurrentAnimation == null)
+                return;
+
             Time += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (Time >= 1.0f / framesPerSecond)
             {
