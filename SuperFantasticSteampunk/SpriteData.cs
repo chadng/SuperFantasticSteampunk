@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk
 {
@@ -13,6 +14,34 @@ namespace SuperFantasticSteampunk
         public int PaddingY { get; private set; }
         public int OffsetX { get; private set; }
         public int OffsetY { get; private set; }
+        public string AnimationData { get; private set; }
+        public Dictionary<string, int[]> Animations { get; private set; }
+        #endregion
+
+        #region Instance Methods
+        public void PopulateAnimationsFromAnimationData()
+        {
+            Animations = new Dictionary<string, int[]>();
+
+            if (AnimationData == null || AnimationData.Length == 0)
+                return;
+
+            string[] animationStrings = AnimationData.Split(';');
+            foreach (string animationString in animationStrings)
+            {
+                if (animationString.Length == 0)
+                    continue;
+
+                int colonIndex = animationString.IndexOf(':');
+                string name = animationString.Substring(0, colonIndex);
+                string[] intStrings = animationString.Substring(colonIndex + 1).Split(',');
+                List<int> frames = new List<int>(intStrings.Length);
+                foreach (string str in intStrings)
+                    frames.Add(int.Parse(str.Trim()));
+
+                Animations.Add(name, frames.ToArray());
+            }
+        }
         #endregion
     }
 }

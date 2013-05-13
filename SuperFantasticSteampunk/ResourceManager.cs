@@ -251,6 +251,7 @@ namespace SuperFantasticSteampunk
             foreach (var data in spriteDataList)
             {
                 SpriteData spriteData = newObjectFromItemData<SpriteData>(data);
+                spriteData.PopulateAnimationsFromAnimationData();
                 spriteDataDictionary.Add(spriteData.Name, spriteData);
                 Logger.Log("Loaded sprite '" + spriteData.Name + "'");
             }

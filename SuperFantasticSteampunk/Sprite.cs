@@ -60,7 +60,11 @@ namespace SuperFantasticSteampunk
 
         public void SetAnimation(string name)
         {
-            SetAnimation(animations[name]);
+            int[] animation;
+            if (animations.TryGetValue(name, out animation))
+                SetAnimation(animation);
+            else
+                SetAnimation(Data.Animations[name]);
         }
 
         public void SetAnimation(int[] animation)
