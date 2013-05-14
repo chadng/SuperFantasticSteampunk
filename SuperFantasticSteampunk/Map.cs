@@ -77,24 +77,35 @@ namespace SuperFantasticSteampunk
     class Map
     {
         #region Constants
+        public const int TileSize = 32;
         private const int corridorPadding = 2;
         #endregion
 
         #region Instance Properties
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        public int TileWidth { get; private set; }
+        public int TileHeight { get; private set; }
         public bool[,] CollisionMap { get; private set; }
+
+        public int Width
+        {
+            get { return TileWidth * TileSize; }
+        }
+
+        public int Height
+        {
+            get { return TileHeight * TileSize; }
+        }
         #endregion
 
         #region Constructors
-        public Map(int width, int height, int columns, int rows)
+        public Map(int tileWidth, int tileHeight, int columns, int rows)
         {
-            Width = width;
-            Height = height;
-            CollisionMap = new bool[width, height];
-            for (int x = 0; x < Width; ++x)
+            TileWidth = tileWidth;
+            TileHeight = tileHeight;
+            CollisionMap = new bool[TileWidth, TileHeight];
+            for (int x = 0; x < TileWidth; ++x)
             {
-                for (int y = 0; y < Height; ++y)
+                for (int y = 0; y < TileHeight; ++y)
                     CollisionMap[x, y] = false;
             }
 
@@ -105,8 +116,8 @@ namespace SuperFantasticSteampunk
         #region Instance Methods
         private void generateCollisionMapFromRooms(MapRoom[,] rooms, int columns, int rows)
         {
-            int roomWidth = Width / columns;
-            int roomHeight = Height / rows;
+            int roomWidth = TileWidth / columns;
+            int roomHeight = TileHeight / rows;
 
             for (int x = 0; x < columns; ++x)
             {

@@ -7,12 +7,9 @@ namespace SuperFantasticSteampunk
 {
     class Entity
     {
-        #region Instance Fields
-        private Sprite sprite;
-        #endregion
-
         #region Instance Properties
         public Skeleton Skeleton { get; private set; }
+        public Sprite Sprite { get; private set; }
         public AnimationState AnimationState { get; private set; }
         public Vector2 Position { get; set; }
         public Vector2 Velocity { get; set; }
@@ -33,7 +30,7 @@ namespace SuperFantasticSteampunk
         public Entity(Sprite sprite, Vector2 position)
         {
             ResetManipulation();
-            this.sprite = sprite;
+            this.Sprite = sprite;
             Position = position;
         }
         #endregion
@@ -93,7 +90,7 @@ namespace SuperFantasticSteampunk
             if (Skeleton != null)
                 updateSkeleton(gameTime);
             else
-                sprite.Update(gameTime);
+                Sprite.Update(gameTime);
         }
 
         public virtual void Draw(Renderer renderer)
@@ -101,7 +98,7 @@ namespace SuperFantasticSteampunk
             if (Skeleton != null)
                 renderer.Draw(Skeleton);
             else
-                renderer.Draw(sprite, Position, Tint, Rotation, Scale);
+                renderer.Draw(Sprite, Position, Tint, Rotation, Scale);
         }
 
         private void updateSkeleton(GameTime gameTime)

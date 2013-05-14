@@ -117,13 +117,18 @@ namespace SuperFantasticSteampunk
         {
             TextureData pixelTexture = ResourceManager.GetTextureData("white_pixel");
 
-            var s = Microsoft.Xna.Framework.Input.Mouse.GetState();
-            for (int x = Math.Max(0, s.X - 100); x < s.X + 100 && x < Map.Width; ++x)
+            Rectangle cameraBoundingBox = camera.GetBoundingBox();
+            int startX = cameraBoundingBox.Left / Map.TileSize;
+            int finishX = Math.Min((cameraBoundingBox.Left + cameraBoundingBox.Width) / Map.TileSize, Map.TileWidth);
+            int startY = cameraBoundingBox.Top / Map.TileSize;
+            int finishY = Math.Min((cameraBoundingBox.Top + cameraBoundingBox.Height) / Map.TileSize, Map.TileHeight);
+
+            for (int x = startX; x <= finishX; ++x)
             {
-                for (int y = Math.Max(0, s.Y - 100); y < s.Y + 100 && y < Map.Height; ++y)
+                for (int y = startY; y <= finishY; ++y)
                 {
                     if (Map.CollisionMap[x, y])
-                        renderer.Draw(pixelTexture, new Vector2(x, y), Color.Black);
+                        renderer.Draw(pixelTexture, new Vector2(x, y) * Map.TileSize, Color.Black, 0.0f, new Vector2(Map.TileSize));
                 }
             }
         }
