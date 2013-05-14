@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk
 {
@@ -38,7 +39,7 @@ namespace SuperFantasticSteampunk
         public void Update(GameTime gameTime)
         {
             if (Target != null)
-                Position = Target.Position;
+                Position = new Vector2((float)Math.Round(Target.Position.X), (float)Math.Round(Target.Position.Y));
 
             Overworld overworld = Scene.Current as Overworld;
             if (overworld != null)

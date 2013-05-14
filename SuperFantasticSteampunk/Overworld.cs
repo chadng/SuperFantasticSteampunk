@@ -36,7 +36,7 @@ namespace SuperFantasticSteampunk
             states.Push(new OverworldStates.Play(this));
             stateChanged = true;
 
-            Map = new Map(500, 500, 5, 5);
+            Map = new Map(100, 100, 5, 5);
 
             PlayerParty.PrimaryPartyMember.StartOverworld(new Vector2(100.0f));
             addEntity(PlayerParty.PrimaryPartyMember.OverworldEntity);
@@ -127,9 +127,9 @@ namespace SuperFantasticSteampunk
 
             Rectangle cameraBoundingBox = camera.GetBoundingBox();
             int startX = cameraBoundingBox.Left / Map.TileSize;
-            int finishX = Math.Min((cameraBoundingBox.Left + cameraBoundingBox.Width) / Map.TileSize, Map.TileWidth);
+            int finishX = Math.Min((cameraBoundingBox.Left + cameraBoundingBox.Width) / Map.TileSize, Map.TileWidth - 1);
             int startY = cameraBoundingBox.Top / Map.TileSize;
-            int finishY = Math.Min((cameraBoundingBox.Top + cameraBoundingBox.Height) / Map.TileSize, Map.TileHeight);
+            int finishY = Math.Min((cameraBoundingBox.Top + cameraBoundingBox.Height) / Map.TileSize, Map.TileHeight - 1);
 
             for (int x = startX; x <= finishX; ++x)
             {
