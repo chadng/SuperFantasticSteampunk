@@ -36,7 +36,7 @@ namespace SuperFantasticSteampunk
         {
             beginSpriteBatch();
             translatePosition(ref position);
-            Vector2 origin = new Vector2(sprite.OriginX, sprite.OriginY);
+            Vector2 origin = new Vector2(sprite.Data.OriginX, sprite.Data.OriginY);
             spriteBatch.Draw(sprite.Texture, position, sprite.GetSourceRectangle(), color, rotation, origin, scale, SpriteEffects.None, 0.0f);
         }
 

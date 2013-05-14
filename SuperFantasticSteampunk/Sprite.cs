@@ -21,16 +21,6 @@ namespace SuperFantasticSteampunk
         public int[] CurrentAnimation { get; set; }
         public float Time { get; set; }
 
-        public float OriginX
-        {
-            get { return textureData.OriginX; }
-        }
-
-        public float OriginY
-        {
-            get { return textureData.OriginY; }
-        }
-
         public Texture2D Texture
         {
             get { return textureData.Texture; }
@@ -80,8 +70,8 @@ namespace SuperFantasticSteampunk
         public Rectangle GetSourceRectangle()
         {
             int textureWidth = textureData.Width - Data.OffsetX;
-            int textureHeight = textureData.Height - Data.OffsetY;
             int boundingWidth = Data.Width + (Data.PaddingX * 2);
+            int boundingHeight = Data.Height + (Data.PaddingY * 2);
 
             int framesPerRow = textureWidth / boundingWidth;
             int frame = CurrentAnimation == null ? 0 : CurrentAnimation[currentAnimationFrameIndex];
@@ -89,7 +79,7 @@ namespace SuperFantasticSteampunk
             int row = frame / framesPerRow;
             int column = frame % framesPerRow;
 
-            return new Rectangle((column * Data.Width) + Data.PaddingX, (row * Data.Height) + Data.PaddingY, Data.Width, Data.Height);
+            return new Rectangle((column * boundingWidth) + Data.PaddingX + Data.OffsetX, (row * boundingHeight) + Data.PaddingY + Data.OffsetY, Data.Width, Data.Height);
         }
         #endregion
     }

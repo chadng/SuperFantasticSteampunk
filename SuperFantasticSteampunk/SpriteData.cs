@@ -14,6 +14,8 @@ namespace SuperFantasticSteampunk
         public int PaddingY { get; private set; }
         public int OffsetX { get; private set; }
         public int OffsetY { get; private set; }
+        public int OriginX { get; private set; }
+        public int OriginY { get; private set; }
         public string AnimationData { get; private set; }
         public Dictionary<string, int[]> Animations { get; private set; }
         #endregion

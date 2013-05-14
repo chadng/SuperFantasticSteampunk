@@ -69,6 +69,14 @@ namespace SuperFantasticSteampunk
             Logger.Log(CurrentOverworldState.GetType().Name + " overworld state resumed");
         }
 
+        public void AddEnemyParty(Party party, Vector2 position)
+        {
+            if (party.PrimaryPartyMember.OverworldEntity == null)
+                party.PrimaryPartyMember.StartOverworld(position);
+            EnemyParties.Add(party);
+            addEntity(party.PrimaryPartyMember.OverworldEntity);
+        }
+
         protected override void update(GameTime gameTime)
         {
             if (stateChanged)

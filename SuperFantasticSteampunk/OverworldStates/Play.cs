@@ -28,16 +28,7 @@ namespace SuperFantasticSteampunk.OverworldStates
         public override void Update(GameTime gameTime)
         {
             handlePlayerMovement(gameTime);
-
-            if (Input.A())
-            {
-                Party enemyParty = new Party();
-                enemyParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("enemy")));
-                enemyParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("enemy")));
-                enemyParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("enemy")));
-                enemyParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("enemy")));
-                new Battle(Overworld.PlayerParty, enemyParty);
-            }
+            handleEnemyCollisions();
         }
 
         private void handlePlayerMovement(GameTime gameTime)
@@ -55,6 +46,21 @@ namespace SuperFantasticSteampunk.OverworldStates
             Entity entity = Overworld.PlayerParty.PrimaryPartyMember.OverworldEntity;
             limitVelocityForCollisionWithWall(entity, gameTime, ref velocity);
             entity.Velocity = velocity;
+        }
+
+        private void handleEnemyCollisions()
+        {
+            foreach (Party party in Overworld.EnemyParties)
+            {
+                Entity playerEntity = Overworld.PlayerParty.PrimaryPartyMember.OverworldEntity;
+                Entity enemyEntity = party.PrimaryPartyMember.OverworldEntity;
+
+                if (playerEntity.CollidesWith(enemyEntity))
+                {
+                    new Battle(Overworld.PlayerParty, party);
+                    break;
+                }
+            }
         }
 
         private void limitVelocityForCollisionWithWall(Entity entity, GameTime gameTime, ref Vector2 velocity)

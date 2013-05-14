@@ -77,6 +77,23 @@ namespace SuperFantasticSteampunk
                 Skeleton.SetAttachment(slotName, attachmentName);
         }
 
+        public bool CollidesWith(Entity other)
+        {
+            if (Sprite == null || other.Sprite == null)
+                return false;
+            return GetBoundingBox().Intersects(other.GetBoundingBox());
+        }
+
+        public Rectangle GetBoundingBox()
+        {
+            return new Rectangle(
+                (int)(Position.X - (Sprite.Data.OriginX * Scale.X)),
+                (int)(Position.Y - (Sprite.Data.OriginY * Scale.Y)),
+                (int)(Sprite.Data.Width * Scale.X),
+                (int)(Sprite.Data.Height * Scale.Y)
+            );
+        }
+
         public virtual void Kill()
         {
             Scene.RemoveEntity(this);
