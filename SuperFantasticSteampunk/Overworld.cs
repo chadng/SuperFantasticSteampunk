@@ -9,7 +9,7 @@ namespace SuperFantasticSteampunk
         #region Instance Fields
         private Stack<OverworldState> states;
         private bool stateChanged;
-        private Map map;
+        private Camera camera;
         #endregion
 
         #region Instance Properties
@@ -20,6 +20,7 @@ namespace SuperFantasticSteampunk
 
         public Party PlayerParty { get; private set; }
         public List<Party> EnemyParties { get; private set; }
+        public Map Map { get; private set; }
         #endregion
 
         #region Constructors
@@ -35,10 +36,13 @@ namespace SuperFantasticSteampunk
             states.Push(new OverworldStates.Play(this));
             stateChanged = true;
 
-            map = new Map(500, 500, 5, 5);
+            Map = new Map(500, 500, 5, 5);
 
             PlayerParty.PrimaryPartyMember.StartOverworld(new Vector2(100.0f));
             addEntity(PlayerParty.PrimaryPartyMember.OverworldEntity);
+
+            camera = new Camera(new Vector2(Game1.ScreenWidth, Game1.ScreenHeight));
+            camera.Target = playerParty.PrimaryPartyMember.OverworldEntity;
         }
         #endregion
 
@@ -79,10 +83,14 @@ namespace SuperFantasticSteampunk
 
             if (CurrentOverworldState.OverworldStateRenderer != null)
                 CurrentOverworldState.OverworldStateRenderer.Update(gameTime);
+
+            camera.Update(gameTime);
         }
 
         protected override void draw(Renderer renderer)
         {
+            renderer.Camera = camera;
+
             if (CurrentOverworldState.OverworldStateRenderer != null)
                 CurrentOverworldState.OverworldStateRenderer.BeforeDraw(renderer);
 
@@ -92,6 +100,8 @@ namespace SuperFantasticSteampunk
 
             if (CurrentOverworldState.OverworldStateRenderer != null)
                 CurrentOverworldState.OverworldStateRenderer.AfterDraw(renderer);
+
+            renderer.Camera = null;
         }
 
         protected override void finishCleanup()
@@ -108,11 +118,11 @@ namespace SuperFantasticSteampunk
             TextureData pixelTexture = ResourceManager.GetTextureData("white_pixel");
 
             var s = Microsoft.Xna.Framework.Input.Mouse.GetState();
-            for (int x = Math.Max(0, s.X - 100); x < s.X + 100 && x < map.Width; ++x)
+            for (int x = Math.Max(0, s.X - 100); x < s.X + 100 && x < Map.Width; ++x)
             {
-                for (int y = Math.Max(0, s.Y - 100); y < s.Y + 100 && y < map.Height; ++y)
+                for (int y = Math.Max(0, s.Y - 100); y < s.Y + 100 && y < Map.Height; ++y)
                 {
-                    if (map.CollisionMap[x, y])
+                    if (Map.CollisionMap[x, y])
                         renderer.Draw(pixelTexture, new Vector2(x, y), Color.Black);
                 }
             }

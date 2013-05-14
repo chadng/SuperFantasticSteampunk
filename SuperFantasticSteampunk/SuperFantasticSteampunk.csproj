@@ -68,6 +68,7 @@
     <Compile Include="BattleStates\ThinkRenderer.cs" />
     <Compile Include="BattleStates\UseItem.cs" />
     <Compile Include="BattleStates\Win.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="InputButtonListener.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Item.cs" />

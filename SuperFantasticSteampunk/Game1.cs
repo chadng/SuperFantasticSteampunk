@@ -12,6 +12,11 @@ namespace SuperFantasticSteampunk
 {
     public class Game1 : Game
     {
+        #region Constants
+        public const int ScreenWidth = 1920;
+        public const int ScreenHeight = 1080;
+        #endregion
+
         #region Static Properties
         public static Random Random { get; private set; }
         #endregion
@@ -34,8 +39,8 @@ namespace SuperFantasticSteampunk
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.IsFullScreen = false;
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+            graphics.PreferredBackBufferWidth = ScreenWidth;
+            graphics.PreferredBackBufferHeight = ScreenHeight;
             Content.RootDirectory = "Content";
         }
         #endregion
