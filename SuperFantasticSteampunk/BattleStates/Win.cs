@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using SuperFantasticSteampunk.OverworldStates;
 
 namespace SuperFantasticSteampunk.BattleStates
 {
@@ -19,6 +20,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
+            Battle.OverworldEncounter.State = EncounterState.Won;
             Battle.Finish();
         }
 

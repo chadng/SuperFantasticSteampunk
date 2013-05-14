@@ -82,6 +82,7 @@
     <Compile Include="Overworld.cs" />
     <Compile Include="OverworldStateRenderer.cs" />
     <Compile Include="OverworldState.cs" />
+    <Compile Include="OverworldStates\Encounter.cs" />
     <Compile Include="OverworldStates\Play.cs" />
     <Compile Include="Party.cs" />
     <Compile Include="PartyBattleLayout.cs" />

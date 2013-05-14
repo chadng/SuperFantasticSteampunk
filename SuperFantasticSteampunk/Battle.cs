@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Spine;
+using SuperFantasticSteampunk.OverworldStates;
 
 namespace SuperFantasticSteampunk
 {
@@ -24,10 +25,12 @@ namespace SuperFantasticSteampunk
 
         public PartyBattleLayout PlayerPartyLayout { get; private set; }
         public PartyBattleLayout EnemyPartyLayout { get; private set; }
+
+        public Encounter OverworldEncounter { get; private set; }
         #endregion
 
         #region Constructors
-        public Battle(Party playerParty, Party enemyParty)
+        public Battle(Party playerParty, Party enemyParty, Encounter overworldEncounter)
         {
             if (playerParty == null)
                 throw new Exception("Party playerParty cannot be null");
@@ -43,6 +46,8 @@ namespace SuperFantasticSteampunk
             states = new Stack<BattleState>();
             states.Push(new BattleStates.Intro(this));
             stateChanged = true;
+
+            OverworldEncounter = overworldEncounter;
         }
         #endregion
 
