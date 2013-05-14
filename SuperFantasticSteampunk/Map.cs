@@ -6,6 +6,14 @@ namespace SuperFantasticSteampunk
 {
     class MapRoom
     {
+        #region Constants
+        private const double chanceOfCorridor = 0.2;
+        #endregion
+
+        #region Instance Fields
+        private bool isCorridor;
+        #endregion
+
         #region Instance Properties
         public Point Position { get; private set; }
         public List<MapRoom> ConnectedRooms { get; private set; }
@@ -14,6 +22,11 @@ namespace SuperFantasticSteampunk
         {
             get { return ConnectedRooms.Count > 0; }
         }
+
+        public bool IsCorridor
+        {
+            get { return isCorridor && ConnectedRooms.Count > 1; }
+        }
         #endregion
 
         #region Constructors
@@ -21,6 +34,7 @@ namespace SuperFantasticSteampunk
         {
             Position = position;
             ConnectedRooms = new List<MapRoom>();
+            isCorridor = Game1.Random.NextDouble() <= chanceOfCorridor;
         }
         #endregion
 
@@ -62,6 +76,10 @@ namespace SuperFantasticSteampunk
 
     class Map
     {
+        #region Constants
+        private const int corridorPadding = 2;
+        #endregion
+
         #region Instance Properties
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -93,7 +111,12 @@ namespace SuperFantasticSteampunk
             for (int x = 0; x < columns; ++x)
             {
                 for (int y = 0; y < rows; ++y)
-                    wallOffRoom(x, y, roomWidth, roomHeight);
+                {
+                    if (rooms[x, y].IsCorridor)
+                        fillInRoom(x, y, roomWidth, roomHeight);
+                    else
+                        wallOffRoom(x, y, roomWidth, roomHeight);
+                }
             }
 
             for (int x = 0; x < columns; ++x)
@@ -101,8 +124,22 @@ namespace SuperFantasticSteampunk
                 for (int y = 0; y < rows; ++y)
                 {
                     foreach (MapRoom room in rooms[x, y].ConnectedRooms)
-                        digCorridoor(rooms[x, y].Position, room.Position, roomWidth, roomHeight);
+                        digCorridor(rooms[x, y].Position, room.Position, roomWidth, roomHeight);
                 }
+            }
+        }
+
+        private void fillInRoom(int roomX, int roomY, int roomWidth, int roomHeight)
+        {
+            int startX = roomX * roomWidth;
+            int finishX = startX + roomWidth - 1;
+            int startY = roomY * roomHeight;
+            int finishY = startY + roomHeight - 1;
+
+            for (int x = startX; x <= finishX; ++x)
+            {
+                for (int y = startY; y <= finishY; ++y)
+                    CollisionMap[x, y] = true;
             }
         }
 
@@ -126,7 +163,7 @@ namespace SuperFantasticSteampunk
             }
         }
 
-        private void digCorridoor(Point start, Point finish, int roomWidth, int roomHeight)
+        private void digCorridor(Point start, Point finish, int roomWidth, int roomHeight)
         {
             if (start.Y == finish.Y)
             {
@@ -139,9 +176,13 @@ namespace SuperFantasticSteampunk
 
                 int startX = (start.X * roomWidth) + (roomWidth / 2);
                 int finishX = startX + roomWidth;
-                int y = (start.Y * roomHeight) + (roomHeight / 2);
+                int startY = (start.Y * roomHeight) + (roomHeight / 2) - corridorPadding;
+                int finishY = startY + (corridorPadding * 2);
                 for (int x = startX; x < finishX; ++x)
-                    CollisionMap[x, y] = false;
+                {
+                    for (int y = startY; y <= finishY; ++y)
+                        CollisionMap[x, y] = false;
+                }
             }
             else
             {
@@ -154,9 +195,13 @@ namespace SuperFantasticSteampunk
 
                 int startY = (start.Y * roomHeight) + (roomHeight / 2);
                 int finishY = startY + roomHeight;
-                int x = (start.X * roomWidth) + (roomWidth / 2);
+                int startX = (start.X * roomWidth) + (roomWidth / 2) - corridorPadding;
+                int finishX = startX + (corridorPadding * 2);
                 for (int y = startY; y < finishY; ++y)
-                    CollisionMap[x, y] = false;
+                {
+                    for (int x = startX; x <= finishX; ++x)
+                        CollisionMap[x, y] = false;
+                }
             }
         }
 

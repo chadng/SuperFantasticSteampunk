@@ -107,9 +107,10 @@ namespace SuperFantasticSteampunk
         {
             TextureData pixelTexture = ResourceManager.GetTextureData("white_pixel");
 
-            for (int x = 0; x < map.Width; ++x)
+            var s = Microsoft.Xna.Framework.Input.Mouse.GetState();
+            for (int x = Math.Max(0, s.X - 100); x < s.X + 100 && x < map.Width; ++x)
             {
-                for (int y = 0; y < map.Height; ++y)
+                for (int y = Math.Max(0, s.Y - 100); y < s.Y + 100 && y < map.Height; ++y)
                 {
                     if (map.CollisionMap[x, y])
                         renderer.Draw(pixelTexture, new Vector2(x, y), Color.Black);
