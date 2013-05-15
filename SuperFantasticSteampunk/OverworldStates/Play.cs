@@ -50,7 +50,7 @@ namespace SuperFantasticSteampunk.OverworldStates
             }
 
             Entity entity = Overworld.PlayerParty.PrimaryPartyMember.OverworldEntity;
-            limitVelocityForCollisionWithWall(entity, gameTime, ref velocity);
+            handleWallCollision(entity, gameTime, ref velocity);
             entity.Velocity = velocity;
         }
 
@@ -69,34 +69,11 @@ namespace SuperFantasticSteampunk.OverworldStates
             }
         }
 
-        private void limitVelocityForCollisionWithWall(Entity entity, GameTime gameTime, ref Vector2 velocity)
+        private void handleWallCollision(Entity entity, GameTime gameTime, ref Vector2 velocity)
         {
-            if (!collidesWithWall(entity, gameTime, velocity))
-                return;
-
-            Vector2 newVelocity = new Vector2(velocity.X, 0.0f);
-            if (!collidesWithWall(entity, gameTime, newVelocity))
-            {
-                velocity.Y = 0.0f;
-                return;
-            }
-
-            newVelocity = new Vector2(0.0f, velocity.Y);
-            if (!collidesWithWall(entity, gameTime, newVelocity))
-            {
-                velocity.X = 0.0f;
-                return;
-            }
-
-            velocity = Vector2.Zero;
-        }
-
-        private bool collidesWithWall(Entity entity, GameTime gameTime, Vector2 velocity)
-        {
-            Vector2 newPosition = entity.Position + (velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
-            Rectangle bounds = entity.GetBoundingBox();
-            bounds.X += (int)(newPosition.X - entity.Position.X);
-            bounds.Y += (int)(newPosition.Y - entity.Position.Y);
+            float deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Vector2 newPosition = entity.Position + (velocity * deltaT);
+            Rectangle bounds = entity.GetBoundingBoxAt(newPosition);
 
             Point topLeftTileCoord = new Point(bounds.Left / Map.TileSize, bounds.Top / Map.TileSize);
             Point bottomRightTileCoord = new Point(bounds.Right / Map.TileSize, bounds.Bottom / Map.TileSize);
@@ -106,11 +83,39 @@ namespace SuperFantasticSteampunk.OverworldStates
                 for (int y = topLeftTileCoord.Y; y <= bottomRightTileCoord.Y; ++y)
                 {
                     if (Overworld.Map.CollisionMap[x, y])
-                        return true;
+                        handleWallTileCollision(entity, deltaT, x, y, ref velocity);
                 }
             }
+        }
 
-            return false;
+        private void handleWallTileCollision(Entity entity, float deltaT, int tileX, int tileY, ref Vector2 velocity)
+        {
+            Rectangle tileRect = new Rectangle(tileX * Map.TileSize, tileY * Map.TileSize, Map.TileSize, Map.TileSize);
+
+            Vector2 intersectionAmount;
+            Vector2 tempPosition = entity.Position + (velocity * deltaT);
+            if (tileRect.EIntersects(entity.GetBoundingBoxAt(tempPosition)))
+            {
+                tempPosition = entity.Position;
+                tempPosition.X += velocity.X * deltaT;
+                if (entity.GetBoundingBoxAt(tempPosition).Intersects(tileRect, out intersectionAmount))
+                {
+                    bool positive = velocity.X >= 0;
+                    velocity.X -= intersectionAmount.X / deltaT;
+                    if ((positive && velocity.X < 0) || (!positive && velocity.X > 0))
+                        velocity.X = 0;
+                }
+
+                tempPosition = entity.Position;
+                tempPosition.Y += velocity.Y * deltaT;
+                if (entity.GetBoundingBoxAt(tempPosition).Intersects(tileRect, out intersectionAmount))
+                {
+                    bool positive = velocity.Y >= 0;
+                    velocity.Y -= intersectionAmount.Y / deltaT;
+                    if ((positive && velocity.Y < 0) || (!positive && velocity.Y > 0))
+                        velocity.Y = 0;
+                }
+            }
         }
         #endregion
     }

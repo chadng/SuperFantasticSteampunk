@@ -93,9 +93,14 @@ namespace SuperFantasticSteampunk
 
         public Rectangle GetBoundingBox()
         {
+            return GetBoundingBoxAt(Position);
+        }
+
+        public Rectangle GetBoundingBoxAt(Vector2 position)
+        {
             return new Rectangle(
-                (int)(Position.X - (Sprite.Data.OriginX * Scale.X)),
-                (int)(Position.Y - (Sprite.Data.OriginY * Scale.Y)),
+                (int)(position.X - (Sprite.Data.OriginX * Scale.X)),
+                (int)(position.Y - (Sprite.Data.OriginY * Scale.Y)),
                 (int)(Sprite.Data.Width * Scale.X),
                 (int)(Sprite.Data.Height * Scale.Y)
             );

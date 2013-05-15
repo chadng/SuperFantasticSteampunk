@@ -42,5 +42,51 @@ namespace SuperFantasticSteampunk
                 return default(T);
             return self[Game1.Random.Next(self.Count)];
         }
+
+        public static bool EIntersects(this Rectangle self, Rectangle otherRect)
+        {
+            bool xIntersection = (self.Left < otherRect.Right && self.Left > otherRect.Left) || (self.Right > otherRect.Left && self.Right < otherRect.Right);
+            bool yIntersection = (self.Top < otherRect.Bottom && self.Top > otherRect.Top) || (self.Bottom > otherRect.Top && self.Bottom < otherRect.Bottom);
+            bool longer = (self.Left <= otherRect.Left && self.Right >= otherRect.Right) || (otherRect.Left <= self.Left && otherRect.Right >= self.Right);
+            bool taller = (self.Top <= otherRect.Top && self.Bottom >= otherRect.Bottom) || (otherRect.Top <= self.Top && otherRect.Bottom >= self.Bottom);
+            return (xIntersection || longer) && (yIntersection || taller);
+        }
+
+        public static bool Intersects(this Rectangle self, Rectangle otherRect, out Vector2 intersectionAmount)
+        {
+            bool xIntersection = false, yIntersection = false;
+            intersectionAmount = Vector2.Zero;
+
+            if (self.Left < otherRect.Right && self.Left > otherRect.Left)
+            {
+                xIntersection = true;
+                intersectionAmount.X = self.Left - otherRect.Right;
+            }
+            else if (self.Right > otherRect.Left && self.Right < otherRect.Right)
+            {
+                xIntersection = true;
+                intersectionAmount.X = self.Right - otherRect.Left;
+            }
+            else if ((self.Left <= otherRect.Left && self.Right >= otherRect.Right) || (otherRect.Left <= self.Left && otherRect.Right >= self.Right))
+                xIntersection = true;
+
+            if (self.Top < otherRect.Bottom && self.Top > otherRect.Top)
+            {
+                yIntersection = true;
+                intersectionAmount.Y = self.Top - otherRect.Bottom;
+            }
+            else if (self.Bottom > otherRect.Top && self.Bottom < otherRect.Bottom)
+            {
+                yIntersection = true;
+                intersectionAmount.Y = self.Bottom - otherRect.Top;
+            }
+            else if ((self.Top <= otherRect.Top && self.Bottom >= otherRect.Bottom) || (otherRect.Top <= self.Top && otherRect.Bottom >= self.Bottom))
+                yIntersection = true;
+
+            if (!xIntersection || !yIntersection)
+                intersectionAmount = Vector2.Zero;
+
+            return xIntersection && yIntersection;
+        }
     }
 }
