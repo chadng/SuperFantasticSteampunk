@@ -20,6 +20,9 @@ namespace SuperFantasticSteampunk.OverworldStates
             : base(overworld)
         {
             this.enemyParty = enemyParty;
+
+            // In here instead of Start() to stop flicker when the state is rendered before Start() is called. The EncounterRenderer doesn't rely on the state of Encounter anyway
+            OverworldStateRenderer = new EncounterRenderer(this);
         }
         #endregion
 

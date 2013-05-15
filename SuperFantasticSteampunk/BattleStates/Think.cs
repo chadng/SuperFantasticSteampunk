@@ -94,6 +94,11 @@ namespace SuperFantasticSteampunk.BattleStates
         public int CurrentOptionNameIndex { get; private set; }
         public PartyMember CurrentPartyMember { get; private set; }
         public List<ThinkMenuOption> MenuOptions { get; private set; }
+
+        public override bool KeepPartyMembersStatic
+        {
+            get { return true; }
+        }
         #endregion
 
         #region Constructors

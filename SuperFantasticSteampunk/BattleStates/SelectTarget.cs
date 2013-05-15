@@ -18,6 +18,11 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             get { return potentialTargets[currentPotentialTargetIndex]; }
         }
+
+        public override bool KeepPartyMembersStatic
+        {
+            get { return true; }
+        }
         #endregion
 
         #region Constructors

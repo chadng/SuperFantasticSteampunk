@@ -61,7 +61,9 @@
     <Compile Include="BattleStates\EndTurn.cs" />
     <Compile Include="BattleStates\HandleStatusEffects.cs" />
     <Compile Include="BattleStates\Intro.cs" />
+    <Compile Include="BattleStates\IntroOutroRenderer.cs" />
     <Compile Include="BattleStates\Lose.cs" />
+    <Compile Include="BattleStates\Outro.cs" />
     <Compile Include="BattleStates\SelectTarget.cs" />
     <Compile Include="BattleStates\SelectTargetRenderer.cs" />
     <Compile Include="BattleStates\Think.cs" />
@@ -84,6 +86,9 @@
     <Compile Include="OverworldStateRenderer.cs" />
     <Compile Include="OverworldState.cs" />
     <Compile Include="OverworldStates\Encounter.cs" />
+    <Compile Include="OverworldStates\EncounterIntro.cs" />
+    <Compile Include="OverworldStates\EncounterIntroRenderer.cs" />
+    <Compile Include="OverworldStates\EncounterRenderer.cs" />
     <Compile Include="OverworldStates\Play.cs" />
     <Compile Include="Party.cs" />
     <Compile Include="PartyBattleLayout.cs" />

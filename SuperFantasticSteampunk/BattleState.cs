@@ -9,6 +9,11 @@ namespace SuperFantasticSteampunk
         #region Instance Properties
         public Battle Battle { get; private set; }
         public BattleStateRenderer BattleStateRenderer { get; protected set; }
+
+        public virtual bool KeepPartyMembersStatic
+        {
+            get { return false; }
+        }
         #endregion
 
         #region Constructors

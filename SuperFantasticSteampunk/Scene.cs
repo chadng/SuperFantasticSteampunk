@@ -62,7 +62,10 @@ namespace SuperFantasticSteampunk
                 }
             }
             else if (nextScene != null)
+            {
                 pushNextScene();
+                Current.update(gameTime);
+            }
         }
 
         public static void DrawCurrent(Renderer renderer)

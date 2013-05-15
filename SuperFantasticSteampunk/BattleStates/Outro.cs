@@ -2,7 +2,7 @@
 
 namespace SuperFantasticSteampunk.BattleStates
 {
-    class Intro : BattleState
+    class Outro : BattleState
     {
         #region Constants
         public const float FadeTimeInSeconds = 0.8f;
@@ -18,7 +18,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Constructors
-        public Intro(Battle battle)
+        public Outro(Battle battle)
             : base(battle)
         {
         }
@@ -27,19 +27,19 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
-            Time = 0.0f;
+            Time = FadeTimeInSeconds;
             BattleStateRenderer = new IntroOutroRenderer(this);
         }
 
         public override void Finish()
         {
-            ChangeState(new Think(Battle));
+            Battle.Finish();
         }
 
         public override void Update(GameTime gameTime)
         {
-            Time += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (Time >= FadeTimeInSeconds)
+            Time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (Time <= 0.0f)
                 Finish();
         }
         #endregion

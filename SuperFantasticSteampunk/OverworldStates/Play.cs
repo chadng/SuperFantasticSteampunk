@@ -66,7 +66,8 @@ namespace SuperFantasticSteampunk.OverworldStates
 
                 if (playerEntity.CollidesWith(enemyEntity))
                 {
-                    PushState(new Encounter(Overworld, party));
+                    playerEntity.Velocity = Vector2.Zero;
+                    PushState(new EncounterIntro(Overworld, party));
                     break;
                 }
             }
