@@ -7,6 +7,7 @@ namespace SuperFantasticSteampunk.OverworldStates
     {
         #region Constants
         private const float movementVelocity = 300.0f;
+        private const double oneOverRootTwo = 0.7071067811865475;
         #endregion
 
         #region Constructors
@@ -52,6 +53,8 @@ namespace SuperFantasticSteampunk.OverworldStates
             Entity entity = Overworld.PlayerParty.PrimaryPartyMember.OverworldEntity;
             handleWallCollision(entity, gameTime, ref velocity);
             entity.Velocity = velocity;
+
+            setEntitySpriteAnimationForVelocity(entity);
         }
 
         private void handleEnemyCollisions()
@@ -116,6 +119,39 @@ namespace SuperFantasticSteampunk.OverworldStates
                         velocity.Y = 0;
                 }
             }
+        }
+
+        private void setEntitySpriteAnimationForVelocity(Entity entity)
+        {
+            if (entity.Velocity == Vector2.Zero)
+            {
+                if (entity.Sprite.CurrentAnimation == null)
+                    entity.Sprite.SetAnimation("idle_down");
+                else
+                {
+                    string animationName = entity.Sprite.CurrentAnimation.Name;
+                    if (!animationName.StartsWith("idle_"))
+                        entity.Sprite.SetAnimation(animationName.Replace("walk_", "idle_"));
+                }
+            }
+            else
+                entity.Sprite.SetAnimation("walk_" + directionFromVelocity(entity.Velocity));
+        }
+
+        private string directionFromVelocity(Vector2 velocity)
+        {
+            velocity.Normalize();
+
+            if (velocity.Y <= -oneOverRootTwo)
+                return "up";
+            else if (velocity.Y >= oneOverRootTwo)
+                return "down";
+            else if (velocity.X < 0)
+                return "left";
+            else if (velocity.X > 0)
+                return "right";
+
+            return "down";
         }
         #endregion
     }

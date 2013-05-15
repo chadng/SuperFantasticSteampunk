@@ -5,6 +5,22 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SuperFantasticSteampunk
 {
+    class SpriteAnimation
+    {
+        #region Instance Properties
+        public string Name { get; private set; }
+        public int[] Data { get; private set; }
+        #endregion
+
+        #region Constructors
+        public SpriteAnimation(string name, int[] data)
+        {
+            Name = name;
+            Data = data;
+        }
+        #endregion
+    }
+
     class Sprite
     {
         #region Constants
@@ -18,7 +34,7 @@ namespace SuperFantasticSteampunk
 
         #region Instance Properties
         public SpriteData Data { get; private set; }
-        public int[] CurrentAnimation { get; set; }
+        public SpriteAnimation CurrentAnimation { get; set; }
         public float Time { get; set; }
 
         public Texture2D Texture
@@ -46,7 +62,7 @@ namespace SuperFantasticSteampunk
             SetAnimation(Data.Animations[name]);
         }
 
-        public void SetAnimation(int[] animation)
+        public void SetAnimation(SpriteAnimation animation)
         {
             CurrentAnimation = animation;
             Time = 0.0f;
@@ -61,7 +77,7 @@ namespace SuperFantasticSteampunk
             Time += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (Time >= 1.0f / framesPerSecond)
             {
-                if (++currentAnimationFrameIndex >= CurrentAnimation.Length)
+                if (++currentAnimationFrameIndex >= CurrentAnimation.Data.Length)
                     currentAnimationFrameIndex = 0;
                 Time = 0.0f;
             }
@@ -74,7 +90,7 @@ namespace SuperFantasticSteampunk
             int boundingHeight = Data.Height + (Data.PaddingY * 2);
 
             int framesPerRow = textureWidth / boundingWidth;
-            int frame = CurrentAnimation == null ? 0 : CurrentAnimation[currentAnimationFrameIndex];
+            int frame = CurrentAnimation == null ? 0 : CurrentAnimation.Data[currentAnimationFrameIndex];
 
             int row = frame / framesPerRow;
             int column = frame % framesPerRow;

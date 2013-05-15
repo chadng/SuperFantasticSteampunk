@@ -17,13 +17,13 @@ namespace SuperFantasticSteampunk
         public int OriginX { get; private set; }
         public int OriginY { get; private set; }
         public string AnimationData { get; private set; }
-        public Dictionary<string, int[]> Animations { get; private set; }
+        public Dictionary<string, SpriteAnimation> Animations { get; private set; }
         #endregion
 
         #region Instance Methods
         public void PopulateAnimationsFromAnimationData()
         {
-            Animations = new Dictionary<string, int[]>();
+            Animations = new Dictionary<string, SpriteAnimation>();
 
             if (AnimationData == null || AnimationData.Length == 0)
                 return;
@@ -41,7 +41,7 @@ namespace SuperFantasticSteampunk
                 foreach (string str in intStrings)
                     frames.Add(int.Parse(str.Trim()));
 
-                Animations.Add(name, frames.ToArray());
+                Animations.Add(name, new SpriteAnimation(name, frames.ToArray()));
             }
         }
         #endregion
