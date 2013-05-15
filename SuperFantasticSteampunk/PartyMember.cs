@@ -197,17 +197,15 @@ namespace SuperFantasticSteampunk
             return damage <= 0 ? 1 : damage;
         }
 
-        public void AddExperience(PartyMember enemy)
+        public bool AddExperience(int amount)
         {
-            addExperience(calculateExperienceGained(enemy.Level, enemy.Data.ExperienceMultiplier));
-        }
+            bool levelledUp = false;
 
-        private void addExperience(int amount)
-        {
             Experience += amount;
             while (Experience >= ExperienceNeededToLevelUp)
             {
                 ++Level;
+                levelledUp = true;
                 Experience -= ExperienceNeededToLevelUp;
             }
             if (Level > MaxLevel)
@@ -217,6 +215,13 @@ namespace SuperFantasticSteampunk
             }
             resetBaseStatsFromLevel();
             calculateStatsFromModifiers();
+
+            return levelledUp;
+        }
+
+        public int CalculateExperienceGained(PartyMember enemy)
+        {
+            return calculateExperienceGained(enemy.Level, enemy.Data.ExperienceMultiplier);
         }
 
         private int calculateExperienceGained(int enemyLevel, int enemyExperienceMultiplier)

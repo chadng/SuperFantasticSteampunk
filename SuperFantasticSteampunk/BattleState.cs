@@ -54,16 +54,26 @@ namespace SuperFantasticSteampunk
 
         protected void removeDeadPartyMembers()
         {
-            removeDeadPartyMembers(Battle.PlayerParty);
-            removeDeadPartyMembers(Battle.EnemyParty);
+            removeDeadPartyMembers(Battle.PlayerParty, Battle.EnemyParty);
+            removeDeadPartyMembers(Battle.EnemyParty, Battle.PlayerParty);
         }
 
-        private void removeDeadPartyMembers(Party party)
+        private void removeDeadPartyMembers(Party party, Party otherParty)
         {
             for (int i = party.Count - 1; i >= 0; --i)
             {
                 if (!party[i].Alive)
+                {
+                    foreach (PartyMember partyMember in otherParty)
+                    {
+                        int experience = partyMember.CalculateExperienceGained(party[i]);
+                        Scene.AddEntity(new FloatingText(experience.ToString() + " exp", Color.Gold, partyMember.BattleEntity.Position));
+                        if (partyMember.AddExperience(experience))
+                            Scene.AddEntity(new FloatingText("Level up!", Color.Blue, partyMember.BattleEntity.Position));
+                    }
+
                     party[i].Kill(Battle);
+                }
             }
         }
         #endregion
