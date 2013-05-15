@@ -93,11 +93,13 @@ namespace SuperFantasticSteampunk
                 CurrentOverworldState.OverworldStateRenderer.Update(gameTime);
 
             camera.Update(gameTime);
+            Clock.Update(gameTime);
         }
 
         protected override void draw(Renderer renderer)
         {
             renderer.Camera = camera;
+            renderer.Tint = Clock.GetCurrentColor();
 
             if (CurrentOverworldState.OverworldStateRenderer != null)
                 CurrentOverworldState.OverworldStateRenderer.BeforeDraw(renderer);
@@ -105,6 +107,8 @@ namespace SuperFantasticSteampunk
             base.draw(renderer);
 
             drawMap(renderer);
+
+            renderer.ResetTint();
 
             if (CurrentOverworldState.OverworldStateRenderer != null)
                 CurrentOverworldState.OverworldStateRenderer.AfterDraw(renderer);

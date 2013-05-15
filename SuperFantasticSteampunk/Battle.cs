@@ -124,10 +124,16 @@ namespace SuperFantasticSteampunk
 
         protected override void draw(Renderer renderer)
         {
+            renderer.Tint = Clock.GetCurrentColor();
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.BeforeDraw(renderer);
-            drawPersistentGui(renderer);
+
             base.draw(renderer);
+
+            renderer.ResetTint();
+
+            drawPersistentGui(renderer);
+
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.AfterDraw(renderer);
         }

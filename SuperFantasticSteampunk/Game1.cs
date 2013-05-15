@@ -65,6 +65,8 @@ namespace SuperFantasticSteampunk
                 enemyParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("enemy")));
                 overworld.AddEnemyParty(enemyParty, new Vector2(100.0f * i));
             }
+
+            Clock.Init(12);
         }
 
         protected override void UnloadContent()
@@ -87,7 +89,7 @@ namespace SuperFantasticSteampunk
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(new Color(Clock.GetCurrentColor().ToVector4() * Color.CornflowerBlue.ToVector4()));
 
             Scene.DrawCurrent(renderer);
             renderer.End();

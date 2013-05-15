@@ -71,6 +71,7 @@
     <Compile Include="BattleStates\UseItem.cs" />
     <Compile Include="BattleStates\Win.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="Clock.cs" />
     <Compile Include="FloatingText.cs" />
     <Compile Include="InputButtonListener.cs" />
     <Compile Include="Inventory.cs" />

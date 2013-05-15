@@ -5,9 +5,14 @@ namespace SuperFantasticSteampunk.BattleStates
 {
     class EndTurn : BattleState
     {
+        #region Constants
+        private const float clockHourTransistionTimeInSeconds = 2.0f;
+        #endregion
+
         #region Instance Fields
         Party currentStatusEffectParty;
         int currentStatusEffectPartyMemberIndex;
+        float clockTime;
         #endregion
 
         #region Constructors
@@ -22,6 +27,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             currentStatusEffectParty = Battle.PlayerParty;
             currentStatusEffectPartyMemberIndex = 0;
+            clockTime = 0.0f;
         }
 
         public override void Finish()
@@ -68,6 +74,12 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 currentStatusEffectParty = Battle.EnemyParty;
                 currentStatusEffectPartyMemberIndex = 0;
+            }
+            else if (clockTime < clockHourTransistionTimeInSeconds)
+            {
+                float deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                clockTime += deltaT;
+                Clock.Update(deltaT / clockHourTransistionTimeInSeconds);
             }
             else
                 Finish();
