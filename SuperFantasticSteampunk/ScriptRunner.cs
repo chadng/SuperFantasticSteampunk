@@ -184,6 +184,7 @@ namespace SuperFantasticSteampunk
 
             int damage = target.CalculateDamageTaken(actor);
             target.DoDamage(damage);
+            Scene.AddEntity(new FloatingText(damage.ToString(), Color.Red, target.BattleEntity.Position));
 
             if (target.EquippedShield != null)
                 addNestedScriptRunner(target.EquippedShield.Data.Script, 0.0f);

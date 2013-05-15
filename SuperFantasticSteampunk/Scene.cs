@@ -80,6 +80,8 @@ namespace SuperFantasticSteampunk
 
         #region Instance Fields
         private List<Entity> entities;
+        private List<Entity> entitiesToAdd;
+        private List<Entity> entitiesToRemove;
         private bool finished;
         #endregion
 
@@ -87,6 +89,8 @@ namespace SuperFantasticSteampunk
         protected Scene()
         {
             entities = new List<Entity>();
+            entitiesToAdd = new List<Entity>();
+            entitiesToRemove = new List<Entity>();
             finished = false;
             nextScene = this;
         }
@@ -101,23 +105,37 @@ namespace SuperFantasticSteampunk
 
         protected virtual void addEntity(Entity entity)
         {
-            entities.Add(entity);
+            entitiesToAdd.Add(entity);
         }
 
         protected virtual void removeEntity(Entity entity)
         {
-            entities.Remove(entity);
+            entitiesToRemove.Add(entity);
+            entitiesToAdd.Remove(entity);
         }
 
         protected virtual void update(GameTime gameTime)
         {
+            if (entitiesToAdd.Count > 0)
+            {
+                entities.AddRange(entitiesToAdd);
+                entitiesToAdd.Clear();
+            }
+
             foreach (Entity entity in entities)
                 entity.Update(gameTime);
+
+            if (entitiesToRemove.Count > 0)
+            {
+                foreach (Entity entity in entitiesToRemove)
+                    entities.Remove(entity);
+                entitiesToRemove.Clear();
+            }
         }
 
         protected virtual void draw(Renderer renderer)
         {
-            entities.Sort((a, b) => a.Position.Y.CompareTo(b.Position.Y));
+            entities.Sort((a, b) => a.ZIndex == b.ZIndex ? a.Position.Y.CompareTo(b.Position.Y) : b.ZIndex.CompareTo(a.ZIndex));
             foreach (Entity entity in entities)
                 entity.Draw(renderer);
         }

@@ -17,21 +17,28 @@ namespace SuperFantasticSteampunk
         public float Rotation { get; set; }
         public float AngularVelocity { get; set; }
         public Color Tint { get; set; }
+        public int ZIndex { get; set; }
         #endregion
 
         #region Constructors
+        public Entity(Vector2 position)
+        {
+            ResetManipulation();
+            Position = position;
+            ZIndex = 0;
+        }
+
         public Entity(Skeleton skeleton, Vector2 position)
-            : this((Sprite)null, position)
+            : this(position)
         {
             Skeleton = skeleton;
             AnimationState = new AnimationState(new AnimationStateData(skeleton.Data));
         }
 
         public Entity(Sprite sprite, Vector2 position)
+            : this(position)
         {
-            ResetManipulation();
-            this.Sprite = sprite;
-            Position = position;
+            Sprite = sprite;
         }
         #endregion
 
@@ -106,7 +113,7 @@ namespace SuperFantasticSteampunk
 
             if (Skeleton != null)
                 updateSkeleton(gameTime);
-            else
+            else if (Sprite != null)
                 Sprite.Update(gameTime);
         }
 
@@ -114,7 +121,7 @@ namespace SuperFantasticSteampunk
         {
             if (Skeleton != null)
                 renderer.Draw(Skeleton);
-            else
+            else if (Sprite != null)
                 renderer.Draw(Sprite, Position, Tint, Rotation, Scale);
         }
 

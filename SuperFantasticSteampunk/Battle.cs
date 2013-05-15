@@ -165,8 +165,6 @@ namespace SuperFantasticSteampunk
         {
             foreach (PartyMember partyMember in PlayerParty)
                 drawHealthBar(partyMember, renderer);
-            foreach (PartyMember partyMember in EnemyParty)
-                drawHealthBar(partyMember, renderer);
         }
 
         private void drawHealthBar(PartyMember partyMember, Renderer renderer)

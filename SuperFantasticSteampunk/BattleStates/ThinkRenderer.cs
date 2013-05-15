@@ -52,7 +52,7 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 if (thinkActionType == ThinkActionType.None)
                     continue;
-                renderer.DrawText(thinkActionType.ToString(), position, battleState.CurrentThinkActionType == thinkActionType ? Color.Blue : Color.White);
+                renderer.DrawText(thinkActionType.ToString(), position, battleState.CurrentThinkActionType == thinkActionType ? Color.Blue : Color.White, 0.0f, Vector2.Zero, Vector2.One);
                 position.Y += 20.0f;
             }
         }
@@ -71,7 +71,7 @@ namespace SuperFantasticSteampunk.BattleStates
                     color = i == battleState.CurrentOptionNameIndex ? Color.DarkRed : Color.Gray;
                 else
                     color = i == battleState.CurrentOptionNameIndex ? Color.Blue : Color.White;
-                renderer.DrawText(text, position, color);
+                renderer.DrawText(text, position, color, 0.0f, Vector2.Zero, Vector2.One);
                 position.Y += 20.0f;
             }
         }

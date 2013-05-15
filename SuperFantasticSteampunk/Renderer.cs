@@ -73,10 +73,10 @@ namespace SuperFantasticSteampunk
                 skeletonRenderer.Draw(skeleton);
         }
 
-        public void DrawText(string text, Vector2 position, Color color)
+        public void DrawText(string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale)
         {
             beginSpriteBatch();
-            spriteBatch.DrawString(SpriteFont, text, position, color);
+            spriteBatch.DrawString(SpriteFont, text, position, color, rotation, origin, scale, SpriteEffects.None, 0.0f);
         }
 
         public void End()
