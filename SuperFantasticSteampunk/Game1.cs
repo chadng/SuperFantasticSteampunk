@@ -34,6 +34,7 @@ namespace SuperFantasticSteampunk
             graphics.IsFullScreen = false;
             graphics.PreferredBackBufferWidth = ScreenWidth;
             graphics.PreferredBackBufferHeight = ScreenHeight;
+            IsFixedTimeStep = false;
             Content.RootDirectory = "Content";
         }
         #endregion

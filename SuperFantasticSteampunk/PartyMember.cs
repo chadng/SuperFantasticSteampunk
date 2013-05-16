@@ -97,6 +97,9 @@ namespace SuperFantasticSteampunk
                 BattleEntity.AnimationState.SetAnimation(animation, true);
             BattleEntity.Scale = new Vector2(0.6f);
             BattleEntity.AnimationState.Time = Game1.Random.Next(100) / 100.0f;
+            BattleEntity.Altitude = Data.BattleAltitude;
+            if (Data.BattleShadowFollowBoneName != null && Data.BattleShadowFollowBoneName.Length > 0)
+                BattleEntity.ShadowFollowBone = BattleEntity.Skeleton.FindBone(Data.BattleShadowFollowBoneName);
         }
 
         public void FinishBattle()

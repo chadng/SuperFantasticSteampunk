@@ -125,6 +125,8 @@ namespace SuperFantasticSteampunk
         protected override void draw(Renderer renderer)
         {
             renderer.Tint = Clock.GetCurrentColor();
+
+            renderer.Draw(ResourceManager.GetTextureData("battle_grass_floor"), Vector2.Zero, Color.White);
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.BeforeDraw(renderer);
 

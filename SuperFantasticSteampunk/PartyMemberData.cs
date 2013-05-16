@@ -17,6 +17,8 @@
         public string OverworldSpriteName { get; private set; }
         public string BattleSkeletonName { get; private set; }
         public string BattleSkeletonSkinName { get; private set; }
+        public float BattleAltitude { get; private set; }
+        public string BattleShadowFollowBoneName { get; private set; }
         #endregion
     }
 }

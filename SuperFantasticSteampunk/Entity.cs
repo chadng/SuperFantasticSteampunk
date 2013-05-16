@@ -7,6 +7,10 @@ namespace SuperFantasticSteampunk
 {
     class Entity
     {
+        #region Instance Fields
+        private TextureData shadowTextureData;
+        #endregion
+
         #region Instance Properties
         public Skeleton Skeleton { get; private set; }
         public Sprite Sprite { get; private set; }
@@ -18,6 +22,8 @@ namespace SuperFantasticSteampunk
         public float AngularVelocity { get; set; }
         public Color Tint { get; set; }
         public int ZIndex { get; set; }
+        public float Altitude { get; set; }
+        public Bone ShadowFollowBone { get; set; }
         #endregion
 
         #region Constructors
@@ -26,6 +32,7 @@ namespace SuperFantasticSteampunk
             ResetManipulation();
             Position = position;
             ZIndex = 0;
+            Altitude = 0.0f;
         }
 
         public Entity(Skeleton skeleton, Vector2 position)
@@ -33,6 +40,7 @@ namespace SuperFantasticSteampunk
         {
             Skeleton = skeleton;
             AnimationState = new AnimationState(new AnimationStateData(skeleton.Data));
+            shadowTextureData = ResourceManager.GetTextureData("shadow");
         }
 
         public Entity(Sprite sprite, Vector2 position)
@@ -125,7 +133,26 @@ namespace SuperFantasticSteampunk
         public virtual void Draw(Renderer renderer)
         {
             if (Skeleton != null)
-                renderer.Draw(Skeleton);
+            {
+                Vector2 shadowPosition = Position;
+                Vector2 shadowScale = Vector2.One;
+                if (ShadowFollowBone != null)
+                {
+                    shadowPosition.X = ShadowFollowBone.WorldX;
+                    shadowScale += new Vector2(ShadowFollowBone.WorldY - Skeleton.RootBone.WorldY) / 400.0f;
+                }
+                renderer.Draw(shadowTextureData, shadowPosition, Color.White * 0.5f, 0.0f, shadowScale);
+                
+                if (Altitude == 0.0f)
+                    renderer.Draw(Skeleton);
+                else
+                {
+                    Skeleton.RootBone.Y -= Altitude;
+                    Skeleton.UpdateWorldTransform();
+                    renderer.Draw(Skeleton);
+                    Skeleton.RootBone.Y += Altitude;
+                }
+            }
             else if (Sprite != null)
                 renderer.Draw(Sprite, Position, Tint, Rotation, Scale);
         }
