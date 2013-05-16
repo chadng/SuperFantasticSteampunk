@@ -100,6 +100,8 @@ namespace SuperFantasticSteampunk
             BattleEntity.Altitude = Data.BattleAltitude;
             if (Data.BattleShadowFollowBoneName != null && Data.BattleShadowFollowBoneName.Length > 0)
                 BattleEntity.ShadowFollowBone = BattleEntity.Skeleton.FindBone(Data.BattleShadowFollowBoneName);
+
+            updateBattleEntitySkeleton();
         }
 
         public void FinishBattle()
@@ -107,8 +109,6 @@ namespace SuperFantasticSteampunk
             statModifiers.Clear();
             statusEffects.Clear();
             BattleEntity = null;
-            EquippedWeapon = null;
-            EquippedShield = null;
         }
 
         public void EndTurn()
