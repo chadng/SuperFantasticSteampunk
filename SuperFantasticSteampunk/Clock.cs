@@ -6,7 +6,7 @@ namespace SuperFantasticSteampunk
     static class Clock
     {
         #region Constants
-        private const float hoursPerSecond = 1f;
+        private const float hoursPerSecond = 0.2f;
         #endregion
 
         #region Instance Fields

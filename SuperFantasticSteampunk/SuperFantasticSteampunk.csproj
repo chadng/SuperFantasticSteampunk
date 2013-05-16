@@ -91,6 +91,7 @@
     <Compile Include="OverworldStates\EncounterIntroRenderer.cs" />
     <Compile Include="OverworldStates\EncounterRenderer.cs" />
     <Compile Include="OverworldStates\Play.cs" />
+    <Compile Include="ParticleEffect.cs" />
     <Compile Include="Party.cs" />
     <Compile Include="PartyBattleLayout.cs" />
     <Compile Include="PartyMember.cs" />
