@@ -79,11 +79,6 @@ namespace SuperFantasticSteampunk
             addEntity(entity);
         }
 
-        public void RemoveBattleEntity(Entity entity)
-        {
-            removeEntity(entity);
-        }
-
         public Party GetPartyForPartyMember(PartyMember partyMember)
         {
             if (PlayerParty.Contains(partyMember))

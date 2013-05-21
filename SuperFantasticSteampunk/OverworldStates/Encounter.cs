@@ -39,7 +39,7 @@ namespace SuperFantasticSteampunk.OverworldStates
             if (State == EncounterState.Won)
             {
                 Overworld.EnemyParties.Remove(enemyParty);
-                Overworld.RemoveEntity(primaryEnemyPartyMemberEntity);
+                primaryEnemyPartyMemberEntity.Kill();
             }
             else if (State == EncounterState.Lost)
             {

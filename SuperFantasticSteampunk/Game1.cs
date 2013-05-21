@@ -65,6 +65,7 @@ namespace SuperFantasticSteampunk
                 enemyParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("enemy")));
                 overworld.AddEnemyParty(enemyParty, new Vector2(100.0f * i));
             }
+            Scene.AddEntity(new Scenery(ResourceManager.GetNewSprite("arrow_down"), new Vector2(100.0f, 400.0f)));
 
             Clock.Init(12);
         }

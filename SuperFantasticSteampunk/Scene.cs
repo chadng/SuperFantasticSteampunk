@@ -33,12 +33,6 @@ namespace SuperFantasticSteampunk
                 Current.addEntity(entity);
         }
 
-        public static void RemoveEntity(Entity entity)
-        {
-            if (Current != null)
-                Current.removeEntity(entity);
-        }
-
         public static void FinishCurrent()
         {
             if (Current != null)
@@ -81,21 +75,26 @@ namespace SuperFantasticSteampunk
         }
         #endregion
 
+        #region Instance Properties
+        public List<Entity> Entities;
+        public List<Scenery> SceneryEntities;
+        #endregion
+
         #region Instance Fields
-        private List<Entity> entities;
         private List<Entity> entitiesToAdd;
-        private List<Entity> entitiesToRemove;
         private bool finished;
         #endregion
 
         #region Constructors
         protected Scene()
         {
-            entities = new List<Entity>();
+            Entities = new List<Entity>();
+            SceneryEntities = new List<Scenery>();
             entitiesToAdd = new List<Entity>();
-            entitiesToRemove = new List<Entity>();
             finished = false;
             nextScene = this;
+            if (Current == null)
+                pushNextScene();
         }
         #endregion
 
@@ -109,43 +108,50 @@ namespace SuperFantasticSteampunk
         protected virtual void addEntity(Entity entity)
         {
             entitiesToAdd.Add(entity);
-        }
-
-        protected virtual void removeEntity(Entity entity)
-        {
-            entitiesToRemove.Add(entity);
-            entitiesToAdd.Remove(entity);
+            Scenery scenery = entity as Scenery;
+            if (scenery != null)
+                SceneryEntities.Add(scenery);
         }
 
         protected virtual void update(GameTime gameTime)
         {
             if (entitiesToAdd.Count > 0)
             {
-                entities.AddRange(entitiesToAdd);
+                Entities.AddRange(entitiesToAdd);
                 entitiesToAdd.Clear();
             }
 
-            foreach (Entity entity in entities)
+            foreach (Entity entity in Entities)
                 entity.Update(gameTime);
 
-            if (entitiesToRemove.Count > 0)
-            {
-                foreach (Entity entity in entitiesToRemove)
-                    entities.Remove(entity);
-                entitiesToRemove.Clear();
-            }
+            removeDeadEntities();
         }
 
         protected virtual void draw(Renderer renderer)
         {
-            entities.Sort((a, b) => a.ZIndex == b.ZIndex ? a.Position.Y.CompareTo(b.Position.Y) : b.ZIndex.CompareTo(a.ZIndex));
-            foreach (Entity entity in entities)
+            Entities.Sort((a, b) => a.ZIndex == b.ZIndex ? a.Position.Y.CompareTo(b.Position.Y) : b.ZIndex.CompareTo(a.ZIndex));
+            foreach (Entity entity in Entities)
                 entity.Draw(renderer);
         }
 
         protected virtual void finishCleanup()
         {
-            entities.Clear();
+            Entities.Clear();
+        }
+
+        private void removeDeadEntities()
+        {
+            for (int i = Entities.Count - 1; i >= 0; --i)
+            {
+                if (!Entities[i].Alive)
+                    Entities.RemoveAt(i);
+            }
+
+            for (int i = SceneryEntities.Count - 1; i >= 0; --i)
+            {
+                if (!SceneryEntities[i].Alive)
+                    SceneryEntities.RemoveAt(i);
+            }
         }
         #endregion
     }

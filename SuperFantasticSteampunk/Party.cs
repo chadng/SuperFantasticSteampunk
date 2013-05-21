@@ -85,7 +85,7 @@ namespace SuperFantasticSteampunk
         {
             foreach (PartyMember partyMember in this)
             {
-                battle.RemoveBattleEntity(partyMember.BattleEntity);
+                partyMember.BattleEntity.Kill();
                 partyMember.FinishBattle();
             }
         }

@@ -24,6 +24,7 @@ namespace SuperFantasticSteampunk
         public int ZIndex { get; set; }
         public float Altitude { get; set; }
         public Bone ShadowFollowBone { get; set; }
+        public bool Alive { get; private set; }
         #endregion
 
         #region Constructors
@@ -33,6 +34,7 @@ namespace SuperFantasticSteampunk
             Position = position;
             ZIndex = 0;
             Altitude = 0.0f;
+            Alive = true;
         }
 
         public Entity(Skeleton skeleton, Vector2 position)
@@ -116,7 +118,7 @@ namespace SuperFantasticSteampunk
 
         public virtual void Kill()
         {
-            Scene.RemoveEntity(this);
+            Alive = false;
         }
 
         public virtual void Update(GameTime gameTime)
