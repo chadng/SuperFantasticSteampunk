@@ -53,10 +53,9 @@ namespace SuperFantasticSteampunk
             renderer.SpriteFont = ResourceManager.GetSpriteFont("verdana10");
 
             Party playerParty = new Party();
-            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("player1")));
-            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("player1")));
-            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("player1")));
-            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("player1")));
+            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("marksman")));
+            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("medic")));
+            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("marksman")));
 
             Overworld overworld = new Overworld(playerParty);
             for (int i = 2; i < 5; ++i)
