@@ -83,6 +83,10 @@
     <Compile Include="Entity.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Input.cs" />
+    <Compile Include="NpcMover.cs" />
+    <Compile Include="NpcMovers\Follow.cs" />
+    <Compile Include="NpcMovers\Run.cs" />
+    <Compile Include="NpcMovers\Wander.cs" />
     <Compile Include="Overworld.cs" />
     <Compile Include="OverworldStateRenderer.cs" />
     <Compile Include="OverworldState.cs" />

@@ -10,26 +10,59 @@ namespace SuperFantasticSteampunk.OverworldStates
         private const double oneOverRootTwo = 0.7071067811865475;
         #endregion
 
+        #region Instance Fields
+        private List<NpcMover> npcMovers;
+        #endregion
+
         #region Constructors
         public Play(Overworld overworld)
             : base(overworld)
         {
+            npcMovers = new List<NpcMover>();
         }
         #endregion
 
         #region Instance Methods
         public override void Start()
         {
+            npcMovers.Clear();
+            initNpcMovers();
         }
 
         public override void Finish()
         {
+            npcMovers.Clear();
+        }
+
+        public override void Pause()
+        {
+            npcMovers.Clear();
+            base.Pause();
+        }
+
+        public override void Resume(OverworldState previousOverworldState)
+        {
+            base.Resume(previousOverworldState);
+            initNpcMovers();
         }
 
         public override void Update(GameTime gameTime)
         {
             handlePlayerMovement(gameTime);
+            foreach (NpcMover npcMover in npcMovers)
+                npcMover.Update(gameTime);
+
             handleEnemyCollisions();
+        }
+
+        private void initNpcMovers()
+        {
+            Entity playerEntity = Overworld.PlayerParty.PrimaryPartyMember.OverworldEntity;
+            foreach (Party party in Overworld.EnemyParties)
+            {
+                PartyMember partyMember = party.PrimaryPartyMember;
+                npcMovers.Add(NpcMover.Create(partyMember.Data.OverworldMovementType, partyMember.OverworldEntity, playerEntity, Overworld));
+            }
         }
 
         private void handlePlayerMovement(GameTime gameTime)
@@ -60,9 +93,9 @@ namespace SuperFantasticSteampunk.OverworldStates
 
         private void handleEnemyCollisions()
         {
+            Entity playerEntity = Overworld.PlayerParty.PrimaryPartyMember.OverworldEntity;
             foreach (Party party in Overworld.EnemyParties)
             {
-                Entity playerEntity = Overworld.PlayerParty.PrimaryPartyMember.OverworldEntity;
                 Entity enemyEntity = party.PrimaryPartyMember.OverworldEntity;
 
                 if (playerEntity.CollidesWith(enemyEntity))

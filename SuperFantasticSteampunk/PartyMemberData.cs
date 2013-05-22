@@ -1,6 +1,7 @@
 ﻿namespace SuperFantasticSteampunk
 {
     enum CharacterClass { Warrior, Marksman, Thief, Medic, Enemy }
+    enum OverworldMovementType { Wander, Follow, Run }
 
     class PartyMemberData // Represents base stats for a PartyMember
     {
@@ -19,6 +20,7 @@
         public string BattleSkeletonSkinName { get; private set; }
         public float BattleAltitude { get; private set; }
         public string BattleShadowFollowBoneName { get; private set; }
+        public OverworldMovementType OverworldMovementType { get; private set; }
         #endregion
     }
 }
