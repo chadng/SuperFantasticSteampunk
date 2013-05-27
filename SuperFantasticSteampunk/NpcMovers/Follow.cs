@@ -17,7 +17,7 @@ namespace SuperFantasticSteampunk.NpcMovers
         #endregion
 
         #region Instance Methods
-        public override void Update(GameTime gameTime)
+        public override void Finish()
         {
         }
         #endregion

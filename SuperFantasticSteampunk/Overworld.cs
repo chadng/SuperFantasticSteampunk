@@ -77,6 +77,23 @@ namespace SuperFantasticSteampunk
             addEntity(party.PrimaryPartyMember.OverworldEntity);
         }
 
+        public void SetEntitySpriteAnimationForVelocity(Entity entity)
+        {
+            if (entity.Velocity == Vector2.Zero)
+            {
+                if (entity.Sprite.CurrentAnimation == null)
+                    entity.Sprite.SetAnimation("idle_down");
+                else
+                {
+                    string animationName = entity.Sprite.CurrentAnimation.Name;
+                    if (!animationName.StartsWith("idle_"))
+                        entity.Sprite.SetAnimation(animationName.Replace("walk_", "idle_"));
+                }
+            }
+            else
+                entity.Sprite.SetAnimation("walk_" + directionFromVelocity(entity.Velocity));
+        }
+
         protected override void update(GameTime gameTime)
         {
             if (stateChanged)
@@ -143,6 +160,24 @@ namespace SuperFantasticSteampunk
                         renderer.Draw(pixelTexture, new Vector2(x, y) * Map.TileSize, Color.Black, 0.0f, new Vector2(Map.TileSize));
                 }
             }
+        }
+
+        private string directionFromVelocity(Vector2 velocity)
+        {
+            const double oneOverRootTwo = 0.7071067811865475;
+
+            velocity.Normalize();
+
+            if (velocity.Y <= -oneOverRootTwo)
+                return "up";
+            else if (velocity.Y >= oneOverRootTwo)
+                return "down";
+            else if (velocity.X < 0)
+                return "left";
+            else if (velocity.X > 0)
+                return "right";
+
+            return "down";
         }
         #endregion
     }

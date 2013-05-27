@@ -7,7 +7,6 @@ namespace SuperFantasticSteampunk.OverworldStates
     {
         #region Constants
         private const float movementVelocity = 300.0f;
-        private const double oneOverRootTwo = 0.7071067811865475;
         #endregion
 
         #region Instance Fields
@@ -25,18 +24,18 @@ namespace SuperFantasticSteampunk.OverworldStates
         #region Instance Methods
         public override void Start()
         {
-            npcMovers.Clear();
+            finalizeNpcMovers();
             initNpcMovers();
         }
 
         public override void Finish()
         {
-            npcMovers.Clear();
+            finalizeNpcMovers();
         }
 
         public override void Pause()
         {
-            npcMovers.Clear();
+            finalizeNpcMovers();
             base.Pause();
         }
 
@@ -65,6 +64,13 @@ namespace SuperFantasticSteampunk.OverworldStates
             }
         }
 
+        private void finalizeNpcMovers()
+        {
+            foreach (NpcMover npcMover in npcMovers)
+                npcMover.Finish();
+            npcMovers.Clear();
+        }
+
         private void handlePlayerMovement(GameTime gameTime)
         {
             Vector2 velocity = Vector2.Zero;
@@ -88,7 +94,7 @@ namespace SuperFantasticSteampunk.OverworldStates
             handleSceneryCollisions(entity, gameTime, ref velocity);
             entity.Velocity = velocity;
 
-            setEntitySpriteAnimationForVelocity(entity);
+            Overworld.SetEntitySpriteAnimationForVelocity(entity);
         }
 
         private void handleEnemyCollisions()
@@ -162,39 +168,6 @@ namespace SuperFantasticSteampunk.OverworldStates
                         velocity.Y = 0;
                 }
             }
-        }
-
-        private void setEntitySpriteAnimationForVelocity(Entity entity)
-        {
-            if (entity.Velocity == Vector2.Zero)
-            {
-                if (entity.Sprite.CurrentAnimation == null)
-                    entity.Sprite.SetAnimation("idle_down");
-                else
-                {
-                    string animationName = entity.Sprite.CurrentAnimation.Name;
-                    if (!animationName.StartsWith("idle_"))
-                        entity.Sprite.SetAnimation(animationName.Replace("walk_", "idle_"));
-                }
-            }
-            else
-                entity.Sprite.SetAnimation("walk_" + directionFromVelocity(entity.Velocity));
-        }
-
-        private string directionFromVelocity(Vector2 velocity)
-        {
-            velocity.Normalize();
-
-            if (velocity.Y <= -oneOverRootTwo)
-                return "up";
-            else if (velocity.Y >= oneOverRootTwo)
-                return "down";
-            else if (velocity.X < 0)
-                return "left";
-            else if (velocity.X > 0)
-                return "right";
-
-            return "down";
         }
         #endregion
     }

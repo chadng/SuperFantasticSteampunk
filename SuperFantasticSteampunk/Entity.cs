@@ -101,6 +101,32 @@ namespace SuperFantasticSteampunk
             return GetBoundingBox().Intersects(other.GetBoundingBox());
         }
 
+        public bool CollidesWith(Map map)
+        {
+            if (Sprite == null)
+                return false;
+
+            Rectangle bounds = GetBoundingBox();
+
+            Point topLeftTileCoord = new Point(bounds.Left / Map.TileSize, bounds.Top / Map.TileSize);
+            Point bottomRightTileCoord = new Point(bounds.Right / Map.TileSize, bounds.Bottom / Map.TileSize);
+
+            for (int x = topLeftTileCoord.X; x <= bottomRightTileCoord.X; ++x)
+            {
+                for (int y = topLeftTileCoord.Y; y <= bottomRightTileCoord.Y; ++y)
+                {
+                    if (map.CollisionMap[x, y])
+                    {
+                        Rectangle tileRect = new Rectangle(x * Map.TileSize, y * Map.TileSize, Map.TileSize, Map.TileSize);
+                        if (tileRect.EIntersects(bounds))
+                            return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public Rectangle GetBoundingBox()
         {
             return GetBoundingBoxAt(Position);

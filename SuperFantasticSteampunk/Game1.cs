@@ -90,7 +90,8 @@ namespace SuperFantasticSteampunk
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(new Color(Clock.GetCurrentColor().ToVector4() * Color.CornflowerBlue.ToVector4()));
+            Color backgroundColor = new Color(140, 197, 217);
+            GraphicsDevice.Clear(new Color(Clock.GetCurrentColor().ToVector4() * backgroundColor.ToVector4()));
 
             Scene.DrawCurrent(renderer);
             renderer.End();

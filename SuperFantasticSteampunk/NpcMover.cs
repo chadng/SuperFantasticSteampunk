@@ -32,7 +32,33 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public abstract void Update(GameTime gameTime);
+        public virtual void Update(GameTime gameTime)
+        {
+            overworld.SetEntitySpriteAnimationForVelocity(entity);
+        }
+
+        public abstract void Finish();
+
+        protected bool entityCollidesWithOtherEnemy()
+        {
+            foreach (Party party in overworld.EnemyParties)
+            {
+                Entity otherEntity = party.PrimaryPartyMember.OverworldEntity;
+                if (entity != otherEntity && entity.CollidesWith(otherEntity))
+                    return true;
+            }
+            return false;
+        }
+
+        protected bool entityCollidesWithScenery()
+        {
+            foreach (Scenery scenery in overworld.SceneryEntities)
+            {
+                if (entity.CollidesWith(scenery))
+                    return true;
+            }
+            return false;
+        }
         #endregion
     }
 }
