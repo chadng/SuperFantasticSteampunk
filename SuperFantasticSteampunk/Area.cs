@@ -5,6 +5,10 @@ namespace SuperFantasticSteampunk
 {
     class Area
     {
+        #region Constants
+        private const int enemiesPerArea = 4;
+        #endregion
+
         #region Instance Properties
         public AreaData Data { get; private set; }
         public List<string> EnemyNames { get; private set; }
@@ -18,8 +22,27 @@ namespace SuperFantasticSteampunk
                 throw new Exception("AreaData cannot be null");
 
             Data = data;
-            EnemyNames = new List<string>(data.EnemyNames.TrimEnd(';').Split(';'));
             ScenerySpriteNames = new List<string>(data.ScenerySpriteNames.TrimEnd(';').Split(';'));
+            populateEnemyNames();
+        }
+        #endregion
+
+        #region Instance Methods
+        private void populateEnemyNames()
+        {
+            List<string> allEnemyNames = new List<string>(Data.EnemyNames.TrimEnd(';').Split(';'));
+            if (allEnemyNames.Count <= enemiesPerArea)
+                EnemyNames = allEnemyNames;
+            else
+            {
+                EnemyNames = new List<string>(enemiesPerArea);
+                while (EnemyNames.Count < enemiesPerArea)
+                {
+                    string name = allEnemyNames.Sample();
+                    allEnemyNames.Remove(name);
+                    EnemyNames.Add(name);
+                }
+            }
         }
         #endregion
     }

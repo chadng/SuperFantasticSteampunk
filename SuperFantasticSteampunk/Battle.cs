@@ -52,6 +52,12 @@ namespace SuperFantasticSteampunk
 
             camera = new Camera(new Vector2(Game1.ScreenWidth, Game1.ScreenHeight));
             camera.Position = camera.Size / 2.0f;
+
+            repositionPartyMembers();
+            updateCamera();
+            camera.Scale = camera.TargetScale;
+            updateCamera();
+            camera.Position = camera.TargetPosition;
         }
         #endregion
 
@@ -120,7 +126,7 @@ namespace SuperFantasticSteampunk
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.Update(gameTime);
 
-            updateCamera(gameTime);
+            updateCamera(() => camera.Update(gameTime));
         }
 
         protected override void draw(Renderer renderer)
@@ -153,7 +159,7 @@ namespace SuperFantasticSteampunk
             base.finishCleanup();
         }
 
-        private void updateCamera(GameTime gameTime)
+        private void updateCamera(Action midUpdateAction = null)
         {
             Vector2 firstPosition = PlayerParty[0].BattleEntity.Position;
             float lowestX = firstPosition.X - 200.0f, lowestY = firstPosition.Y - 400.0f;
@@ -170,12 +176,13 @@ namespace SuperFantasticSteampunk
             else
                 camera.TargetScale = new Vector2(scaleY);
 
-            camera.Update(gameTime);
+            if (midUpdateAction != null)
+                midUpdateAction();
+
             float scale = camera.Scale.X;
             float averageX = (lowestX + highestX) / 2.0f;
             float averageY = (lowestY + highestY) / 2.0f;
             camera.TargetPosition = new Vector2(averageX, averageY) * scale;
-            
         }
 
         private void getLowestAndHighestPositionalValuesForParty(Party party, ref float lowestX, ref float lowestY, ref float highestX, ref float highestY)

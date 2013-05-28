@@ -151,7 +151,7 @@ namespace SuperFantasticSteampunk
 
         private void populateWithScenery()
         {
-            AddEntity(new Scenery(ResourceManager.GetNewSprite(Area.ScenerySpriteNames[0]), new Vector2(100.0f, 400.0f)));
+            AddEntity(new Scenery(ResourceManager.GetNewSprite(Area.ScenerySpriteNames.Sample()), new Vector2(100.0f, 400.0f)));
         }
 
         private void populateWithEnemies()
@@ -159,8 +159,8 @@ namespace SuperFantasticSteampunk
             for (int i = 2; i < 5; ++i)
             {
                 Party enemyParty = new Party();
-                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames[0]));
-                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames[0]));
+                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
+                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
                 AddEnemyParty(enemyParty, new Vector2(100.0f * i));
             }
         }
