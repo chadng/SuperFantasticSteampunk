@@ -270,6 +270,7 @@ namespace SuperFantasticSteampunk
             case StatusEffectType.Poison: statusEffect = new StatusEffects.Poison(); break;
             case StatusEffectType.Paralysis: statusEffect = new StatusEffects.Paralysis(); break;
             case StatusEffectType.Fear: statusEffect = new StatusEffects.Fear(actor); break;
+            case StatusEffectType.Doom: statusEffect = new StatusEffects.Doom(actor); break;
             default: statusEffect = null; break;
             }
 

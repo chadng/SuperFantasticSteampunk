@@ -161,7 +161,7 @@ namespace SuperFantasticSteampunk
 
         private void updateCamera(Action midUpdateAction = null)
         {
-            Vector2 firstPosition = PlayerParty[0].BattleEntity.Position;
+            Vector2 firstPosition = (PlayerParty.Count > 0 ? PlayerParty : EnemyParty)[0].BattleEntity.Position;
             float lowestX = firstPosition.X - 200.0f, lowestY = firstPosition.Y - 400.0f;
             float highestX = firstPosition.X + 200.0f, highestY = firstPosition.Y + 200.0f;
 
