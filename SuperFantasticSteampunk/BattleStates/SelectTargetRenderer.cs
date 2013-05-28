@@ -46,7 +46,8 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             Vector2 position = battleState.PotentialTarget.BattleEntity.Position;
             position.Y -= 400.0f;
-            renderer.Draw(arrowTextureData, position, Color.White);
+            Color color = battleState.Actor.FearsPartyMember(battleState.PotentialTarget) ? Color.Black : Color.White;
+            renderer.Draw(arrowTextureData, position, color);
         }
         #endregion
     }

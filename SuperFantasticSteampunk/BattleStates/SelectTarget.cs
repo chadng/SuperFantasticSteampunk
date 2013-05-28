@@ -14,6 +14,11 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Instance Properties
+        public PartyMember Actor
+        {
+            get { return thinkAction.Actor; }
+        }
+
         public PartyMember PotentialTarget
         {
             get { return potentialTargets[currentPotentialTargetIndex]; }

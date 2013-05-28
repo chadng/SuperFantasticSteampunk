@@ -163,6 +163,19 @@ namespace SuperFantasticSteampunk
             return false;
         }
 
+        public bool FearsPartyMember(PartyMember other)
+        {
+            foreach (StatusEffect statusEffect in statusEffects)
+            {
+                if (statusEffect.Type == StatusEffectType.Fear)
+                {
+                    if ((statusEffect as StatusEffects.Fear).Inflictor == other)
+                        return true;
+                }
+            }
+            return false;
+        }
+
         public void EquipWeapon(string name)
         {
             EquippedShield = null;

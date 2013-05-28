@@ -117,6 +117,7 @@
     <Compile Include="SpriteData.cs" />
     <Compile Include="StatModifier.cs" />
     <Compile Include="StatusEffect.cs" />
+    <Compile Include="StatusEffects\Fear.cs" />
     <Compile Include="StatusEffects\Paralysis.cs" />
     <Compile Include="StatusEffects\Poison.cs" />
     <Compile Include="TextureData.cs" />

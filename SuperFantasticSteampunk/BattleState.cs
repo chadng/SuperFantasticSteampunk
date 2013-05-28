@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Spine;
+using SuperFantasticSteampunk.BattleStates;
 
 namespace SuperFantasticSteampunk
 {
@@ -61,6 +62,17 @@ namespace SuperFantasticSteampunk
         {
             removeDeadPartyMembers(Battle.PlayerParty, Battle.EnemyParty);
             removeDeadPartyMembers(Battle.EnemyParty, Battle.PlayerParty);
+        }
+
+        protected Inventory getInventoryFromThinkActionType(ThinkActionType thinkActionType, CharacterClass characterClass)
+        {
+            switch (thinkActionType)
+            {
+            case ThinkActionType.Attack: return Battle.PlayerParty.WeaponInventories[characterClass];
+            case ThinkActionType.Defend: return Battle.PlayerParty.ShieldInventories[characterClass];
+            case ThinkActionType.UseItem: return Battle.PlayerParty.ItemInventory;
+            default: return null;
+            }
         }
 
         private void removeDeadPartyMembers(Party party, Party otherParty)

@@ -260,7 +260,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 CurrentPartyMember = lastAction.Actor;
                 if (!ThinkMenuOption.IsDefaultOptionName(lastAction.OptionName))
                 {
-                    Inventory inventory = getInventoryFromThinkActionType(lastAction.Type);
+                    Inventory inventory = getInventoryFromThinkActionType(lastAction.Type, CurrentPartyMember.CharacterClass);
                     if (inventory != null)
                         inventory.AddItem(lastAction.OptionName);
                 }
@@ -359,17 +359,6 @@ namespace SuperFantasticSteampunk.BattleStates
             }
         }
 
-        private Inventory getInventoryFromThinkActionType(ThinkActionType thinkActionType)
-        {
-            switch (thinkActionType)
-            {
-            case ThinkActionType.Attack: return Battle.PlayerParty.WeaponInventories[CurrentPartyMember.CharacterClass];
-            case ThinkActionType.Defend: return Battle.PlayerParty.ShieldInventories[CurrentPartyMember.CharacterClass];
-            case ThinkActionType.UseItem: return Battle.PlayerParty.ItemInventory;
-            default: return null;
-            }
-        }
-
         private void repopulateMenuOptions()
         {
             itemMenuOptions.Clear();
@@ -423,7 +412,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             if (currentThinkAction.Target != null || currentThinkAction.Type == ThinkActionType.Defend)
             {
-                Inventory inventory = getInventoryFromThinkActionType(currentThinkAction.Type);
+                Inventory inventory = getInventoryFromThinkActionType(currentThinkAction.Type, CurrentPartyMember.CharacterClass);
                 if (inventory != null)
                     inventory.UseItem(currentThinkAction.OptionName, CurrentPartyMember);
                 actions.Add(currentThinkAction);

@@ -2,7 +2,7 @@
 
 namespace SuperFantasticSteampunk
 {
-    enum StatusEffectType { Poison, Paralysis }
+    enum StatusEffectType { Poison, Paralysis, Fear }
     enum StatusEffectEvent { BeforeAct, EndTurn }
 
     abstract class StatusEffect

@@ -105,6 +105,12 @@ namespace SuperFantasticSteampunk.BattleStates
 
             if (!thinkAction.Actor.Alive || !thinkAction.Active)
             {
+                if (!ThinkMenuOption.IsDefaultOptionName(thinkAction.OptionName))
+                {
+                    Inventory inventory = getInventoryFromThinkActionType(thinkAction.Type, thinkAction.Actor.CharacterClass);
+                    if (inventory != null)
+                        inventory.AddItem(thinkAction.OptionName);
+                }
                 getNextThinkAction();
                 return;
             }
