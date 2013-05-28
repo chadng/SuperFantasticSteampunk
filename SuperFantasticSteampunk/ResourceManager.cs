@@ -20,6 +20,7 @@ namespace SuperFantasticSteampunk
         private static SortedDictionary<string, SpriteData> spriteDataDictionary;
         private static SortedDictionary<string, TextureData> textureDataDictionary;
         private static SortedDictionary<string, SpriteFont> spriteFontDictionary;
+        private static SortedDictionary<string, AreaData> areaDataDictionary;
         #endregion
 
         #region Static Methods
@@ -41,6 +42,8 @@ namespace SuperFantasticSteampunk
             populateTextureDataDictionary(contentManager);
             spriteFontDictionary = new SortedDictionary<string, SpriteFont>();
             populateSpriteFontDictionary(contentManager);
+            areaDataDictionary = new SortedDictionary<string, AreaData>();
+            populateAreaDataDictionary(contentManager);
         }
 
         public static void UnloadContent()
@@ -55,6 +58,7 @@ namespace SuperFantasticSteampunk
             spriteDataDictionary.Clear();
             textureDataDictionary.Clear();
             spriteFontDictionary.Clear();
+            areaDataDictionary.Clear();
         }
 
         public static Skeleton GetNewSkeleton(string name)
@@ -116,6 +120,15 @@ namespace SuperFantasticSteampunk
             return null;
         }
 
+        public static PartyMember GetNewPartyMember(string name)
+        {
+            PartyMemberData partyMemberData = GetPartyMemberData(name);
+            if (partyMemberData == null)
+                return null;
+            else
+                return new PartyMember(partyMemberData);
+        }
+
         public static PartyMemberData GetPartyMemberData(string name)
         {
             PartyMemberData partyMemberData;
@@ -154,6 +167,23 @@ namespace SuperFantasticSteampunk
             SpriteFont spriteFont;
             if (spriteFontDictionary.TryGetValue(name, out spriteFont))
                 return spriteFont;
+            return null;
+        }
+
+        public static Area GetNewArea(string name)
+        {
+            AreaData areaData = GetAreaData(name);
+            if (areaData == null)
+                return null;
+            else
+                return new Area(areaData);
+        }
+
+        public static AreaData GetAreaData(string name)
+        {
+            AreaData areaData;
+            if (areaDataDictionary.TryGetValue(name, out areaData))
+                return areaData;
             return null;
         }
 
@@ -270,6 +300,16 @@ namespace SuperFantasticSteampunk
             }
         }
 
+        private static void populateAreaDataDictionary(ContentManager contentManager)
+        {
+            List<Dictionary<string, object>> areaDataList = loadItemData(contentManager.RootDirectory + "/Items/Areas.txt");
+            foreach (var data in areaDataList)
+            {
+                AreaData areaData = newObjectFromItemData<AreaData>(data);
+                areaDataDictionary.Add(areaData.Name, areaData);
+                Logger.Log("Loaded area '" + areaData.Name + "'");
+            }
+        }
 
         private static List<Dictionary<string, object>> loadItemData(string itemsFilePath)
         {

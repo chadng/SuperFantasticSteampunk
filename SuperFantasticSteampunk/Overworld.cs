@@ -21,15 +21,18 @@ namespace SuperFantasticSteampunk
         public Party PlayerParty { get; private set; }
         public List<Party> EnemyParties { get; private set; }
         public Map Map { get; private set; }
+        public Area Area { get; private set; }
         #endregion
 
         #region Constructors
-        public Overworld(Party playerParty)
+        public Overworld(Party playerParty, Area area)
         {
             if (playerParty == null)
                 throw new Exception("Party playerParty cannot be null");
 
             PlayerParty = playerParty;
+            Area = area;
+
             EnemyParties = new List<Party>();
 
             states = new Stack<OverworldState>();
@@ -43,6 +46,9 @@ namespace SuperFantasticSteampunk
 
             camera = new Camera(new Vector2(Game1.ScreenWidth, Game1.ScreenHeight));
             camera.Target = playerParty.PrimaryPartyMember.OverworldEntity;
+
+            populateWithScenery();
+            populateWithEnemies();
         }
         #endregion
 
@@ -141,6 +147,22 @@ namespace SuperFantasticSteampunk
                 party.PrimaryPartyMember.FinishOverworld();
 
             base.finishCleanup();
+        }
+
+        private void populateWithScenery()
+        {
+            AddEntity(new Scenery(ResourceManager.GetNewSprite(Area.ScenerySpriteNames[0]), new Vector2(100.0f, 400.0f)));
+        }
+
+        private void populateWithEnemies()
+        {
+            for (int i = 2; i < 5; ++i)
+            {
+                Party enemyParty = new Party();
+                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames[0]));
+                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames[0]));
+                AddEnemyParty(enemyParty, new Vector2(100.0f * i));
+            }
         }
 
         private void drawMap(Renderer renderer)
