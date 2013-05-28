@@ -50,7 +50,7 @@ namespace SuperFantasticSteampunk
 
             OverworldEncounter = overworldEncounter;
 
-            camera = new Camera(new Vector2(Game1.ScreenWidth, Game1.ScreenHeight));
+            camera = new Camera(Game1.ScreenSize);
             camera.Position = camera.Size / 2.0f;
 
             repositionPartyMembers();
@@ -168,8 +168,8 @@ namespace SuperFantasticSteampunk
             getLowestAndHighestPositionalValuesForParty(PlayerParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
             getLowestAndHighestPositionalValuesForParty(EnemyParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
 
-            float scaleX = Game1.ScreenWidth / (highestX - lowestX);
-            float scaleY = Game1.ScreenHeight / (highestY - lowestY);
+            float scaleX = Game1.ScreenSize.X / (highestX - lowestX);
+            float scaleY = Game1.ScreenSize.Y / (highestY - lowestY);
 
             if (scaleX < scaleY)
                 camera.TargetScale = new Vector2(scaleX);

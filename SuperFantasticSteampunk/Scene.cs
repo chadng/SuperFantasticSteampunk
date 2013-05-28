@@ -7,7 +7,6 @@ namespace SuperFantasticSteampunk
     class Scene
     {
         #region Static Fields
-        private static Stack<Scene> sceneStack;
         private static Scene nextScene;
         #endregion
 
@@ -16,6 +15,8 @@ namespace SuperFantasticSteampunk
         {
             get { return sceneStack.Count == 0 ? null : sceneStack.Peek(); }
         }
+
+        protected static Stack<Scene> sceneStack { get; private set; }
         #endregion
 
         #region Static Constructors
@@ -83,6 +84,7 @@ namespace SuperFantasticSteampunk
         #region Instance Fields
         private List<Entity> entitiesToAdd;
         private bool finished;
+        private InputButtonListener inputButtonListener;
         #endregion
 
         #region Constructors
@@ -92,6 +94,11 @@ namespace SuperFantasticSteampunk
             SceneryEntities = new List<Scenery>();
             entitiesToAdd = new List<Entity>();
             finished = false;
+
+            inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
+                { InputButton.Pause, new ButtonEventHandlers(up: pause) }
+            });
+
             nextScene = this;
             if (Current == null)
                 pushNextScene();
@@ -125,6 +132,8 @@ namespace SuperFantasticSteampunk
                 entity.Update(gameTime);
 
             removeDeadEntities();
+
+            inputButtonListener.Update(gameTime);
         }
 
         protected virtual void draw(Renderer renderer)
@@ -137,6 +146,11 @@ namespace SuperFantasticSteampunk
         protected virtual void finishCleanup()
         {
             Entities.Clear();
+        }
+
+        protected virtual void pause()
+        {
+            new PauseMenu();
         }
 
         private void removeDeadEntities()

@@ -35,7 +35,7 @@ namespace SuperFantasticSteampunk.OverworldStates
         public override void AfterDraw(Renderer renderer)
         {
             Color color = Color.Black * (overworldState.Time / EncounterIntro.FadeTimeInSeconds);
-            renderer.Draw(pixelTextureData, Vector2.Zero, color, 0.0f, new Vector2(Game1.ScreenWidth, Game1.ScreenHeight));
+            renderer.Draw(pixelTextureData, Vector2.Zero, color, 0.0f, Game1.ScreenSize);
         }
         #endregion
     }

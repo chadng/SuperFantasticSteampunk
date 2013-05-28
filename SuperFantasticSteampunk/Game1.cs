@@ -6,15 +6,22 @@ namespace SuperFantasticSteampunk
     public class Game1 : Game
     {
         #region Constants
-        public const int ScreenWidth = 1920;
-        public const int ScreenHeight = 1080;
         public static readonly Color SkyColor = new Color(140, 197, 217);
         public static readonly Color GrassColor = new Color(190, 255, 153);
+        #endregion
+        
+        #region Static Fields
+        private static Game1 instance;
         #endregion
 
         #region Static Properties
         public static Random Random { get; private set; }
         public static Color BackgroundColor { get; set; }
+
+        public static Vector2 ScreenSize
+        {
+            get { return new Vector2(1920, 1080); }
+        }
         #endregion
 
         #region Static Constructors
@@ -22,6 +29,14 @@ namespace SuperFantasticSteampunk
         {
             Random = new Random();
             BackgroundColor = SkyColor;
+        }
+        #endregion
+
+        #region Static Methods
+        public static void ExitGame()
+        {
+            Logger.Log("Game exited");
+            instance.Exit();
         }
         #endregion
 
@@ -34,10 +49,11 @@ namespace SuperFantasticSteampunk
         public Game1()
             : base()
         {
+            instance = this;
             graphics = new GraphicsDeviceManager(this);
             graphics.IsFullScreen = false;
-            graphics.PreferredBackBufferWidth = ScreenWidth;
-            graphics.PreferredBackBufferHeight = ScreenHeight;
+            graphics.PreferredBackBufferWidth = (int)ScreenSize.X;
+            graphics.PreferredBackBufferHeight = (int)ScreenSize.Y;
             IsFixedTimeStep = false;
             Content.RootDirectory = "Content";
         }
@@ -73,14 +89,7 @@ namespace SuperFantasticSteampunk
 
         protected override void Update(GameTime gameTime)
         {
-            if (Input.Pause())
-            {
-                Logger.Log("Game exited");
-                Exit();
-            }
-
             Scene.UpdateCurrent(gameTime);
-
             base.Update(gameTime);
         }
 

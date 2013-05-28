@@ -44,7 +44,7 @@ namespace SuperFantasticSteampunk
             PlayerParty.PrimaryPartyMember.StartOverworld(new Vector2(100.0f));
             addEntity(PlayerParty.PrimaryPartyMember.OverworldEntity);
 
-            camera = new Camera(new Vector2(Game1.ScreenWidth, Game1.ScreenHeight));
+            camera = new Camera(Game1.ScreenSize);
             camera.Target = playerParty.PrimaryPartyMember.OverworldEntity;
 
             populateWithScenery();

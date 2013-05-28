@@ -31,7 +31,7 @@ namespace SuperFantasticSteampunk.BattleStates
             float time = intro == null ? (battleState as Outro).Time : intro.Time;
 
             Color color = Color.Black * (1.0f - (time / Intro.FadeTimeInSeconds));
-            renderer.Draw(pixelTextureData, Vector2.Zero, color, 0.0f, new Vector2(Game1.ScreenWidth, Game1.ScreenHeight));
+            renderer.Draw(pixelTextureData, Vector2.Zero, color, 0.0f, Game1.ScreenSize);
         }
         #endregion
     }
