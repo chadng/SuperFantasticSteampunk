@@ -12,6 +12,7 @@ namespace SuperFantasticSteampunk
         private Stack<BattleState> states;
         private bool stateChanged;
         private TextureData whitePixelTextureData;
+        private Camera camera;
         #endregion
 
         #region Instance Properties
@@ -48,6 +49,9 @@ namespace SuperFantasticSteampunk
             stateChanged = true;
 
             OverworldEncounter = overworldEncounter;
+
+            camera = new Camera(new Vector2(Game1.ScreenWidth, Game1.ScreenHeight));
+            camera.Position = camera.Size / 2.0f;
         }
         #endregion
 
@@ -115,10 +119,14 @@ namespace SuperFantasticSteampunk
 
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.Update(gameTime);
+
+            updateCamera(gameTime);
         }
 
         protected override void draw(Renderer renderer)
         {
+            Game1.BackgroundColor = Game1.GrassColor;
+            renderer.Camera = camera;
             renderer.Tint = Clock.GetCurrentColor();
 
             renderer.Draw(ResourceManager.GetTextureData("battle_grass_floor"), Vector2.Zero, Color.White);
@@ -133,6 +141,8 @@ namespace SuperFantasticSteampunk
 
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.AfterDraw(renderer);
+
+            renderer.Camera = null;
         }
 
         protected override void finishCleanup()
@@ -141,6 +151,49 @@ namespace SuperFantasticSteampunk
             PlayerParty.FinishBattle(this);
             EnemyParty.FinishBattle(this);
             base.finishCleanup();
+        }
+
+        private void updateCamera(GameTime gameTime)
+        {
+            Vector2 firstPosition = PlayerParty[0].BattleEntity.Position;
+            float lowestX = firstPosition.X - 200.0f, lowestY = firstPosition.Y - 400.0f;
+            float highestX = firstPosition.X + 200.0f, highestY = firstPosition.Y + 200.0f;
+
+            getLowestAndHighestPositionalValuesForParty(PlayerParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
+            getLowestAndHighestPositionalValuesForParty(EnemyParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
+
+            float scaleX = Game1.ScreenWidth / (highestX - lowestX);
+            float scaleY = Game1.ScreenHeight / (highestY - lowestY);
+
+            if (scaleX < scaleY)
+                camera.TargetScale = new Vector2(scaleX);
+            else
+                camera.TargetScale = new Vector2(scaleY);
+
+            camera.Update(gameTime);
+            float scale = camera.Scale.X;
+            float averageX = (lowestX + highestX) / 2.0f;
+            float averageY = (lowestY + highestY) / 2.0f;
+            camera.TargetPosition = new Vector2(averageX, averageY) * scale;
+            
+        }
+
+        private void getLowestAndHighestPositionalValuesForParty(Party party, ref float lowestX, ref float lowestY, ref float highestX, ref float highestY)
+        {
+            foreach (PartyMember partyMember in party)
+            {
+                Vector2 position = partyMember.BattleEntity.Position;
+
+                if (position.X - 200.0f < lowestX)
+                    lowestX = position.X - 200.0f;
+                else if (position.X + 200.0f > highestX)
+                    highestX = position.X + 200.0f;
+
+                if (position.Y - 400.0f < lowestY)
+                    lowestY = position.Y - 400.0f;
+                else if (position.Y + 200.0f > highestY)
+                    highestY = position.Y + 200.0f;
+            }
         }
 
         private void repositionPartyMembers()

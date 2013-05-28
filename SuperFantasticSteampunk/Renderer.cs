@@ -43,6 +43,7 @@ namespace SuperFantasticSteampunk
             beginSpriteBatch();
             translatePosition(ref position);
             updateColor(ref color);
+            updateScale(ref scale);
             Vector2 origin = new Vector2(sprite.Data.OriginX, sprite.Data.OriginY);
             spriteBatch.Draw(sprite.Texture, position, sprite.GetSourceRectangle(), color, rotation, origin, scale, SpriteEffects.None, 0.0f);
         }
@@ -52,6 +53,7 @@ namespace SuperFantasticSteampunk
             beginSpriteBatch();
             translatePosition(ref position);
             updateColor(ref color);
+            updateScale(ref scale);
             Rectangle sourceRect = new Rectangle(0, 0, textureData.Texture.Width, textureData.Texture.Height);
             Vector2 origin = new Vector2(textureData.OriginX, textureData.OriginY);
             spriteBatch.Draw(textureData.Texture, position, sourceRect, color, rotation, origin, scale, SpriteEffects.None, 0.0f);
@@ -59,8 +61,6 @@ namespace SuperFantasticSteampunk
 
         public void Draw(TextureData textureData, Vector2 position, Color color)
         {
-            translatePosition(ref position);
-            updateColor(ref color);
             Draw(textureData, position, color, 0.0f, new Vector2(1.0f));
         }
 
@@ -75,12 +75,22 @@ namespace SuperFantasticSteampunk
             {
                 float previousX = skeleton.RootBone.X;
                 float previousY = skeleton.RootBone.Y;
+                float previousScaleX = skeleton.RootBone.ScaleX;
+                float previousScaleY = skeleton.RootBone.ScaleY;
                 Vector2 position = Camera.TranslateVector(new Vector2(previousX, previousY));
                 skeleton.RootBone.X = position.X;
                 skeleton.RootBone.Y = position.Y;
+                skeleton.RootBone.ScaleX *= Camera.Scale.X;
+                skeleton.RootBone.ScaleY *= Camera.Scale.Y;
+                skeleton.RootBone.X *= Camera.Scale.X;
+                skeleton.RootBone.Y *= Camera.Scale.Y;
+                skeleton.UpdateWorldTransform();
                 skeletonRenderer.Draw(skeleton);
                 skeleton.RootBone.X = previousX;
                 skeleton.RootBone.Y = previousY;
+                skeleton.RootBone.ScaleX = previousScaleX;
+                skeleton.RootBone.ScaleY = previousScaleY;
+                skeleton.UpdateWorldTransform();
             }
             else
                 skeletonRenderer.Draw(skeleton);
@@ -136,7 +146,10 @@ namespace SuperFantasticSteampunk
         private void translatePosition(ref Vector2 position)
         {
             if (Camera != null)
+            {
                 position = Camera.TranslateVector(position);
+                position *= Camera.Scale;
+            }
         }
 
         private void updateColor(ref Color color)
@@ -145,6 +158,12 @@ namespace SuperFantasticSteampunk
                 return;
 
             color = new Color(color.ToVector4() * Tint.ToVector4());
+        }
+
+        private void updateScale(ref Vector2 scale)
+        {
+            if (Camera != null)
+                scale *= Camera.Scale;
         }
 
         private void tintSkeleton(Skeleton skeleton)

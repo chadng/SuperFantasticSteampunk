@@ -8,16 +8,20 @@ namespace SuperFantasticSteampunk
         #region Constants
         public const int ScreenWidth = 1920;
         public const int ScreenHeight = 1080;
+        public static readonly Color SkyColor = new Color(140, 197, 217);
+        public static readonly Color GrassColor = new Color(190, 255, 153);
         #endregion
 
         #region Static Properties
         public static Random Random { get; private set; }
+        public static Color BackgroundColor { get; set; }
         #endregion
 
         #region Static Constructors
         static Game1()
         {
             Random = new Random();
+            BackgroundColor = SkyColor;
         }
         #endregion
 
@@ -90,8 +94,7 @@ namespace SuperFantasticSteampunk
 
         protected override void Draw(GameTime gameTime)
         {
-            Color backgroundColor = new Color(140, 197, 217);
-            GraphicsDevice.Clear(new Color(Clock.GetCurrentColor().ToVector4() * backgroundColor.ToVector4()));
+            GraphicsDevice.Clear(new Color(Clock.GetCurrentColor().ToVector4() * BackgroundColor.ToVector4()));
 
             Scene.DrawCurrent(renderer);
             renderer.End();

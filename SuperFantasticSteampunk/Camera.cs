@@ -9,6 +9,9 @@ namespace SuperFantasticSteampunk
         public Entity Target { get; set; }
         public Vector2 Size { get; private set; }
         public Vector2 Position { get; set; }
+        public Vector2 Scale { get; set; }
+        public Vector2 TargetPosition { get; set; }
+        public Vector2 TargetScale { get; set; }
         #endregion
 
         #region Constructors
@@ -17,6 +20,9 @@ namespace SuperFantasticSteampunk
             Target = null;
             Size = size;
             Position = Vector2.Zero;
+            Scale = Vector2.One;
+            TargetScale = Vector2.One;
+            TargetPosition = Position;
         }
         #endregion
 
@@ -39,7 +45,10 @@ namespace SuperFantasticSteampunk
         public void Update(GameTime gameTime)
         {
             if (Target != null)
+            {
                 Position = new Vector2((float)Math.Round(Target.Position.X), (float)Math.Round(Target.Position.Y));
+                TargetPosition = Position;
+            }
 
             Overworld overworld = Scene.Current as Overworld;
             if (overworld != null)
@@ -57,7 +66,27 @@ namespace SuperFantasticSteampunk
                     newPosition.Y -= boundingBox.Bottom - overworld.Map.Height;
 
                 Position = newPosition;
+                TargetPosition = Position;
             }
+
+            Position = updateVectorToTarget(Position, TargetPosition, gameTime);
+            Scale = updateVectorToTarget(Scale, TargetScale, gameTime);
+        }
+
+        private Vector2 updateVectorToTarget(Vector2 vector, Vector2 target, GameTime gameTime)
+        {
+            if (vector == target)
+                return vector;
+
+            float newX = moveFloatTowardsValue(vector.X, target.X, gameTime);
+            float newY = moveFloatTowardsValue(vector.Y, target.Y, gameTime);
+
+            return new Vector2(newX, newY);
+        }
+
+        private float moveFloatTowardsValue(float value, float targetValue, GameTime gameTime)
+        {
+            return value + ((targetValue - value) * (float)gameTime.ElapsedGameTime.TotalSeconds);
         }
         #endregion
     }

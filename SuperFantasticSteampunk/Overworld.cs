@@ -115,6 +115,7 @@ namespace SuperFantasticSteampunk
 
         protected override void draw(Renderer renderer)
         {
+            Game1.BackgroundColor = Game1.GrassColor;
             renderer.Camera = camera;
             renderer.Tint = Clock.GetCurrentColor();
 
@@ -147,9 +148,9 @@ namespace SuperFantasticSteampunk
             TextureData pixelTexture = ResourceManager.GetTextureData("white_pixel");
 
             Rectangle cameraBoundingBox = camera.GetBoundingBox();
-            int startX = cameraBoundingBox.Left / Map.TileSize;
+            int startX = Math.Max(cameraBoundingBox.Left / Map.TileSize, 0);
             int finishX = Math.Min((cameraBoundingBox.Left + cameraBoundingBox.Width) / Map.TileSize, Map.TileWidth - 1);
-            int startY = cameraBoundingBox.Top / Map.TileSize;
+            int startY = Math.Max(cameraBoundingBox.Top / Map.TileSize, 0);
             int finishY = Math.Min((cameraBoundingBox.Top + cameraBoundingBox.Height) / Map.TileSize, Map.TileHeight - 1);
 
             for (int x = startX; x <= finishX; ++x)
