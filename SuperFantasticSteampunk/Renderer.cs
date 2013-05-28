@@ -101,9 +101,14 @@ namespace SuperFantasticSteampunk
             skeleton.A = colorBefore.W;
         }
 
-        public void DrawText(string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale)
+        public void DrawText(string text, Vector2 position, Color color, float rotation, Vector2 origin, Vector2 scale, bool cameraTransform = false)
         {
             beginSpriteBatch();
+            if (cameraTransform)
+            {
+                translatePosition(ref position);
+                updateScale(ref scale);
+            }
             spriteBatch.DrawString(SpriteFont, text, position, color, rotation, origin, scale, SpriteEffects.None, 0.0f);
         }
 

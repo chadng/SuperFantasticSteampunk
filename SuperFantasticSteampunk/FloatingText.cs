@@ -48,7 +48,7 @@ namespace SuperFantasticSteampunk
 
         public override void Draw(Renderer renderer)
         {
-            renderer.DrawText(text, Position, Tint, 0.0f, Vector2.Zero, new Vector2(5.0f));
+            renderer.DrawText(text, Position, Tint, 0.0f, Vector2.Zero, new Vector2(5.0f), true);
         }
         #endregion
     }
