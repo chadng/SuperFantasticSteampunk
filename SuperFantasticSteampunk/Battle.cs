@@ -53,6 +53,8 @@ namespace SuperFantasticSteampunk
             camera = new Camera(Game1.ScreenSize);
             camera.Position = camera.Size / 2.0f;
 
+            generateScenery();
+
             repositionPartyMembers();
             updateCamera();
             camera.Scale = camera.TargetScale;
@@ -160,14 +162,42 @@ namespace SuperFantasticSteampunk
             base.finishCleanup();
         }
 
+        private void generateScenery()
+        {
+            List<string> scenerySpriteNames = OverworldEncounter.Overworld.Area.Data.BattleScenerySpriteNamesToList();
+            Vector2 position = new Vector2(-400.0f, 200.0f);
+            do
+            {
+                SpriteData spriteData = ResourceManager.GetSpriteData(scenerySpriteNames.Sample());
+                if (Game1.Random.Next(3) == 0)
+                {
+                    Vector2 sceneryPosition = new Vector2(position.X, position.Y + Game1.Random.Next(50));
+                    Scenery scenery = new Scenery(new Sprite(spriteData), sceneryPosition);
+                    scenery.Scale = new Vector2(0.5f);
+                    if (scenery.Sprite.Data.Animations.Count > 0)
+                        scenery.Sprite.SetAnimation(new List<string>(scenery.Sprite.Data.Animations.Keys).Sample());
+                    addEntity(scenery);
+                    position.X += spriteData.Width + Game1.Random.Next(spriteData.Width);
+                }
+                else
+                    position.X += Game1.Random.Next(spriteData.Width);
+            } while (position.X < Game1.ScreenSize.X + 400.0f);
+        }
+
         private void updateCamera(Action midUpdateAction = null)
         {
+            float borderSize = Game1.ScreenSize.X / (5.0f + ((Game1.ScreenSize.X / 2700.0f) * 10.0f));
             Vector2 firstPosition = (PlayerParty.Count > 0 ? PlayerParty : EnemyParty)[0].BattleEntity.Position;
-            float lowestX = firstPosition.X - 200.0f, lowestY = firstPosition.Y - 400.0f;
-            float highestX = firstPosition.X + 200.0f, highestY = firstPosition.Y + 200.0f;
+            float lowestX = firstPosition.X, lowestY = firstPosition.Y;
+            float highestX = firstPosition.X, highestY = firstPosition.Y;
 
             getLowestAndHighestPositionalValuesForParty(PlayerParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
             getLowestAndHighestPositionalValuesForParty(EnemyParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
+
+            lowestX -= borderSize;
+            lowestY -= borderSize * 2.5f;
+            highestX += borderSize;
+            highestY += borderSize;
 
             float scaleX = Game1.ScreenSize.X / (highestX - lowestX);
             float scaleY = Game1.ScreenSize.Y / (highestY - lowestY);
@@ -192,15 +222,15 @@ namespace SuperFantasticSteampunk
             {
                 Vector2 position = partyMember.BattleEntity.Position;
 
-                if (position.X - 200.0f < lowestX)
-                    lowestX = position.X - 200.0f;
-                else if (position.X + 200.0f > highestX)
-                    highestX = position.X + 200.0f;
+                if (position.X < lowestX)
+                    lowestX = position.X;
+                else if (position.X > highestX)
+                    highestX = position.X;
 
-                if (position.Y - 400.0f < lowestY)
-                    lowestY = position.Y - 400.0f;
-                else if (position.Y + 200.0f > highestY)
-                    highestY = position.Y + 200.0f;
+                if (position.Y < lowestY)
+                    lowestY = position.Y;
+                else if (position.Y > highestY)
+                    highestY = position.Y;
             }
         }
 
@@ -230,9 +260,9 @@ namespace SuperFantasticSteampunk
             const float scale = 0.5f;
             Rectangle cameraBoundingBox = camera.GetBoundingBox();
 
-            TextureData textureData = OverworldEncounter.Overworld.Area.BattleSceneryTextureData;
+            TextureData textureData = OverworldEncounter.Overworld.Area.BattleBackgroundTextureData;
             float textureWidth = textureData.Width * scale * camera.Scale.X;
-            int drawCount = (int)(cameraBoundingBox.Right / textureWidth) + 1;
+            int drawCount = (int)Math.Ceiling(cameraBoundingBox.Right / textureWidth) + 1;
             for (int i = 0; i < drawCount; ++i)
                 renderer.Draw(textureData, new Vector2(textureData.Width * scale * i, 0.0f), Color.White, 0.0f, new Vector2(scale));
             

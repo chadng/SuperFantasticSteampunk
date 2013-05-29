@@ -48,12 +48,15 @@ namespace SuperFantasticSteampunk
             spriteBatch.Draw(sprite.Texture, position, sprite.GetSourceRectangle(), color, rotation, origin, scale, SpriteEffects.None, 0.0f);
         }
 
-        public void Draw(TextureData textureData, Vector2 position, Color color, float rotation, Vector2 scale)
+        public void Draw(TextureData textureData, Vector2 position, Color color, float rotation, Vector2 scale, bool cameraTransform = true)
         {
             beginSpriteBatch();
-            translatePosition(ref position);
+            if (cameraTransform)
+            {
+                translatePosition(ref position);
+                updateScale(ref scale);
+            }
             updateColor(ref color);
-            updateScale(ref scale);
             Rectangle sourceRect = new Rectangle(0, 0, textureData.Texture.Width, textureData.Texture.Height);
             Vector2 origin = new Vector2(textureData.OriginX, textureData.OriginY);
             spriteBatch.Draw(textureData.Texture, position, sourceRect, color, rotation, origin, scale, SpriteEffects.None, 0.0f);
@@ -132,7 +135,7 @@ namespace SuperFantasticSteampunk
             {
                 if (state == RendererState.SkeletonRendererBegan)
                     skeletonRenderer.End();
-                spriteBatch.Begin();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
                 state = RendererState.SpriteBatchBegan;
             }
         }

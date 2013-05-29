@@ -104,5 +104,13 @@ namespace SuperFantasticSteampunk
                     self.Add(pair.Key, pair.Value);
             }
         }
+
+        public static List<T2> Map<T1, T2>(this List<T1> self, Func<T1, T2> func)
+        {
+            List<T2> result = new List<T2>(self.Count);
+            foreach (T1 item in self)
+                result.Add(func(item));
+            return result;
+        }
     }
 }
