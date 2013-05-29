@@ -88,5 +88,21 @@ namespace SuperFantasticSteampunk
 
             return xIntersection && yIntersection;
         }
+
+        public static void Merge<T1, T2>(this IDictionary<T1, T2> self, IDictionary<T1, T2> other, Func<T2, T2, T2> keyExistsHandler = null)
+        {
+            foreach (KeyValuePair<T1, T2> pair in other)
+            {
+                if (self.ContainsKey(pair.Key))
+                {
+                    if (keyExistsHandler == null)
+                        self[pair.Key] = pair.Value;
+                    else
+                        self[pair.Key] = keyExistsHandler(self[pair.Key], pair.Value);
+                }
+                else
+                    self.Add(pair.Key, pair.Value);
+            }
+        }
     }
 }

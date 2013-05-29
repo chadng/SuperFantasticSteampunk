@@ -12,7 +12,7 @@ namespace SuperFantasticSteampunk
         }
 
         public Dictionary<CharacterClass, Inventory> WeaponInventories { get; private set; }
-        public Dictionary<CharacterClass, Inventory> ShieldInventories { get; private set; }
+        public Inventory ShieldInventory { get; private set; }
         public Inventory ItemInventory { get; private set; }
         #endregion
 
@@ -20,21 +20,10 @@ namespace SuperFantasticSteampunk
         public Party()
         {
             WeaponInventories = new Dictionary<CharacterClass, Inventory>();
-            ShieldInventories = new Dictionary<CharacterClass, Inventory>();
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
-            {
-                WeaponInventories.Add(characterClass, new Inventory().Tap(i =>
-                {
-                    i.Add("test1", 5);
-                    i.Add("test2", 5);
-                }));
-                ShieldInventories.Add(characterClass, new Inventory().Tap(i =>
-                {
-                    i.Add("shield1", 5);
-                    i.Add("shield2", 5);
-                }));
-            }
-            ItemInventory = new Inventory().Tap(i => i.Add("item1", 5));
+                WeaponInventories.Add(characterClass, new Inventory());
+            ShieldInventory = new Inventory();
+            ItemInventory = new Inventory();
         }
         #endregion
 
@@ -42,6 +31,10 @@ namespace SuperFantasticSteampunk
         public void AddPartyMember(PartyMember partyMember)
         {
             Add(partyMember);
+            Func<int, int, int> keyExistsHandler = (a, b) => a < 0 || b < 0 ? -1 : a + b;
+            WeaponInventories[partyMember.CharacterClass].Merge(partyMember.Data.DefaultWeaponsToDictionary(), keyExistsHandler);
+            ShieldInventory.Merge(partyMember.Data.DefaultShieldsToDictionary(), keyExistsHandler);
+            ItemInventory.Merge(partyMember.Data.DefaultItemsToDictionary(), keyExistsHandler);
         }
 
         public void RemovePartyMember(PartyMember partyMember)

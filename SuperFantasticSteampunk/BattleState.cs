@@ -69,7 +69,7 @@ namespace SuperFantasticSteampunk
             switch (thinkActionType)
             {
             case ThinkActionType.Attack: return Battle.PlayerParty.WeaponInventories[characterClass];
-            case ThinkActionType.Defend: return Battle.PlayerParty.ShieldInventories[characterClass];
+            case ThinkActionType.Defend: return Battle.PlayerParty.ShieldInventory;
             case ThinkActionType.UseItem: return Battle.PlayerParty.ItemInventory;
             default: return null;
             }

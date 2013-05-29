@@ -343,10 +343,12 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void selectDefaultOptionName()
         {
-            if (MenuOptions == null || MenuOptions.Count <= 2)
+            if (MenuOptions == null || MenuOptions.Count < 2)
                 CurrentOptionNameIndex = 0;
+            else if (CurrentThinkActionType == ThinkActionType.Defend && MenuOptions.Count > 2)
+                CurrentOptionNameIndex = 2;
             else
-                CurrentOptionNameIndex = 2;                
+                CurrentOptionNameIndex = 1;                
         }
 
         private void getNextPartyMember()
@@ -369,7 +371,6 @@ namespace SuperFantasticSteampunk.BattleStates
                 {
                     menuOptions.Clear();
                     menuOptions.Add(ThinkMenuOption.Cancel);
-                    menuOptions.Add(ThinkMenuOption.NoWeapon);
                 });
                 shieldMenuOptions[characterClass].Tap(menuOptions =>
                 {
@@ -383,7 +384,7 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 foreach (InventoryItem item in Battle.PlayerParty.WeaponInventories[characterClass].GetSortedItems(CurrentPartyMember))
                     weaponMenuOptions[characterClass].Add(new ThinkMenuOption(item.Key, item.Value, false));
-                foreach (InventoryItem item in Battle.PlayerParty.ShieldInventories[characterClass].GetSortedItems(CurrentPartyMember))
+                foreach (InventoryItem item in Battle.PlayerParty.ShieldInventory.GetSortedItems(CurrentPartyMember))
                     shieldMenuOptions[characterClass].Add(new ThinkMenuOption(item.Key, item.Value, false));
             }
             foreach (InventoryItem item in Battle.PlayerParty.ItemInventory.GetSortedItems(CurrentPartyMember))
