@@ -9,7 +9,8 @@ namespace SuperFantasticSteampunk
         public string EnemyNames { get; private set; }
         public string ScenerySpriteNames { get; private set; }
         public string BattleBackgroundTextureNames { get; private set; }
-        public string BattleScenerySpriteNames { get; private set; }
+        public string BattleBackgroundScenerySpriteNames { get; private set; }
+        public string BattleFloorScenerySpriteNames { get; private set; }
         #endregion
 
         #region Instance Methods
@@ -28,9 +29,14 @@ namespace SuperFantasticSteampunk
             return splitStringIntoList(BattleBackgroundTextureNames);
         }
 
-        public List<string> BattleScenerySpriteNamesToList()
+        public List<string> BattleBackgroundScenerySpriteNamesToList()
         {
-            return splitStringIntoList(BattleScenerySpriteNames);
+            return splitStringIntoList(BattleBackgroundScenerySpriteNames);
+        }
+
+        public List<string> BattleFloorScenerySpriteNamesToList()
+        {
+            return splitStringIntoList(BattleFloorScenerySpriteNames);
         }
 
         private List<string> splitStringIntoList(string str)

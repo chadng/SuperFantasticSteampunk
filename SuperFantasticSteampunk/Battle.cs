@@ -53,7 +53,8 @@ namespace SuperFantasticSteampunk
             camera = new Camera(Game1.ScreenSize);
             camera.Position = camera.Size / 2.0f;
 
-            generateScenery();
+            generateBackgroundScenery();
+            generateFloorScenery();
 
             repositionPartyMembers();
             updateCamera();
@@ -162,26 +163,62 @@ namespace SuperFantasticSteampunk
             base.finishCleanup();
         }
 
-        private void generateScenery()
+        private void generateBackgroundScenery()
         {
-            List<string> scenerySpriteNames = OverworldEncounter.Overworld.Area.Data.BattleScenerySpriteNamesToList();
-            Vector2 position = new Vector2(-400.0f, 200.0f);
+            const float overflow = 400.0f;
+            List<string> scenerySpriteNames = OverworldEncounter.Overworld.Area.Data.BattleBackgroundScenerySpriteNamesToList();
+            Vector2 position = new Vector2(-overflow, 200.0f);
             do
             {
                 SpriteData spriteData = ResourceManager.GetSpriteData(scenerySpriteNames.Sample());
                 if (Game1.Random.Next(3) == 0)
                 {
                     Vector2 sceneryPosition = new Vector2(position.X, position.Y + Game1.Random.Next(50));
-                    Scenery scenery = new Scenery(new Sprite(spriteData), sceneryPosition);
-                    scenery.Scale = new Vector2(0.5f);
-                    if (scenery.Sprite.Data.Animations.Count > 0)
-                        scenery.Sprite.SetAnimation(new List<string>(scenery.Sprite.Data.Animations.Keys).Sample());
-                    addEntity(scenery);
+                    addScenery(spriteData, sceneryPosition);
                     position.X += spriteData.Width + Game1.Random.Next(spriteData.Width);
                 }
                 else
                     position.X += Game1.Random.Next(spriteData.Width);
-            } while (position.X < Game1.ScreenSize.X + 400.0f);
+            } while (position.X < Game1.ScreenSize.X + overflow);
+        }
+
+        private void generateFloorScenery()
+        {
+            const float overflow = 400.0f;
+            const float minStep = 30.0f;
+            const int randomStep = 30;
+            const float startY = 300.0f;
+
+            List<string> scenerySpriteNames = OverworldEncounter.Overworld.Area.Data.BattleFloorScenerySpriteNamesToList();
+
+            Vector2 position = new Vector2(-overflow, startY);
+            do
+            {
+                do
+                {
+                    SpriteData spriteData = ResourceManager.GetSpriteData(scenerySpriteNames.Sample());
+                    if (Game1.Random.Next(10) == 0)
+                    {
+                        Vector2 sceneryPosition = new Vector2(position.X, position.Y + Game1.Random.Next(50));
+                        addScenery(spriteData, sceneryPosition);
+                        position.X += spriteData.Width + Game1.Random.Next(spriteData.Width);
+                    }
+
+                    position.Y += minStep + Game1.Random.Next(randomStep);
+                } while (position.Y < Game1.ScreenSize.Y + overflow);
+
+                position.X += minStep + Game1.Random.Next(randomStep);
+                position.Y = startY;
+            } while (position.X < Game1.ScreenSize.X + overflow);
+        }
+
+        private void addScenery(SpriteData spriteData, Vector2 position)
+        {
+            Scenery scenery = new Scenery(new Sprite(spriteData), position);
+            scenery.Scale = new Vector2(0.5f);
+            if (scenery.Sprite.Data.Animations.Count > 0)
+                scenery.Sprite.SetAnimation(new List<string>(scenery.Sprite.Data.Animations.Keys).Sample());
+            addEntity(scenery);
         }
 
         private void updateCamera(Action midUpdateAction = null)
