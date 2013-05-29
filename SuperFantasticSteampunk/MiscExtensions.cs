@@ -36,7 +36,7 @@ namespace SuperFantasticSteampunk
             self.Add(key, value);
         }
 
-        public static T Sample<T>(this List<T> self)
+        public static T Sample<T>(this IList<T> self)
         {
             if (self.Count == 0)
                 return default(T);

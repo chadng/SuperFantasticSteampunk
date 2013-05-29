@@ -13,6 +13,7 @@ namespace SuperFantasticSteampunk
         public AreaData Data { get; private set; }
         public List<string> EnemyNames { get; private set; }
         public List<string> ScenerySpriteNames { get; private set; }
+        public TextureData BattleSceneryTextureData { get; private set; }
         #endregion
 
         #region Constructors
@@ -22,8 +23,9 @@ namespace SuperFantasticSteampunk
                 throw new Exception("AreaData cannot be null");
 
             Data = data;
-            ScenerySpriteNames = new List<string>(data.ScenerySpriteNames.TrimEnd(';').Split(';'));
+            ScenerySpriteNames = new List<string>(Data.ScenerySpriteNames.TrimEnd(';').Split(';'));
             populateEnemyNames();
+            BattleSceneryTextureData = ResourceManager.GetTextureData(Data.BattleSceneryTextureNames.TrimEnd(';').Split(';').Sample());
         }
         #endregion
 

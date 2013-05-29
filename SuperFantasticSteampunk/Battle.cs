@@ -135,7 +135,8 @@ namespace SuperFantasticSteampunk
             renderer.Camera = camera;
             renderer.Tint = Clock.GetCurrentColor();
 
-            renderer.Draw(ResourceManager.GetTextureData("battle_grass_floor"), Vector2.Zero, Color.White);
+            drawBackground(renderer);
+
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.BeforeDraw(renderer);
 
@@ -222,6 +223,25 @@ namespace SuperFantasticSteampunk
                 position.X += 150.0f;
                 position.Y += 150.0f;
             });
+        }
+
+        private void drawBackground(Renderer renderer)
+        {
+            const float scale = 0.5f;
+            Rectangle cameraBoundingBox = camera.GetBoundingBox();
+
+            TextureData textureData = OverworldEncounter.Overworld.Area.BattleSceneryTextureData;
+            float textureWidth = textureData.Width * scale * camera.Scale.X;
+            int drawCount = (int)(cameraBoundingBox.Right / textureWidth) + 1;
+            for (int i = 0; i < drawCount; ++i)
+                renderer.Draw(textureData, new Vector2(textureData.Width * scale * i, 0.0f), Color.White, 0.0f, new Vector2(scale));
+            
+            if (cameraBoundingBox.Left < 0)
+            {
+                drawCount = (int)(Math.Abs(cameraBoundingBox.Left) / textureWidth) + 1;
+                for (int i = -1; i >= -drawCount; --i)
+                    renderer.Draw(textureData, new Vector2(textureData.Width * scale * i, 0.0f), Color.White, 0.0f, new Vector2(scale));
+            }
         }
 
         private void drawPersistentGui(Renderer renderer)
