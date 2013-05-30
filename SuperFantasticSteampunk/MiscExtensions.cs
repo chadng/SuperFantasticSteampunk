@@ -3,11 +3,28 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
+using Spine;
 
 namespace SuperFantasticSteampunk
 {
     static class MiscExtensions
     {
+        #region Constants
+        private static readonly int[] regionAttachmentXIndexes = new int[] {
+            RegionAttachment.X1,
+            RegionAttachment.X2,
+            RegionAttachment.X3,
+            RegionAttachment.X4
+        };
+
+        private static readonly int[] regionAttachmentYIndexes = new int[] {
+            RegionAttachment.Y1,
+            RegionAttachment.Y2,
+            RegionAttachment.Y3,
+            RegionAttachment.Y4
+        };
+        #endregion
+
         public static T Tap<T>(this T self, Action<T> action)
         {
             action(self);
@@ -122,6 +139,58 @@ namespace SuperFantasticSteampunk
                     return true;
             }
             return false;
+        }
+
+        public static Rectangle GenerateBoundingBox(this SkeletonData self)
+        {
+            Skeleton skeleton = new Skeleton(self);
+            skeleton.UpdateWorldTransform();
+
+            Vector2 minPoint = new Vector2();
+            Vector2 maxPoint = new Vector2();
+            bool firstSlot = true;
+            float[] vertices = new float[8];
+
+            foreach (Slot slot in skeleton.DrawOrder)
+            {
+                RegionAttachment regionAttachment = slot.Attachment as RegionAttachment;
+                if (regionAttachment == null)
+                    continue;
+
+                regionAttachment.ComputeVertices(slot.Bone, vertices);
+
+                if (firstSlot)
+                {
+                    minPoint.X = maxPoint.X = vertices[RegionAttachment.X1];
+                    minPoint.Y = maxPoint.Y = vertices[RegionAttachment.Y1];
+                    firstSlot = false;
+                }
+
+                foreach (int index in regionAttachmentXIndexes)
+                {
+                    float value = vertices[index];
+                    if (value < minPoint.X)
+                        minPoint.X = value;
+                    else if (value > maxPoint.X)
+                        maxPoint.X = value;
+                }
+
+                foreach (int index in regionAttachmentYIndexes)
+                {
+                    float value = vertices[index];
+                    if (value < minPoint.Y)
+                        minPoint.Y = value;
+                    else if (value > maxPoint.Y)
+                        maxPoint.Y = value;
+                }
+            }
+
+            return new Rectangle(
+                (int)(minPoint.X),
+                (int)(minPoint.Y - Math.Abs(maxPoint.Y)),
+                (int)(Math.Abs(minPoint.X) + Math.Abs(maxPoint.X)),
+                (int)(Math.Abs(minPoint.Y) + Math.Abs(maxPoint.Y))
+            );
         }
     }
 }

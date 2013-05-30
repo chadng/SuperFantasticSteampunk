@@ -9,6 +9,7 @@ namespace SuperFantasticSteampunk
     {
         #region Instance Fields
         private TextureData shadowTextureData;
+        private Rectangle skeletonBoundingBox;
         #endregion
 
         #region Instance Properties
@@ -41,6 +42,7 @@ namespace SuperFantasticSteampunk
             : this(position)
         {
             Skeleton = skeleton;
+            skeletonBoundingBox = ResourceManager.GetSkeletonBoundingBox(skeleton.Data.Name);
             AnimationState = new AnimationState(new AnimationStateData(skeleton.Data));
             shadowTextureData = ResourceManager.GetTextureData("shadow");
         }
@@ -131,12 +133,26 @@ namespace SuperFantasticSteampunk
 
         public Rectangle GetBoundingBoxAt(Vector2 position)
         {
-            return new Rectangle(
-                (int)(position.X - (Sprite.Data.OriginX * Scale.X)),
-                (int)(position.Y - (Sprite.Data.OriginY * Scale.Y)),
-                (int)(Sprite.Data.Width * Scale.X),
-                (int)(Sprite.Data.Height * Scale.Y)
-            );
+            if (Sprite != null)
+            {
+                return new Rectangle(
+                    (int)(position.X - (Sprite.Data.OriginX * Scale.X)),
+                    (int)(position.Y - (Sprite.Data.OriginY * Scale.Y)),
+                    (int)(Sprite.Data.Width * Scale.X),
+                    (int)(Sprite.Data.Height * Scale.Y)
+                );
+            }
+            else if (Skeleton != null)
+            {
+                return new Rectangle(
+                    (int)(position.X + (skeletonBoundingBox.Left * Scale.X)),
+                    (int)(position.Y + (skeletonBoundingBox.Top * Scale.Y)),
+                    (int)(skeletonBoundingBox.Width * Scale.X),
+                    (int)(skeletonBoundingBox.Height * Scale.X)
+                );
+            }
+            else
+                return new Rectangle((int)position.X, (int)position.Y, 0, 0);
         }
 
         public virtual void Kill()

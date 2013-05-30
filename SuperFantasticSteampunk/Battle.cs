@@ -58,14 +58,14 @@ namespace SuperFantasticSteampunk
             camera = new Camera(Game1.ScreenSize);
             camera.Position = camera.Size / 2.0f;
 
-            generateBackgroundScenery();
-            generateFloorScenery();
-
             repositionPartyMembers();
             updateCamera();
             camera.Scale = camera.TargetScale;
             updateCamera();
             camera.Position = camera.TargetPosition;
+
+            generateBackgroundScenery();
+            generateFloorScenery();
 
             whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
             characterClassHeadTextureData = new Dictionary<CharacterClass, TextureData> {
@@ -176,9 +176,16 @@ namespace SuperFantasticSteampunk
 
         private void generateBackgroundScenery()
         {
-            const float overflow = 400.0f;
+            const float startY = 200.0f;
+
+            float lowestX, lowestY, highestX, highestY;
+            getLowestAndHighestPositionalValuesForParties(out lowestX, out lowestY, out highestX, out highestY);
+            float overflow = highestX - lowestX * Game1.ScreenScaleFactor.X;
+            lowestX -= overflow;
+            highestX += overflow;
+
             List<string> scenerySpriteNames = OverworldEncounter.Overworld.Area.Data.BattleBackgroundScenerySpriteNamesToList();
-            Vector2 position = new Vector2(-overflow, 200.0f);
+            Vector2 position = new Vector2(lowestX, startY);
             do
             {
                 SpriteData spriteData = ResourceManager.GetSpriteData(scenerySpriteNames.Sample());
@@ -190,19 +197,25 @@ namespace SuperFantasticSteampunk
                 }
                 else
                     position.X += Game1.Random.Next(spriteData.Width);
-            } while (position.X < Game1.ScreenSize.X + overflow);
+            } while (position.X < highestX);
         }
 
         private void generateFloorScenery()
         {
-            const float overflow = 400.0f;
             const float minStep = 30.0f;
             const int randomStep = 30;
             const float startY = 300.0f;
 
+            float lowestX, lowestY, highestX, highestY;
+            getLowestAndHighestPositionalValuesForParties(out lowestX, out lowestY, out highestX, out highestY);
+            Vector2 overflow = new Vector2(highestX - lowestX, highestY - lowestY) * Game1.ScreenScaleFactor;
+            lowestX -= overflow.X;
+            highestX += overflow.X;
+            highestY += overflow.Y;
+
             List<string> scenerySpriteNames = OverworldEncounter.Overworld.Area.Data.BattleFloorScenerySpriteNamesToList();
 
-            Vector2 position = new Vector2(-overflow, startY);
+            Vector2 position = new Vector2(lowestX, startY);
             do
             {
                 do
@@ -216,11 +229,11 @@ namespace SuperFantasticSteampunk
                     }
 
                     position.Y += minStep + Game1.Random.Next(randomStep);
-                } while (position.Y < Game1.ScreenSize.Y + overflow);
+                } while (position.Y < highestY);
 
                 position.X += minStep + Game1.Random.Next(randomStep);
                 position.Y = startY;
-            } while (position.X < Game1.ScreenSize.X + overflow);
+            } while (position.X < highestX);
         }
 
         private void addScenery(SpriteData spriteData, Vector2 position)
@@ -235,15 +248,11 @@ namespace SuperFantasticSteampunk
         private void updateCamera(Action midUpdateAction = null)
         {
             Vector2 borderSize = new Vector2(150.0f, 75.0f) * Game1.ScreenScaleFactor;
-            Vector2 firstPosition = (PlayerParty.Count > 0 ? PlayerParty : EnemyParty)[0].BattleEntity.Position;
-            float lowestX = firstPosition.X, lowestY = firstPosition.Y;
-            float highestX = firstPosition.X, highestY = firstPosition.Y;
-
-            getLowestAndHighestPositionalValuesForParty(PlayerParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
-            getLowestAndHighestPositionalValuesForParty(EnemyParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
+            float lowestX, lowestY, highestX, highestY;
+            getLowestAndHighestPositionalValuesForParties(out lowestX, out lowestY, out highestX, out highestY);
 
             lowestX -= borderSize.X;
-            lowestY -= borderSize.Y * 5.0f;
+            lowestY -= borderSize.Y * 2.0f;
             highestX += borderSize.X;
             highestY += borderSize.Y + uiHeight;
 
@@ -263,21 +272,33 @@ namespace SuperFantasticSteampunk
             camera.TargetPosition = new Vector2(averageX, averageY);
         }
 
+        private void getLowestAndHighestPositionalValuesForParties(out float lowestX, out float lowestY, out float highestX, out float highestY)
+        {
+            Vector2 firstPosition = (PlayerParty.Count > 0 ? PlayerParty : EnemyParty)[0].BattleEntity.Position;
+            lowestX = firstPosition.X;
+            lowestY = firstPosition.Y;
+            highestX = firstPosition.X;
+            highestY = firstPosition.Y;
+
+            getLowestAndHighestPositionalValuesForParty(PlayerParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
+            getLowestAndHighestPositionalValuesForParty(EnemyParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
+        }
+
         private void getLowestAndHighestPositionalValuesForParty(Party party, ref float lowestX, ref float lowestY, ref float highestX, ref float highestY)
         {
             foreach (PartyMember partyMember in party)
             {
-                Vector2 position = partyMember.BattleEntity.Position;
+                Rectangle boundingBox = partyMember.BattleEntity.GetBoundingBox();
 
-                if (position.X < lowestX)
-                    lowestX = position.X;
-                else if (position.X > highestX)
-                    highestX = position.X;
+                if (boundingBox.Left < lowestX)
+                    lowestX = boundingBox.Left;
+                else if (boundingBox.Right > highestX)
+                    highestX = boundingBox.Right;
 
-                if (position.Y < lowestY)
-                    lowestY = position.Y;
-                else if (position.Y > highestY)
-                    highestY = position.Y;
+                if (boundingBox.Top < lowestY)
+                    lowestY = boundingBox.Top;
+                else if (boundingBox.Bottom > highestY)
+                    highestY = boundingBox.Bottom;
             }
         }
 
@@ -325,7 +346,7 @@ namespace SuperFantasticSteampunk
         {
             Vector2 screenScaleFactor = Game1.ScreenScaleFactor;
             Vector2 headPadding = new Vector2(30.0f) * screenScaleFactor;
-            float barPadding = 20.0f * screenScaleFactor.X;
+            Vector2 barPadding = new Vector2(20.0f) * screenScaleFactor;
             Vector2 barSize = new Vector2(290, 30) * screenScaleFactor;
 
             Vector2 uiPositition = new Vector2(0.0f, Game1.ScreenSize.Y - (uiHeight * screenScaleFactor.Y));
@@ -336,29 +357,30 @@ namespace SuperFantasticSteampunk
             for (int i = 0; i < PlayerParty.Count; ++i)
             {
                 drawPartyMemberUi(PlayerParty[i], position, headPadding, barPadding, barSize, renderer);
-                position.X += (headPadding.X * 2) + barPadding + barSize.X + (characterClassHeadTextureData[PlayerParty[i].CharacterClass].Width * screenScaleFactor.X);
+                position.X += (headPadding.X * 2) + barPadding.X + barSize.X + (characterClassHeadTextureData[PlayerParty[i].CharacterClass].Width * screenScaleFactor.X);
             }
         }
 
-        private void drawPartyMemberUi(PartyMember partyMember, Vector2 position, Vector2 headPadding, float barPadding, Vector2 barSize, Renderer renderer)
+        private void drawPartyMemberUi(PartyMember partyMember, Vector2 position, Vector2 headPadding, Vector2 barPadding, Vector2 barSize, Renderer renderer)
         {
             Vector2 screenScaleFactor = Game1.ScreenScaleFactor;
+            Vector2 minScale = new Vector2(MathHelper.Min(screenScaleFactor.X, screenScaleFactor.Y));
 
             TextureData textureData = characterClassHeadTextureData[partyMember.CharacterClass];
-            renderer.Draw(textureData, position, Color.White, 0.0f, Vector2.One * screenScaleFactor.X, false);
+            renderer.Draw(textureData, position, Color.White, 0.0f, minScale, false);
 
             position.X += (textureData.Width * screenScaleFactor.X) + headPadding.X;
             float percentageHealth = partyMember.Health / (float)partyMember.MaxHealth;
             Color healthBarColor = percentageHealth > 0.5f ? Color.Lerp(Color.Yellow, Color.Green, (percentageHealth - 0.5f) / 0.5f) : Color.Lerp(Color.Red, Color.Yellow, percentageHealth / 0.5f);
             drawBar(position, barSize, percentageHealth, healthBarColor, renderer);
             string barText = "HP: " + partyMember.Health.ToString() + "/" + partyMember.MaxHealth;
-            renderer.DrawText(barText, position + (new Vector2(10.0f, 7.0f) * screenScaleFactor), Color.White, 0.0f, Vector2.Zero, Vector2.One * screenScaleFactor);
+            renderer.DrawText(barText, position + (new Vector2(10.0f, 7.0f) * screenScaleFactor), Color.White, 0.0f, Vector2.Zero, minScale);
 
-            position.Y += barSize.Y + barPadding;
+            position.Y += barSize.Y + barPadding.Y;
             float percentageExperience = partyMember.Experience / (float)partyMember.ExperienceNeededToLevelUp;
             drawBar(position, barSize, percentageExperience, Color.Blue, renderer);
             barText = "XP: " + partyMember.Experience.ToString() + "/" + partyMember.ExperienceNeededToLevelUp.ToString();
-            renderer.DrawText(barText, position + (new Vector2(10.0f, 7.0f) * screenScaleFactor), Color.White, 0.0f, Vector2.Zero, Vector2.One * screenScaleFactor);
+            renderer.DrawText(barText, position + (new Vector2(10.0f, 7.0f) * screenScaleFactor), Color.White, 0.0f, Vector2.Zero, minScale);
         }
 
         private void drawBar(Vector2 position, Vector2 size, float percentage, Color color, Renderer renderer)

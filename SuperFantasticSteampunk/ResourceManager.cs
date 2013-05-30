@@ -3,6 +3,7 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
@@ -13,6 +14,7 @@ namespace SuperFantasticSteampunk
     {
         #region Static Fields
         private static SortedDictionary<string, SkeletonData> skeletonDataDictionary;
+        private static SortedDictionary<string, Rectangle> skeletonBoundingBoxDictionary;
         private static SortedDictionary<string, WeaponData> weaponDataDictionary;
         private static SortedDictionary<string, ShieldData> shieldDataDictionary;
         private static SortedDictionary<string, ItemData> itemDataDictionary;
@@ -27,6 +29,7 @@ namespace SuperFantasticSteampunk
         public static void Initialize(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             skeletonDataDictionary = new SortedDictionary<string, SkeletonData>();
+            skeletonBoundingBoxDictionary = new SortedDictionary<string, Rectangle>();
             populateSkeletonDataDictionary(contentManager, graphicsDevice);
             weaponDataDictionary = new SortedDictionary<string, WeaponData>();
             populateWeaponDataDictionary(contentManager);
@@ -67,6 +70,14 @@ namespace SuperFantasticSteampunk
             if (skeletonDataDictionary.TryGetValue(name, out skeletonData))
                 return new Skeleton(skeletonData);
             return null;
+        }
+
+        public static Rectangle GetSkeletonBoundingBox(string name)
+        {
+            Rectangle rectangle;
+            if (skeletonBoundingBoxDictionary.TryGetValue(name, out rectangle))
+                return rectangle;
+            return new Rectangle();
         }
 
         public static Weapon GetNewWeapon(string name)
@@ -220,7 +231,9 @@ namespace SuperFantasticSteampunk
             foreach (string atlasFileName in atlasFileNames)
             {
                 string skeletonName = atlasFileName.Replace(skeletonDirectory, "").Replace(".atlas", "");
-                skeletonDataDictionary.Add(skeletonName, loadSkeletonData(skeletonDirectory + skeletonName, graphicsDevice));
+                SkeletonData skeletonData = loadSkeletonData(skeletonDirectory + skeletonName, graphicsDevice);
+                skeletonDataDictionary.Add(skeletonName, skeletonData);
+                skeletonBoundingBoxDictionary.Add(skeletonName, skeletonData.GenerateBoundingBox());
                 Logger.Log("Loaded skeleton '" + skeletonName + "'");
             }
         }
