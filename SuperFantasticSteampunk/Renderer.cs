@@ -85,8 +85,6 @@ namespace SuperFantasticSteampunk
                 skeleton.RootBone.Y = position.Y;
                 skeleton.RootBone.ScaleX *= Camera.Scale.X;
                 skeleton.RootBone.ScaleY *= Camera.Scale.Y;
-                skeleton.RootBone.X *= Camera.Scale.X;
-                skeleton.RootBone.Y *= Camera.Scale.Y;
                 skeleton.UpdateWorldTransform();
                 skeletonRenderer.Draw(skeleton);
                 skeleton.RootBone.X = previousX;
@@ -154,10 +152,7 @@ namespace SuperFantasticSteampunk
         private void translatePosition(ref Vector2 position)
         {
             if (Camera != null)
-            {
                 position = Camera.TranslateVector(position);
-                position *= Camera.Scale;
-            }
         }
 
         private void updateColor(ref Color color)

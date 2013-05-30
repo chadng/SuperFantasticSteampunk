@@ -29,14 +29,14 @@ namespace SuperFantasticSteampunk
         #region Instance Methods
         public Vector2 TranslateVector(Vector2 vector)
         {
-            return vector - (Position - (Size / 2.0f));
+            return ((vector - Position) * Scale) + (Size / 2.0f);
         }
 
         public Rectangle GetBoundingBox()
         {
             return new Rectangle(
-                (int)(Position.X - (Size.X / 2.0f)),
-                (int)(Position.Y - (Size.Y / 2.0f)),
+                (int)((Position.X * Scale.X) - (Size.X / 2.0f)),
+                (int)((Position.Y * Scale.Y) - (Size.Y / 2.0f)),
                 (int)Size.X,
                 (int)Size.Y
             );

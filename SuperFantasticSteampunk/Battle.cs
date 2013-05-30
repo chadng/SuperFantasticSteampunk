@@ -247,10 +247,9 @@ namespace SuperFantasticSteampunk
             if (midUpdateAction != null)
                 midUpdateAction();
 
-            float scale = camera.Scale.X;
             float averageX = (lowestX + highestX) / 2.0f;
             float averageY = (lowestY + highestY) / 2.0f;
-            camera.TargetPosition = new Vector2(averageX, averageY) * scale;
+            camera.TargetPosition = new Vector2(averageX, averageY);
         }
 
         private void getLowestAndHighestPositionalValuesForParty(Party party, ref float lowestX, ref float lowestY, ref float highestX, ref float highestY)
@@ -305,7 +304,7 @@ namespace SuperFantasticSteampunk
             
             if (cameraBoundingBox.Left < 0)
             {
-                drawCount = (int)(Math.Abs(cameraBoundingBox.Left) / textureWidth) + 1;
+                drawCount = (int)Math.Ceiling(Math.Abs(cameraBoundingBox.Left) / textureWidth) + 1;
                 for (int i = -1; i >= -drawCount; --i)
                     renderer.Draw(textureData, new Vector2(textureData.Width * scale * i, 0.0f), Color.White, 0.0f, new Vector2(scale));
             }
