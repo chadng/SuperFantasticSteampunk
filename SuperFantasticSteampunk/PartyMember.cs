@@ -47,6 +47,8 @@ namespace SuperFantasticSteampunk
         public Weapon EquippedWeapon { get; private set; }
         public Shield EquippedShield { get; private set; }
 
+        public bool HurtThisTurn { get; private set; }
+
         public bool Alive
         {
             get { return Health > 0; }
@@ -102,6 +104,8 @@ namespace SuperFantasticSteampunk
                 BattleEntity.ShadowFollowBone = BattleEntity.Skeleton.FindBone(Data.BattleShadowFollowBoneName);
 
             updateBattleEntitySkeleton();
+
+            HurtThisTurn = false;
         }
 
         public void FinishBattle()
@@ -109,6 +113,7 @@ namespace SuperFantasticSteampunk
             statModifiers.Clear();
             statusEffects.Clear();
             BattleEntity = null;
+            HurtThisTurn = false;
         }
 
         public void EndTurn()
@@ -125,6 +130,7 @@ namespace SuperFantasticSteampunk
                     statModifiers.RemoveAt(i);
             }
             calculateStatsFromModifiers();
+            HurtThisTurn = false;
         }
 
         public void Kill(Battle battle)
@@ -196,8 +202,11 @@ namespace SuperFantasticSteampunk
             updateBattleEntitySkeleton();
         }
 
-        public void DoDamage(int amount)
+        public void DoDamage(int amount, bool ignoreShield)
         {
+            if (amount > 0 && !ignoreShield)
+                HurtThisTurn = true;
+
             Health -= amount;
             if (Health < 0)
                 Health = 0;

@@ -53,11 +53,8 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public void ResetManipulation(List<string> exclude = null)
+        public void ResetManipulation(params string[] exclude)
         {
-            if (exclude == null)
-                exclude = new List<string>();
-
             if (!exclude.Contains("Position"))
                 Position = new Vector2(0.0f);
             if (!exclude.Contains("Velocity"))

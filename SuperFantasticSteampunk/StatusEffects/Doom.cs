@@ -41,7 +41,7 @@
                 Inflictor = null;
              else if (++turns >= durationInTurns)
             {
-                partyMember.DoDamage(partyMember.Health);
+                partyMember.DoDamage(partyMember.Health, true);
                 Inflictor = null;
             }
         }

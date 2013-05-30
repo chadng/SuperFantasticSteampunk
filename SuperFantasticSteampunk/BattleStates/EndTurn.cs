@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk.BattleStates
@@ -32,18 +33,8 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
-            List<string> exclude = new List<string> { "Scale" };
-            foreach (PartyMember partyMember in Battle.PlayerParty)
-            {
-                partyMember.EndTurn();
-                partyMember.BattleEntity.ResetManipulation(exclude);
-            }
-            foreach (PartyMember partyMember in Battle.EnemyParty)
-            {
-                partyMember.EndTurn();
-                partyMember.BattleEntity.ResetManipulation(exclude);
-            }
-
+            handlePartyFinish(Battle.PlayerParty);
+            handlePartyFinish(Battle.EnemyParty);
             removeDeadPartyMembers();
 
             if (Battle.PlayerParty.Count == 0)
@@ -83,6 +74,17 @@ namespace SuperFantasticSteampunk.BattleStates
             }
             else
                 Finish();
+        }
+
+        private void handlePartyFinish(Party party)
+        {
+            foreach (PartyMember partyMember in party)
+            {
+                if (!partyMember.HurtThisTurn && partyMember.EquippedShield != null)
+                    party.ShieldInventory.AddItem(partyMember.EquippedShield.Data.Name);
+                partyMember.EndTurn();
+                partyMember.BattleEntity.ResetManipulation("Scale");
+            }
         }
         #endregion
     }

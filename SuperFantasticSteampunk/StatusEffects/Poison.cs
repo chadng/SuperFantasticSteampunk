@@ -36,7 +36,7 @@
         {
             base.EndTurnUpdate(partyMember);
             int damage = partyMember.Health / 8;
-            partyMember.DoDamage(damage > 0 ? damage : 1);
+            partyMember.DoDamage(damage > 0 ? damage : 1, true);
             finished = true;
             //TODO: Poison animation
         }

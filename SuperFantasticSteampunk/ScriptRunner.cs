@@ -183,7 +183,7 @@ namespace SuperFantasticSteampunk
             PartyMember target = getPartyMemberFromSelector(targetPartyMemberSelector);
 
             int damage = target.CalculateDamageTaken(actor);
-            target.DoDamage(damage);
+            target.DoDamage(damage, false);
             Scene.AddEntity(new FloatingText(damage.ToString(), Color.Red, target.BattleEntity.Position));
 
             if (target.EquippedShield != null)
@@ -196,7 +196,7 @@ namespace SuperFantasticSteampunk
             int amount = (int)args[1];
 
             PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
-            partyMember.DoDamage(-amount);
+            partyMember.DoDamage(-amount, true);
         }
 
         private void _addMaxHealthStatModifier(object[] args)

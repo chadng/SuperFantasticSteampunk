@@ -112,5 +112,16 @@ namespace SuperFantasticSteampunk
                 result.Add(func(item));
             return result;
         }
+
+        public static bool Contains<T>(this IList<T> self, T item)
+            where T : class
+        {
+            foreach (T element in self)
+            {
+                if (element == item)
+                    return true;
+            }
+            return false;
+        }
     }
 }
