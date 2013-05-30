@@ -127,9 +127,9 @@ namespace SuperFantasticSteampunk.BattleStates
                 { InputButton.Left, new ButtonEventHandlers(down: moveLeft) },
                 { InputButton.Right, new ButtonEventHandlers(down: moveRight) },
                 { InputButton.A, new ButtonEventHandlers(down: showAttackMenu, up: hideAttackMenu) },
-                { InputButton.B, new ButtonEventHandlers(down: showDefendMenu, up: hideDefendMenu) },
-                { InputButton.X, new ButtonEventHandlers(down: showItemMenu, up: hideItemMenu) },
-                { InputButton.Y, new ButtonEventHandlers(up: cancelAction) }
+                { InputButton.X, new ButtonEventHandlers(down: showDefendMenu, up: hideDefendMenu) },
+                { InputButton.Y, new ButtonEventHandlers(down: showItemMenu, up: hideItemMenu) },
+                { InputButton.B, new ButtonEventHandlers(up: cancelAction) }
             });
         }
         #endregion

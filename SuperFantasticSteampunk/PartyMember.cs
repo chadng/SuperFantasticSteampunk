@@ -24,6 +24,8 @@ namespace SuperFantasticSteampunk
         #region Instance Properties
         public PartyMemberData Data { get; private set; }
 
+        public string Name { get; private set; }
+
         public int BaseMaxHealth { get; private set; }
         public int BaseAttack { get; private set; }
         public int BaseSpecialAttack { get; private set; }
@@ -65,9 +67,11 @@ namespace SuperFantasticSteampunk
         {
             if (partyMemberData == null)
                 throw new Exception("PartyMemberData cannot be null");
+            Data = partyMemberData;
+            Name = Data.Name;
+
             statModifiers = new List<StatModifier>();
             statusEffects = new List<StatusEffect>();
-            Data = partyMemberData;
             BattleEntity = null;
             Level = 50;
             resetBaseStatsFromLevel();

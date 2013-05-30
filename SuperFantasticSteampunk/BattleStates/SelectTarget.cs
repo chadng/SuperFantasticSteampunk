@@ -43,7 +43,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 { InputButton.Up, new ButtonEventHandlers(down: choosePreviousTarget) },
                 { InputButton.Down, new ButtonEventHandlers(down: chooseNextTarget) },
                 { InputButton.A, new ButtonEventHandlers(up: selectTarget) },
-                { InputButton.Y, new ButtonEventHandlers(up: cancelTargetSelection) }
+                { InputButton.B, new ButtonEventHandlers(up: cancelTargetSelection) }
             });
         }
         #endregion
