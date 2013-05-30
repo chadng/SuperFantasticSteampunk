@@ -110,6 +110,9 @@ namespace SuperFantasticSteampunk
                 case "setVelocity": _setVelocity(args); break;
                 case "setVelocityX": _setVelocityX(args); break;
                 case "setVelocityY": _setVelocityY(args); break;
+                case "setAcceleration": _setAcceleration(args); break;
+                case "setAccelerationX": _setAccelerationX(args); break;
+                case "setAccelerationY": _setAccelerationY(args); break;
                 case "setRotation": _setRotation(args); break;
                 case "setAngularVelocity": _setAngularVelocity(args); break;
                 case "random": _random(args); break;
@@ -306,6 +309,33 @@ namespace SuperFantasticSteampunk
 
             Entity battleEntity = getPartyMemberFromSelector(partyMemberSelector).BattleEntity;
             battleEntity.Velocity = new Vector2(battleEntity.Velocity.X, y);
+        }
+
+        private void _setAcceleration(object[] args)
+        { // setAcceleration(string partyMemberSelector, float x, float y)
+            string partyMemberSelector = (string)args[0];
+            float x = (float)args[1];
+            float y = (float)args[2];
+
+            getPartyMemberFromSelector(partyMemberSelector).BattleEntity.Acceleration = new Vector2(x, y);
+        }
+
+        private void _setAccelerationX(object[] args)
+        { // setAccelerationX(string partyMemberSelector, float x)
+            string partyMemberSelector = (string)args[0];
+            float x = (float)args[1];
+
+            Entity battleEntity = getPartyMemberFromSelector(partyMemberSelector).BattleEntity;
+            battleEntity.Acceleration = new Vector2(x, battleEntity.Acceleration.Y);
+        }
+
+        private void _setAccelerationY(object[] args)
+        { // setAccelerationY(string partyMemberSelector, float y)
+            string partyMemberSelector = (string)args[0];
+            float y = (float)args[1];
+
+            Entity battleEntity = getPartyMemberFromSelector(partyMemberSelector).BattleEntity;
+            battleEntity.Acceleration = new Vector2(battleEntity.Acceleration.X, y);
         }
 
         private void _setRotation(object[] args)

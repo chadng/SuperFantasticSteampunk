@@ -18,6 +18,7 @@ namespace SuperFantasticSteampunk
         public AnimationState AnimationState { get; private set; }
         public Vector2 Position { get; set; }
         public Vector2 Velocity { get; set; }
+        public Vector2 Acceleration { get; set; }
         public Vector2 Scale { get; set; }
         public float Rotation { get; set; }
         public float AngularVelocity { get; set; }
@@ -58,9 +59,11 @@ namespace SuperFantasticSteampunk
         public void ResetManipulation(params string[] exclude)
         {
             if (!exclude.Contains("Position"))
-                Position = new Vector2(0.0f);
+                Position = Vector2.Zero;
             if (!exclude.Contains("Velocity"))
-                Velocity = new Vector2(0.0f);
+                Velocity = Vector2.Zero;
+            if (!exclude.Contains("Acceleration"))
+                Acceleration = Vector2.Zero;
             if (!exclude.Contains("Scale"))
                 Scale = new Vector2(1.0f);
             if (!exclude.Contains("Rotation"))
@@ -162,8 +165,10 @@ namespace SuperFantasticSteampunk
 
         public virtual void Update(GameTime gameTime)
         {
-            Position += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Rotation += AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Velocity += Acceleration * deltaT;
+            Position += Velocity * deltaT;
+            Rotation += AngularVelocity * deltaT;
 
             if (Skeleton != null)
                 updateSkeleton(gameTime);
