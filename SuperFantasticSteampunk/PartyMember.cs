@@ -68,13 +68,12 @@ namespace SuperFantasticSteampunk
             if (partyMemberData == null)
                 throw new Exception("PartyMemberData cannot be null");
             Data = partyMemberData;
-            Name = Data.Name;
-
             statModifiers = new List<StatModifier>();
             statusEffects = new List<StatusEffect>();
             BattleEntity = null;
             Level = 50;
             resetBaseStatsFromLevel();
+            generateName();
         }
         #endregion
 
@@ -340,6 +339,14 @@ namespace SuperFantasticSteampunk
                 BattleEntity.SetSkeletonAttachment("shield", EquippedShield.Data.Name, EquippedShield.TextureData);
             else
                 BattleEntity.SetSkeletonAttachment("shield", "none", forceNoTextureData: true);
+        }
+
+        private void generateName()
+        {
+            if (Data.CharacterClass == CharacterClass.Enemy)
+                Name = Data.Name;
+            else
+                Name = ResourceManager.PartyMemberTitles.Sample() + " " + ResourceManager.PartyMemberForenames.Sample() + " " + ResourceManager.PartyMemberSurnames.Sample();
         }
         #endregion
     }

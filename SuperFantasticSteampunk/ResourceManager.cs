@@ -25,6 +25,12 @@ namespace SuperFantasticSteampunk
         private static SortedDictionary<string, AreaData> areaDataDictionary;
         #endregion
 
+        #region Static Properties
+        public static List<string> PartyMemberTitles { get; private set; }
+        public static List<string> PartyMemberForenames { get; private set; }
+        public static List<string> PartyMemberSurnames { get; private set; }
+        #endregion
+
         #region Static Methods
         public static void Initialize(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
@@ -47,6 +53,10 @@ namespace SuperFantasticSteampunk
             populateSpriteFontDictionary(contentManager);
             areaDataDictionary = new SortedDictionary<string, AreaData>();
             populateAreaDataDictionary(contentManager);
+
+            PartyMemberTitles = new List<string>(File.ReadAllLines(contentManager.RootDirectory + "/Titles.txt"));
+            PartyMemberForenames = new List<string>(File.ReadAllLines(contentManager.RootDirectory + "/Forenames.txt"));
+            PartyMemberSurnames = new List<string>(File.ReadAllLines(contentManager.RootDirectory + "/Surnames.txt"));
         }
 
         public static void UnloadContent()
@@ -62,6 +72,10 @@ namespace SuperFantasticSteampunk
             textureDataDictionary.Clear();
             spriteFontDictionary.Clear();
             areaDataDictionary.Clear();
+
+            PartyMemberTitles.Clear();
+            PartyMemberForenames.Clear();
+            PartyMemberSurnames.Clear();
         }
 
         public static Skeleton GetNewSkeleton(string name)

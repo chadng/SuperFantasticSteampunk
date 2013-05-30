@@ -369,6 +369,8 @@ namespace SuperFantasticSteampunk
             TextureData textureData = characterClassHeadTextureData[partyMember.CharacterClass];
             renderer.Draw(textureData, position, Color.White, 0.0f, minScale, false);
 
+            renderer.DrawText(partyMember.Name, position + new Vector2(0.0f, (textureData.Height + 5.0f) * minScale.Y), Color.White, 0.0f, Vector2.Zero, minScale);
+
             position.X += (textureData.Width * screenScaleFactor.X) + headPadding.X;
             float percentageHealth = partyMember.Health / (float)partyMember.MaxHealth;
             Color healthBarColor = percentageHealth > 0.5f ? Color.Lerp(Color.Yellow, Color.Green, (percentageHealth - 0.5f) / 0.5f) : Color.Lerp(Color.Red, Color.Yellow, percentageHealth / 0.5f);
