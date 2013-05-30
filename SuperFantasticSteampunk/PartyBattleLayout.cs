@@ -117,6 +117,12 @@ namespace SuperFantasticSteampunk
             List<PartyMember> nextList = layout[listIndex + nextListRelativeIndex];
             int partyMemberPosition = Math.Min(list.IndexOf(partyMember), nextList.Count);
             list.Remove(partyMember);
+            if (partyMemberPosition == 0 && nextList.Count > 0)
+            {
+                Weapon frontPartyMemberWeapon = nextList[partyMemberPosition].EquippedWeapon;
+                if (frontPartyMemberWeapon != null && frontPartyMemberWeapon.Data.WeaponType == WeaponType.Melee)
+                    ++partyMemberPosition;
+            }
             nextList.Insert(partyMemberPosition, partyMember);
         }
 
@@ -130,7 +136,14 @@ namespace SuperFantasticSteampunk
             if (partyMemberIndex != (edgeIndexIsZero ? 0 : list.Count - 1)) // if not at the end already
             {
                 list.RemoveAt(partyMemberIndex);
-                list.Insert(partyMemberIndex + nextRelativeIndex, partyMember);
+                int index = partyMemberIndex + nextRelativeIndex;
+                if (index == 0 && list.Count > 0)
+                {
+                    Weapon frontPartyMemberWeapon = list[index].EquippedWeapon;
+                    if (frontPartyMemberWeapon != null && frontPartyMemberWeapon.Data.WeaponType == WeaponType.Melee)
+                        ++index;
+                }
+                list.Insert(index, partyMember);
             }
         }
         #endregion
