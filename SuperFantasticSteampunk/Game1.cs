@@ -8,6 +8,7 @@ namespace SuperFantasticSteampunk
         #region Constants
         public static readonly Color SkyColor = new Color(140, 197, 217);
         public static readonly Color GrassColor = new Color(190, 255, 153);
+        public static readonly Vector2 ReferenceScreenSize = new Vector2(1920, 1080);
         #endregion
         
         #region Static Fields
@@ -21,6 +22,11 @@ namespace SuperFantasticSteampunk
         public static Vector2 ScreenSize
         {
             get { return new Vector2(1920, 1080); }
+        }
+
+        public static Vector2 ScreenScaleFactor
+        {
+            get { return ScreenSize / ReferenceScreenSize; }
         }
         #endregion
 
@@ -76,6 +82,7 @@ namespace SuperFantasticSteampunk
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("marksman")));
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("medic")));
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("marksman")));
+            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("medic")));
 
             Overworld overworld = new Overworld(playerParty, ResourceManager.GetNewArea("forest"));
 

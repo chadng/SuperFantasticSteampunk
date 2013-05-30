@@ -13,7 +13,7 @@ namespace SuperFantasticSteampunk
         public int MaxStat = 250;
         public int MaxLevel = 99;
         public int ExperienceNeededToLevelUp = 100;
-        private double experienceConstant = 10.0;
+        private double experienceConstant = 5.0;
         #endregion
 
         #region Instance Fields
@@ -237,13 +237,18 @@ namespace SuperFantasticSteampunk
                 levelledUp = true;
                 Experience -= ExperienceNeededToLevelUp;
             }
+
             if (Level > MaxLevel)
             {
                 Level = MaxLevel;
                 Experience = ExperienceNeededToLevelUp;
             }
-            resetBaseStatsFromLevel();
-            calculateStatsFromModifiers();
+
+            if (levelledUp)
+            {
+                resetBaseStatsFromLevel();
+                calculateStatsFromModifiers();
+            }
 
             return levelledUp;
         }

@@ -8,10 +8,15 @@ namespace SuperFantasticSteampunk
 {
     class Battle : Scene
     {
+        #region Constants
+        private const int uiHeight = 150;
+        #endregion
+
         #region Instance Fields
         private Stack<BattleState> states;
         private bool stateChanged;
         private TextureData whitePixelTextureData;
+        private Dictionary<CharacterClass, TextureData> characterClassHeadTextureData;
         private Camera camera;
         #endregion
 
@@ -61,6 +66,12 @@ namespace SuperFantasticSteampunk
             camera.Scale = camera.TargetScale;
             updateCamera();
             camera.Position = camera.TargetPosition;
+
+            whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
+            characterClassHeadTextureData = new Dictionary<CharacterClass, TextureData> {
+                { CharacterClass.Marksman, ResourceManager.GetTextureData("marksman_head") },
+                { CharacterClass.Medic, ResourceManager.GetTextureData("medic_head") }
+            };
         }
         #endregion
 
@@ -223,7 +234,7 @@ namespace SuperFantasticSteampunk
 
         private void updateCamera(Action midUpdateAction = null)
         {
-            float borderSize = Game1.ScreenSize.X / (5.0f + ((Game1.ScreenSize.X / 2700.0f) * 10.0f));
+            Vector2 borderSize = new Vector2(150.0f, 75.0f) * Game1.ScreenScaleFactor;
             Vector2 firstPosition = (PlayerParty.Count > 0 ? PlayerParty : EnemyParty)[0].BattleEntity.Position;
             float lowestX = firstPosition.X, lowestY = firstPosition.Y;
             float highestX = firstPosition.X, highestY = firstPosition.Y;
@@ -231,10 +242,10 @@ namespace SuperFantasticSteampunk
             getLowestAndHighestPositionalValuesForParty(PlayerParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
             getLowestAndHighestPositionalValuesForParty(EnemyParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
 
-            lowestX -= borderSize;
-            lowestY -= borderSize * 2.5f;
-            highestX += borderSize;
-            highestY += borderSize;
+            lowestX -= borderSize.X;
+            lowestY -= borderSize.Y * 5.0f;
+            highestX += borderSize.X;
+            highestY += borderSize.Y + uiHeight;
 
             float scaleX = Game1.ScreenSize.X / (highestX - lowestX);
             float scaleY = Game1.ScreenSize.Y / (highestY - lowestY);
@@ -312,23 +323,48 @@ namespace SuperFantasticSteampunk
 
         private void drawPersistentGui(Renderer renderer)
         {
-            foreach (PartyMember partyMember in PlayerParty)
-                drawHealthBar(partyMember, renderer);
+            Vector2 screenScaleFactor = Game1.ScreenScaleFactor;
+            Vector2 headPadding = new Vector2(30.0f) * screenScaleFactor;
+            float barPadding = 20.0f * screenScaleFactor.X;
+            Vector2 barSize = new Vector2(290, 30) * screenScaleFactor;
+
+            Vector2 uiPositition = new Vector2(0.0f, Game1.ScreenSize.Y - (uiHeight * screenScaleFactor.Y));
+            Vector2 uiSize = new Vector2(Game1.ScreenSize.X, uiHeight * screenScaleFactor.Y);
+            renderer.Draw(whitePixelTextureData, uiPositition, Color.Gray, 0.0f, uiSize, false);
+            
+            Vector2 position = new Vector2(headPadding.X, uiPositition.Y + headPadding.Y);
+            for (int i = 0; i < PlayerParty.Count; ++i)
+            {
+                drawPartyMemberUi(PlayerParty[i], position, headPadding, barPadding, barSize, renderer);
+                position.X += (headPadding.X * 2) + barPadding + barSize.X + (characterClassHeadTextureData[PlayerParty[i].CharacterClass].Width * screenScaleFactor.X);
+            }
         }
 
-        private void drawHealthBar(PartyMember partyMember, Renderer renderer)
+        private void drawPartyMemberUi(PartyMember partyMember, Vector2 position, Vector2 headPadding, float barPadding, Vector2 barSize, Renderer renderer)
         {
-            if (whitePixelTextureData == null)
-                whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
-            if (whitePixelTextureData == null)
-                return;
+            Vector2 screenScaleFactor = Game1.ScreenScaleFactor;
 
+            TextureData textureData = characterClassHeadTextureData[partyMember.CharacterClass];
+            renderer.Draw(textureData, position, Color.White, 0.0f, Vector2.One * screenScaleFactor.X, false);
+
+            position.X += (textureData.Width * screenScaleFactor.X) + headPadding.X;
             float percentageHealth = partyMember.Health / (float)partyMember.MaxHealth;
-            Color color = Color.Lerp(Color.Red, Color.Green, percentageHealth);
-            float width = 200.0f * percentageHealth;
-            float height = 20.0f;
+            Color healthBarColor = percentageHealth > 0.5f ? Color.Lerp(Color.Yellow, Color.Green, (percentageHealth - 0.5f) / 0.5f) : Color.Lerp(Color.Red, Color.Yellow, percentageHealth / 0.5f);
+            drawBar(position, barSize, percentageHealth, healthBarColor, renderer);
+            string barText = "HP: " + partyMember.Health.ToString() + "/" + partyMember.MaxHealth;
+            renderer.DrawText(barText, position + (new Vector2(10.0f, 7.0f) * screenScaleFactor), Color.White, 0.0f, Vector2.Zero, Vector2.One * screenScaleFactor);
 
-            renderer.Draw(whitePixelTextureData, partyMember.BattleEntity.Position + new Vector2(20.0f), color, 0.0f, new Vector2(width, height));
+            position.Y += barSize.Y + barPadding;
+            float percentageExperience = partyMember.Experience / (float)partyMember.ExperienceNeededToLevelUp;
+            drawBar(position, barSize, percentageExperience, Color.Blue, renderer);
+            barText = "XP: " + partyMember.Experience.ToString() + "/" + partyMember.ExperienceNeededToLevelUp.ToString();
+            renderer.DrawText(barText, position + (new Vector2(10.0f, 7.0f) * screenScaleFactor), Color.White, 0.0f, Vector2.Zero, Vector2.One * screenScaleFactor);
+        }
+
+        private void drawBar(Vector2 position, Vector2 size, float percentage, Color color, Renderer renderer)
+        {
+            renderer.Draw(whitePixelTextureData, position, Color.Black, 0.0f, size, false);
+            renderer.Draw(whitePixelTextureData, position, color, 0.0f, new Vector2(size.X * percentage, size.Y), false);
         }
         #endregion
     }
