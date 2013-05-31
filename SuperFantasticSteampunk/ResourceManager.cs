@@ -80,6 +80,9 @@ namespace SuperFantasticSteampunk
 
         public static Skeleton GetNewSkeleton(string name)
         {
+            if (name == null)
+                return null;
+
             SkeletonData skeletonData;
             if (skeletonDataDictionary.TryGetValue(name, out skeletonData))
                 return new Skeleton(skeletonData);
@@ -88,6 +91,9 @@ namespace SuperFantasticSteampunk
 
         public static Rectangle GetSkeletonBoundingBox(string name)
         {
+            if (name == null)
+                return new Rectangle();
+
             Rectangle rectangle;
             if (skeletonBoundingBoxDictionary.TryGetValue(name, out rectangle))
                 return rectangle;
@@ -96,6 +102,9 @@ namespace SuperFantasticSteampunk
 
         public static Weapon GetNewWeapon(string name)
         {
+            if (name == null)
+                return null;
+
             WeaponData weaponData = GetWeaponData(name);
             if (weaponData == null)
                 return null;
@@ -105,6 +114,9 @@ namespace SuperFantasticSteampunk
 
         public static WeaponData GetWeaponData(string name)
         {
+            if (name == null)
+                return null;
+
             WeaponData weaponData;
             if (weaponDataDictionary.TryGetValue(name, out weaponData))
                 return weaponData;
@@ -113,6 +125,9 @@ namespace SuperFantasticSteampunk
 
         public static Shield GetNewShield(string name)
         {
+            if (name == null)
+                return null;
+
             ShieldData shieldData = GetShieldData(name);
             if (shieldData == null)
                 return null;
@@ -122,6 +137,9 @@ namespace SuperFantasticSteampunk
 
         public static ShieldData GetShieldData(string name)
         {
+            if (name == null)
+                return null;
+
             ShieldData shieldData;
             if (shieldDataDictionary.TryGetValue(name, out shieldData))
                 return shieldData;
@@ -130,6 +148,9 @@ namespace SuperFantasticSteampunk
 
         public static Item GetNewItem(string name)
         {
+            if (name == null)
+                return null;
+
             ItemData itemData = GetItemData(name);
             if (itemData == null)
                 return null;
@@ -139,6 +160,9 @@ namespace SuperFantasticSteampunk
 
         public static ItemData GetItemData(string name)
         {
+            if (name == null)
+                return null;
+
             ItemData itemData;
             if (itemDataDictionary.TryGetValue(name, out itemData))
                 return itemData;
@@ -147,6 +171,9 @@ namespace SuperFantasticSteampunk
 
         public static PartyMember GetNewPartyMember(string name)
         {
+            if (name == null)
+                return null;
+
             PartyMemberData partyMemberData = GetPartyMemberData(name);
             if (partyMemberData == null)
                 return null;
@@ -156,6 +183,9 @@ namespace SuperFantasticSteampunk
 
         public static PartyMemberData GetPartyMemberData(string name)
         {
+            if (name == null)
+                return null;
+
             PartyMemberData partyMemberData;
             if (partyMemberDataDictionary.TryGetValue(name, out partyMemberData))
                 return partyMemberData;
@@ -164,6 +194,9 @@ namespace SuperFantasticSteampunk
 
         public static Sprite GetNewSprite(string name)
         {
+            if (name == null)
+                return null;
+
             SpriteData spriteData = GetSpriteData(name);
             if (spriteData == null)
                 return null;
@@ -173,6 +206,9 @@ namespace SuperFantasticSteampunk
 
         public static SpriteData GetSpriteData(string name)
         {
+            if (name == null)
+                return null;
+
             SpriteData spriteData;
             if (spriteDataDictionary.TryGetValue(name, out spriteData))
                 return spriteData;
@@ -181,6 +217,9 @@ namespace SuperFantasticSteampunk
 
         public static TextureData GetTextureData(string name)
         {
+            if (name == null)
+                return null;
+
             TextureData textureData;
             if (textureDataDictionary.TryGetValue(name, out textureData))
                 return textureData;
@@ -189,6 +228,9 @@ namespace SuperFantasticSteampunk
 
         public static SpriteFont GetSpriteFont(string name)
         {
+            if (name == null)
+                return null;
+
             SpriteFont spriteFont;
             if (spriteFontDictionary.TryGetValue(name, out spriteFont))
                 return spriteFont;
@@ -197,6 +239,9 @@ namespace SuperFantasticSteampunk
 
         public static Area GetNewArea(string name)
         {
+            if (name == null)
+                return null;
+
             AreaData areaData = GetAreaData(name);
             if (areaData == null)
                 return null;
@@ -206,6 +251,9 @@ namespace SuperFantasticSteampunk
 
         public static AreaData GetAreaData(string name)
         {
+            if (name == null)
+                return null;
+
             AreaData areaData;
             if (areaDataDictionary.TryGetValue(name, out areaData))
                 return areaData;

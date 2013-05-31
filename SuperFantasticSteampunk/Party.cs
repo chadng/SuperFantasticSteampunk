@@ -70,6 +70,7 @@ namespace SuperFantasticSteampunk
             foreach (PartyMember partyMember in this)
             {
                 partyMember.StartBattle();
+                partyMember.EquipDefaultWeapon(this);
                 battle.AddBattleEntity(partyMember.BattleEntity);
             }
         }

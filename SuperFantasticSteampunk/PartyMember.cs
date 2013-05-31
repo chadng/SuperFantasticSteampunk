@@ -195,6 +195,19 @@ namespace SuperFantasticSteampunk
             updateBattleEntitySkeleton();
         }
 
+        public void EquipDefaultWeapon(Party party)
+        {
+            foreach (KeyValuePair<string, int> inventoryItem in party.WeaponInventories[CharacterClass])
+            {
+                if (inventoryItem.Value < 0)
+                {
+                    EquipWeapon(inventoryItem.Key);
+                    if (EquippedWeapon != null)
+                        break;
+                }
+            }
+        }
+
         public void EquipShield(string name)
         {
             EquippedWeapon = null;
