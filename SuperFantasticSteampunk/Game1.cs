@@ -49,6 +49,7 @@ namespace SuperFantasticSteampunk
         #region Instance Fields
         private GraphicsDeviceManager graphics;
         private Renderer renderer;
+        private bool skipNextUpdate;
         #endregion
 
         #region Constructors
@@ -62,6 +63,7 @@ namespace SuperFantasticSteampunk
             graphics.PreferredBackBufferHeight = (int)ScreenSize.Y;
             IsFixedTimeStep = false;
             Content.RootDirectory = "Content";
+            skipNextUpdate = false;
         }
         #endregion
 
@@ -69,6 +71,19 @@ namespace SuperFantasticSteampunk
         protected override void Initialize()
         {
             base.Initialize();
+
+#if WINDOWS
+            try
+            {
+                OpenTK.NativeWindow window = typeof(OpenTKGameWindow).GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(((OpenTKGameWindow)Window)) as OpenTK.NativeWindow;
+                if (window != null)
+                    window.Move += (object sender, EventArgs e) => skipNextUpdate = true;
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e);
+            }
+#endif
         }
 
         protected override void LoadContent()
@@ -96,6 +111,12 @@ namespace SuperFantasticSteampunk
 
         protected override void Update(GameTime gameTime)
         {
+            if (skipNextUpdate)
+            {
+                skipNextUpdate = false;
+                return;
+            }
+
             Scene.UpdateCurrent(gameTime);
             base.Update(gameTime);
         }

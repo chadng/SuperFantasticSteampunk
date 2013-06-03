@@ -129,6 +129,10 @@
     <Reference Include="MonoGame.Framework">
       <HintPath>..\..\..\..\..\mono_projects\MonoGame\MonoGame.Framework\bin\WindowsGL\Release\MonoGame.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\mono_projects\MonoGame\MonoGame.Framework\bin\WindowsGL\Release\OpenTK.dll</HintPath>
+    </Reference>
     <Reference Include="spine-csharp">
       <HintPath>..\..\..\..\..\projects\spine-runtimes\spine-xna\bin\x86\Release\spine-csharp.dll</HintPath>
     </Reference>
