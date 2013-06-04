@@ -18,11 +18,7 @@ namespace SuperFantasticSteampunk
         #region Static Properties
         public static Random Random { get; private set; }
         public static Color BackgroundColor { get; set; }
-
-        public static Vector2 ScreenSize
-        {
-            get { return new Vector2(1920, 1080); }
-        }
+        public static Vector2 ScreenSize { get; private set; }
 
         public static Vector2 ScreenScaleFactor
         {
@@ -47,6 +43,7 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Fields
+        private Settings settings;
         private GraphicsDeviceManager graphics;
         private Renderer renderer;
         private bool skipNextUpdate;
@@ -57,12 +54,14 @@ namespace SuperFantasticSteampunk
             : base()
         {
             instance = this;
+            Content.RootDirectory = "Content";
+            settings = new Settings("Settings.txt", Content);
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = settings.GetSetting<bool>("fullscreen");
+            ScreenSize = new Vector2(settings.GetSetting<int>("screen_width"), settings.GetSetting<int>("screen_height"));
             graphics.PreferredBackBufferWidth = (int)ScreenSize.X;
             graphics.PreferredBackBufferHeight = (int)ScreenSize.Y;
             IsFixedTimeStep = false;
-            Content.RootDirectory = "Content";
             skipNextUpdate = false;
         }
         #endregion

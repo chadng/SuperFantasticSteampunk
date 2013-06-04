@@ -111,6 +111,7 @@
     <Compile Include="Scenery.cs" />
     <Compile Include="Script.cs" />
     <Compile Include="ScriptRunner.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Shield.cs" />
     <Compile Include="ShieldData.cs" />
     <Compile Include="Sprite.cs" />
@@ -165,6 +166,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\KeyboardMapping.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Settings.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Skeletons\bat.png">
