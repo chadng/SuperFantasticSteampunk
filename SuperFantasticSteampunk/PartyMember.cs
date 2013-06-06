@@ -9,13 +9,6 @@ namespace SuperFantasticSteampunk
 {
     class PartyMember
     {
-        #region Constants
-        public int MaxStat = 250;
-        public int MaxLevel = 99;
-        public int ExperienceNeededToLevelUp = 100;
-        private double experienceConstant = 5.0;
-        #endregion
-
         #region Instance Fields
         private List<StatModifier> statModifiers;
         private List<StatusEffect> statusEffects;
@@ -26,22 +19,9 @@ namespace SuperFantasticSteampunk
 
         public string Name { get; private set; }
 
-        public int BaseMaxHealth { get; private set; }
-        public int BaseAttack { get; private set; }
-        public int BaseSpecialAttack { get; private set; }
-        public int BaseDefence { get; private set; }
-        public int BaseSpeed { get; private set; }
-        public int BaseCharm { get; private set; }
-
         public int MaxHealth { get; private set; }
         public int Health { get; private set; }
-        public int Attack { get; private set; }
-        public int SpecialAttack { get; private set; }
-        public int Defence { get; private set; }
         public int Speed { get; private set; }
-        public int Charm { get; private set; }
-        public int Level { get; private set; }
-        public int Experience { get; private set; }
 
         public Entity BattleEntity { get; private set; }
         public Entity OverworldEntity { get; private set; }
@@ -71,9 +51,8 @@ namespace SuperFantasticSteampunk
             statModifiers = new List<StatModifier>();
             statusEffects = new List<StatusEffect>();
             BattleEntity = null;
-            Level = 50;
-            resetBaseStatsFromLevel();
             generateName();
+            resetStats();
         }
         #endregion
 
@@ -92,7 +71,6 @@ namespace SuperFantasticSteampunk
         {
             statModifiers.Clear();
             statusEffects.Clear();
-            resetBaseStatsFromLevel();
             calculateStatsFromModifiers();
 
             BattleEntity = new Entity(ResourceManager.GetNewSkeleton(Data.BattleSkeletonName), new Vector2());
@@ -232,110 +210,48 @@ namespace SuperFantasticSteampunk
 
         public int CalculateDamageTaken(PartyMember enemy)
         {
-            int damageToDo = enemy.calculateFinalAttackStat() * (enemy.criticalHit() ? 2 : 1);
+            int damageToDo = enemy.calculateFinalAttackStat();
             int damageToBlock = calcuateFinalDefenceStat();
             int damage = damageToDo - damageToBlock;
             return damage <= 0 ? 1 : damage;
         }
 
-        public bool AddExperience(int amount)
-        {
-            bool levelledUp = false;
-
-            Experience += amount;
-            while (Experience >= ExperienceNeededToLevelUp)
-            {
-                ++Level;
-                levelledUp = true;
-                Experience -= ExperienceNeededToLevelUp;
-            }
-
-            if (Level > MaxLevel)
-            {
-                Level = MaxLevel;
-                Experience = ExperienceNeededToLevelUp;
-            }
-
-            if (levelledUp)
-            {
-                resetBaseStatsFromLevel();
-                calculateStatsFromModifiers();
-            }
-
-            return levelledUp;
-        }
-
-        public int CalculateExperienceGained(PartyMember enemy)
-        {
-            return calculateExperienceGained(enemy.Level, enemy.Data.ExperienceMultiplier);
-        }
-
-        private int calculateExperienceGained(int enemyLevel, int enemyExperienceMultiplier)
-        {
-            return (int)Math.Round((enemyLevel / (double)Level) * enemyExperienceMultiplier * experienceConstant);
-        }
-
         private int calculateFinalAttackStat()
         {
             int result = 0;
-            if (EquippedWeapon == null)
-                result = Attack;
-            else
-            {
+            if (EquippedWeapon != null)
                 result += EquippedWeapon.Data.Power;
-                if (EquippedWeapon.Data.WeaponType == WeaponType.Melee)
-                    result += Attack;
-                else
-                    result += SpecialAttack;
-            }
             return result;
         }
 
         private int calcuateFinalDefenceStat()
         {
-            int result = Defence;
+            int result = 0;
             if (EquippedShield != null)
                 result += EquippedShield.Data.Defence;
             return result;
         }
 
-        private bool criticalHit()
+        private void resetStats()
         {
-            return Game1.Random.Next(MaxStat) < Charm;
+            MaxHealth = Data.MaxHealth;
+            Speed = Data.Speed;
+            Health = MaxHealth;
         }
 
         private void calculateStatsFromModifiers()
         {
-            MaxHealth = BaseMaxHealth;
-            Attack = BaseAttack;
-            SpecialAttack = BaseSpecialAttack;
-            Defence = BaseDefence;
-            Speed = BaseSpeed;
-            Charm = BaseCharm;
+            MaxHealth = Data.MaxHealth;
+            Speed = Data.Speed;
 
             foreach (StatModifier statModifier in statModifiers)
             {
-                MaxHealth += (int)(BaseMaxHealth * statModifier.MaxHealth);
-                Attack += (int)(BaseAttack * statModifier.Attack);
-                SpecialAttack += (int)(BaseSpecialAttack * statModifier.SpecialAttack);
-                Defence += (int)(BaseDefence * statModifier.Defence);
-                Speed += (int)(BaseSpeed * statModifier.Speed);
-                Charm += (int)(BaseCharm * statModifier.Charm);
+                MaxHealth += (int)(Data.MaxHealth * statModifier.MaxHealth);
+                Speed += (int)(Data.Speed * statModifier.Speed);
             }
 
             if (Health > MaxHealth)
                 Health = MaxHealth;
-        }
-
-        private void resetBaseStatsFromLevel()
-        {
-            BaseMaxHealth = (int)Math.Round(Level * (Data.MaxHealth / (double)MaxLevel));
-            BaseAttack = (int)Math.Round(Level * (Data.Attack / (double)MaxLevel));
-            BaseSpecialAttack = (int)Math.Round(Level * (Data.SpecialAttack / (double)MaxLevel));
-            BaseDefence = (int)Math.Round(Level * (Data.Defence / (double)MaxLevel));
-            BaseSpeed = (int)Math.Round(Level * (Data.Speed / (double)MaxLevel));
-            BaseCharm = (int)Math.Round(Level * (Data.Charm / (double)MaxLevel));
-            Health = BaseMaxHealth;
         }
 
         private void updateBattleEntitySkeleton()

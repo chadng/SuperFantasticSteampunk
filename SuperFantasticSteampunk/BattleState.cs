@@ -80,24 +80,7 @@ namespace SuperFantasticSteampunk
             for (int i = party.Count - 1; i >= 0; --i)
             {
                 if (!party[i].Alive)
-                {
-                    if (otherParty == Battle.PlayerParty)
-                    {
-                        foreach (PartyMember partyMember in otherParty)
-                        {
-                            int experience = partyMember.CalculateExperienceGained(party[i]);
-                            Scene.AddEntity(new FloatingText(experience.ToString() + " XP", Color.Gold, partyMember.BattleEntity.Position));
-                            Logger.Log(partyMember.Name + " gained " + experience + " XP");
-                            if (partyMember.AddExperience(experience))
-                            {
-                                Logger.Log(partyMember.Name + " levelled up");
-                                Scene.AddEntity(new FloatingText("Level up!", Color.Blue, partyMember.BattleEntity.Position));
-                            }
-                        }
-                    }
-
                     party[i].Kill(Battle);
-                }
             }
         }
         #endregion

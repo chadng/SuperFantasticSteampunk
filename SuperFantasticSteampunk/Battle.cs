@@ -385,12 +385,6 @@ namespace SuperFantasticSteampunk
             drawBar(position, barSize, percentageHealth, healthBarColor, renderer);
             string barText = "HP: " + partyMember.Health.ToString() + "/" + partyMember.MaxHealth;
             renderer.DrawText(barText, position + (new Vector2(10.0f, 7.0f) * screenScaleFactor), Color.White, 0.0f, Vector2.Zero, minScale);
-
-            position.Y += barSize.Y + barPadding.Y;
-            float percentageExperience = partyMember.Experience / (float)partyMember.ExperienceNeededToLevelUp;
-            drawBar(position, barSize, percentageExperience, Color.Blue, renderer);
-            barText = "XP: " + partyMember.Experience.ToString() + "/" + partyMember.ExperienceNeededToLevelUp.ToString();
-            renderer.DrawText(barText, position + (new Vector2(10.0f, 7.0f) * screenScaleFactor), Color.White, 0.0f, Vector2.Zero, minScale);
         }
 
         private void drawBar(Vector2 position, Vector2 size, float percentage, Color color, Renderer renderer)
