@@ -290,13 +290,19 @@ namespace SuperFantasticSteampunk.BattleStates
             ThinkMenuOption option = MenuOptions[CurrentOptionNameIndex];
             if (CurrentThinkActionType == ThinkActionType.Attack)
             {
-                CurrentPartyMember.EquipWeapon(ThinkMenuOption.IsDefaultOption(option) ? null : option.Name);
-                Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + option.Name + "' weapon");
+                if (option != ThinkMenuOption.Cancel)
+                {
+                    CurrentPartyMember.EquipWeapon(option.Name);
+                    Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + option.Name + "' weapon");
+                }
             }
             else if (CurrentThinkActionType == ThinkActionType.Defend)
             {
-                CurrentPartyMember.EquipShield(ThinkMenuOption.IsDefaultOption(option) ? null : option.Name);
-                Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + option.Name + "' shield");
+                if (option != ThinkMenuOption.Cancel)
+                {
+                    CurrentPartyMember.EquipShield(ThinkMenuOption.IsDefaultOption(option) ? null : option.Name);
+                    Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + option.Name + "' shield");
+                }
             }
             else
             {

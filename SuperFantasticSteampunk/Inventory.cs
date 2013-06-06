@@ -56,7 +56,7 @@ namespace SuperFantasticSteampunk
                     result.Add(item);
             }
 
-            result.Sort((a, b) => String.Compare(a.Key, b.Key));
+            result.Sort((a, b) => a.Value < 0 || b.Value < 0 ? a.Value.CompareTo(b.Value) : String.Compare(a.Key, b.Key));
             if (pushLastUsedItemKeyToTop)
                 result.Insert(0, new InventoryItem(lastUsedItemKey, this[lastUsedItemKey]));
 
