@@ -21,6 +21,7 @@ namespace SuperFantasticSteampunk.BattleStates
         public Outro(Battle battle)
             : base(battle)
         {
+            Logger.Log(battle.PlayerPartyItemsUsed.ToString() + " items were used");
         }
         #endregion
 

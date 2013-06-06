@@ -17,6 +17,7 @@ namespace SuperFantasticSteampunk.BattleStates
         public PartyMember Actor { get; set; }
         public PartyMember Target { get; set; }
         public bool Active { get; set; }
+        public bool InfiniteInInventory { get; set; }
         #endregion
 
         #region Constructors
@@ -27,6 +28,7 @@ namespace SuperFantasticSteampunk.BattleStates
             Actor = actor;
             Target = target;
             Active = true;
+            InfiniteInInventory = false;
         }
         #endregion
     }
@@ -328,11 +330,15 @@ namespace SuperFantasticSteampunk.BattleStates
                 return;
             }
 
-            currentThinkAction = new ThinkAction(CurrentThinkActionType, MenuOptions[CurrentOptionNameIndex].Name, CurrentPartyMember);
+            ThinkMenuOption option = MenuOptions[CurrentOptionNameIndex];
+            currentThinkAction = new ThinkAction(CurrentThinkActionType, option.Name, CurrentPartyMember);
             if (CurrentThinkActionType == ThinkActionType.Defend)
                 finishThinkForCurrentPartyMember();
             else
+            {
+                currentThinkAction.InfiniteInInventory = option.Amount < 0;
                 PushState(new SelectTarget(Battle, currentThinkAction));
+            }
         }
 
         private void setThinkActionType(ThinkActionType thinkActionType)

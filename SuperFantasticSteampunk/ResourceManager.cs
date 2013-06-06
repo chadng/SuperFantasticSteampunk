@@ -123,6 +123,11 @@ namespace SuperFantasticSteampunk
             return null;
         }
 
+        public static List<WeaponData> GetWeaponDataWhere(Predicate<WeaponData> predicate)
+        {
+            return getDataWhere(weaponDataDictionary, predicate);
+        }
+
         public static Shield GetNewShield(string name)
         {
             if (name == null)
@@ -146,6 +151,11 @@ namespace SuperFantasticSteampunk
             return null;
         }
 
+        public static List<ShieldData> GetShieldDataWhere(Predicate<ShieldData> predicate)
+        {
+            return getDataWhere(shieldDataDictionary, predicate);
+        }
+
         public static Item GetNewItem(string name)
         {
             if (name == null)
@@ -167,6 +177,11 @@ namespace SuperFantasticSteampunk
             if (itemDataDictionary.TryGetValue(name, out itemData))
                 return itemData;
             return null;
+        }
+
+        public static List<ItemData> GetItemDataWhere(Predicate<ItemData> predicate)
+        {
+            return getDataWhere(itemDataDictionary, predicate);
         }
 
         public static PartyMember GetNewPartyMember(string name)
@@ -273,6 +288,7 @@ namespace SuperFantasticSteampunk
             case "CharacterClass": return ParseItemData<CharacterClass>(valueString);
             case "StatusEffectType": return ParseItemData<StatusEffectType>(valueString);
             case "OverworldMovementType": return ParseItemData<OverworldMovementType>(valueString);
+            case "Rarity": return ParseItemData<Rarity>(valueString);
             case "Script": return valueString.Length == 0 ? null : new Script(valueString);
             }
             return null;
@@ -470,6 +486,17 @@ namespace SuperFantasticSteampunk
                 spriteFontDictionary.Add(spriteFontName, contentManager.Load<SpriteFont>("Fonts/" + spriteFontName));
                 Logger.Log("Loaded font '" + spriteFontName + "'");
             }
+        }
+
+        private static List<T> getDataWhere<T>(IDictionary<string, T> dictionary, Predicate<T> predicate)
+        {
+            List<T> result = new List<T>();
+            foreach (KeyValuePair<string, T> keyValuePair in dictionary)
+            {
+                if (predicate(keyValuePair.Value))
+                    result.Add(keyValuePair.Value);
+            }
+            return result;
         }
         #endregion
     }

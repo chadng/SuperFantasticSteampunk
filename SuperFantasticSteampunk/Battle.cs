@@ -33,6 +33,8 @@ namespace SuperFantasticSteampunk
         public PartyBattleLayout EnemyPartyLayout { get; private set; }
 
         public Encounter OverworldEncounter { get; private set; }
+
+        public int PlayerPartyItemsUsed { get; private set; }
         #endregion
 
         #region Constructors
@@ -72,6 +74,8 @@ namespace SuperFantasticSteampunk
                 { CharacterClass.Marksman, ResourceManager.GetTextureData("marksman_head") },
                 { CharacterClass.Medic, ResourceManager.GetTextureData("medic_head") }
             };
+
+            PlayerPartyItemsUsed = 0;
         }
         #endregion
 
@@ -119,6 +123,12 @@ namespace SuperFantasticSteampunk
             if (EnemyParty.Contains(partyMember))
                 return EnemyPartyLayout;
             return null;
+        }
+
+        public void IncrementItemsUsed(Party party)
+        {
+            if (party == PlayerParty)
+                ++PlayerPartyItemsUsed;
         }
 
         protected override void update(GameTime gameTime)
