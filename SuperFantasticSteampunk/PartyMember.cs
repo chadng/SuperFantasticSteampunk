@@ -213,7 +213,7 @@ namespace SuperFantasticSteampunk
             int damageToDo = enemy.calculateFinalAttackStat();
             int damageToBlock = calcuateFinalDefenceStat();
             int damage = damageToDo - damageToBlock;
-            return damage <= 0 ? 1 : damage;
+            return damage < 0 ? 0 : damage;
         }
 
         private int calculateFinalAttackStat()
@@ -221,6 +221,8 @@ namespace SuperFantasticSteampunk
             int result = 0;
             if (EquippedWeapon != null)
                 result += EquippedWeapon.Data.Power;
+            foreach (StatModifier statModifier in statModifiers)
+                result += EquippedWeapon.Data.WeaponType == WeaponType.Ranged ? statModifier.RangedAttack : statModifier.MeleeAttack;
             return result;
         }
 
@@ -229,6 +231,8 @@ namespace SuperFantasticSteampunk
             int result = 0;
             if (EquippedShield != null)
                 result += EquippedShield.Data.Defence;
+            foreach (StatModifier statModifier in statModifiers)
+                result += statModifier.Defence;
             return result;
         }
 
