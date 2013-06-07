@@ -98,16 +98,11 @@ namespace SuperFantasticSteampunk
 
         public bool CollidesWith(Entity other)
         {
-            if (Sprite == null || other.Sprite == null)
-                return false;
             return GetBoundingBox().Intersects(other.GetBoundingBox());
         }
 
         public bool CollidesWith(Map map)
         {
-            if (Sprite == null)
-                return false;
-
             Rectangle bounds = GetBoundingBox();
 
             Point topLeftTileCoord = new Point(bounds.Left / Map.TileSize, bounds.Top / Map.TileSize);
@@ -187,7 +182,7 @@ namespace SuperFantasticSteampunk
                     shadowPosition.X = ShadowFollowBone.WorldX;
                     shadowScale += new Vector2(ShadowFollowBone.WorldY - Skeleton.RootBone.WorldY) / 400.0f;
                 }
-                renderer.Draw(shadowTextureData, shadowPosition, Color.White * 0.5f, 0.0f, shadowScale);
+                renderer.Draw(shadowTextureData, shadowPosition, Color.White * 0.5f, 0.0f, shadowScale * Scale);
                 
                 if (Altitude == 0.0f)
                     renderer.Draw(Skeleton);

@@ -59,7 +59,13 @@ namespace SuperFantasticSteampunk
         #region Instance Methods
         public void StartOverworld(Vector2 entityPosition)
         {
-            OverworldEntity = new Entity(ResourceManager.GetNewSprite(Data.OverworldSpriteName), entityPosition);
+            if (Data.OverworldSpriteName != null && Data.OverworldSpriteName.Length > 0)
+                OverworldEntity = new Entity(ResourceManager.GetNewSprite(Data.OverworldSpriteName), entityPosition);
+            else
+            {
+                OverworldEntity = new Entity(ResourceManager.GetNewSkeleton(Data.OverworldSkeletonName), entityPosition);
+                OverworldEntity.Scale = new Vector2(0.3f);
+            }
         }
 
         public void FinishOverworld()

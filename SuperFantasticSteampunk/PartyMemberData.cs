@@ -13,6 +13,7 @@ namespace SuperFantasticSteampunk
         public int MaxHealth { get; private set; }
         public int Speed { get; private set; }
         public string OverworldSpriteName { get; private set; }
+        public string OverworldSkeletonName { get; private set; }
         public string BattleSkeletonName { get; private set; }
         public string BattleSkeletonSkinName { get; private set; }
         public float BattleAltitude { get; private set; }

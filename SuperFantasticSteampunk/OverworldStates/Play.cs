@@ -94,7 +94,7 @@ namespace SuperFantasticSteampunk.OverworldStates
             handleSceneryCollisions(entity, gameTime, ref velocity);
             entity.Velocity = velocity;
 
-            Overworld.SetEntitySpriteAnimationForVelocity(entity);
+            Overworld.SetEntityAnimationForVelocity(entity);
         }
 
         private void handleEnemyCollisions()

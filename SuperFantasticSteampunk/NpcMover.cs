@@ -34,7 +34,7 @@ namespace SuperFantasticSteampunk
         #region Instance Methods
         public virtual void Update(GameTime gameTime)
         {
-            overworld.SetEntitySpriteAnimationForVelocity(entity);
+            overworld.SetEntityAnimationForVelocity(entity);
         }
 
         public abstract void Finish();

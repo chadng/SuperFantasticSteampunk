@@ -83,21 +83,12 @@ namespace SuperFantasticSteampunk
             addEntity(party.PrimaryPartyMember.OverworldEntity);
         }
 
-        public void SetEntitySpriteAnimationForVelocity(Entity entity)
+        public void SetEntityAnimationForVelocity(Entity entity)
         {
-            if (entity.Velocity == Vector2.Zero)
-            {
-                if (entity.Sprite.CurrentAnimation == null)
-                    entity.Sprite.SetAnimation("idle_down");
-                else
-                {
-                    string animationName = entity.Sprite.CurrentAnimation.Name;
-                    if (!animationName.StartsWith("idle_"))
-                        entity.Sprite.SetAnimation(animationName.Replace("walk_", "idle_"));
-                }
-            }
+            if (entity.Skeleton == null)
+                setEntitySpriteAnimationForVelocity(entity);
             else
-                entity.Sprite.SetAnimation("walk_" + directionFromVelocity(entity.Velocity));
+                setEntitySkeletonAnimationForVelocity(entity);
         }
 
         protected override void update(GameTime gameTime)
@@ -184,6 +175,48 @@ namespace SuperFantasticSteampunk
                     if (Map.CollisionMap[x, y])
                         renderer.Draw(pixelTexture, new Vector2(x, y) * Map.TileSize, Color.Black, 0.0f, new Vector2(Map.TileSize));
                 }
+            }
+        }
+
+        private void setEntitySpriteAnimationForVelocity(Entity entity)
+        {
+            if (entity.Velocity == Vector2.Zero)
+            {
+                if (entity.Sprite.CurrentAnimation == null)
+                    entity.Sprite.SetAnimation("idle_down");
+                else
+                {
+                    string animationName = entity.Sprite.CurrentAnimation.Name;
+                    if (!animationName.StartsWith("idle_"))
+                        entity.Sprite.SetAnimation(animationName.Replace("walk_", "idle_"));
+                }
+            }
+            else
+            {
+                string animationName = "walk_" + directionFromVelocity(entity.Velocity);
+                if (entity.Sprite.CurrentAnimation == null || animationName != entity.Sprite.CurrentAnimation.Name)
+                    entity.Sprite.SetAnimation(animationName);
+            }
+        }
+
+        private void setEntitySkeletonAnimationForVelocity(Entity entity)
+        {
+            if (entity.Velocity == Vector2.Zero)
+            {
+                if (entity.AnimationState.Animation == null)
+                    entity.AnimationState.SetAnimation("idle_down", true);
+                else
+                {
+                    string animationName = entity.AnimationState.Animation.Name;
+                    if (!animationName.StartsWith("idle_"))
+                        entity.AnimationState.SetAnimation(animationName.Replace("walk_", "idle_"), true);
+                }
+            }
+            else
+            {
+                string animationName = "walk_" + directionFromVelocity(entity.Velocity);
+                if (entity.AnimationState.Animation == null || animationName != entity.AnimationState.Animation.Name)
+                    entity.AnimationState.SetAnimation(animationName, true);
             }
         }
 
