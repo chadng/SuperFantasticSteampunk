@@ -176,7 +176,7 @@ namespace SuperFantasticSteampunk
             if (Skeleton != null)
             {
                 Vector2 shadowPosition = Position;
-                Vector2 shadowScale = Vector2.One;
+                Vector2 shadowScale = new Vector2(1.5f);
                 if (ShadowFollowBone != null)
                 {
                     shadowPosition.X = ShadowFollowBone.WorldX;
