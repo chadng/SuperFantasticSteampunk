@@ -17,6 +17,8 @@ namespace SuperFantasticSteampunk
         private bool stateChanged;
         private TextureData whitePixelTextureData;
         private Dictionary<CharacterClass, TextureData> characterClassHeadTextureData;
+        private List<TextureData> backgroundTextureData;
+        private float lowestBackgroundTextureWidth;
         private Camera camera;
         #endregion
 
@@ -66,6 +68,7 @@ namespace SuperFantasticSteampunk
             updateCamera();
             camera.Position = camera.TargetPosition;
 
+            generateBackground();
             generateBackgroundScenery();
             generateFloorScenery();
 
@@ -182,6 +185,21 @@ namespace SuperFantasticSteampunk
             PlayerParty.FinishBattle(this);
             EnemyParty.FinishBattle(this);
             base.finishCleanup();
+        }
+
+        private void generateBackground()
+        {
+            const int backgroundsToSampleCount = 10;
+            backgroundTextureData = new List<TextureData>(backgroundsToSampleCount);
+            List<string> battleBackgroundTextureNames = OverworldEncounter.Overworld.Area.Data.BattleBackgroundTextureNamesToList();
+            lowestBackgroundTextureWidth = -1;
+            for (int i = 0; i < backgroundsToSampleCount; ++i)
+            {
+                TextureData textureData = ResourceManager.GetTextureData(battleBackgroundTextureNames.Sample());
+                backgroundTextureData.Add(textureData);
+                if (textureData.Width < lowestBackgroundTextureWidth || lowestBackgroundTextureWidth < 0)
+                    lowestBackgroundTextureWidth = textureData.Width;
+            }
         }
 
         private void generateBackgroundScenery()
@@ -338,17 +356,28 @@ namespace SuperFantasticSteampunk
             const float scale = 0.5f;
             Rectangle cameraBoundingBox = camera.GetBoundingBox();
 
-            TextureData textureData = OverworldEncounter.Overworld.Area.BattleBackgroundTextureData;
-            float textureWidth = textureData.Width * scale * camera.Scale.X;
+            float textureWidth = lowestBackgroundTextureWidth * scale * camera.Scale.X;
             int drawCount = (int)Math.Ceiling(cameraBoundingBox.Right / textureWidth) + 1;
+            int textureDataIndex = 0;
             for (int i = 0; i < drawCount; ++i)
+            {
+                TextureData textureData = backgroundTextureData[textureDataIndex];
                 renderer.Draw(textureData, new Vector2(textureData.Width * scale * i, 0.0f), Color.White, 0.0f, new Vector2(scale));
+                if (++textureDataIndex > backgroundTextureData.Count)
+                    textureDataIndex = 0;
+            }
             
             if (cameraBoundingBox.Left < 0)
             {
                 drawCount = (int)Math.Ceiling(Math.Abs(cameraBoundingBox.Left) / textureWidth) + 1;
+                textureDataIndex = backgroundTextureData.Count - 1;
                 for (int i = -1; i >= -drawCount; --i)
+                {
+                    TextureData textureData = backgroundTextureData[textureDataIndex];
                     renderer.Draw(textureData, new Vector2(textureData.Width * scale * i, 0.0f), Color.White, 0.0f, new Vector2(scale));
+                    if (--textureDataIndex < 0)
+                        textureDataIndex = backgroundTextureData.Count - 1;
+                }
             }
         }
 

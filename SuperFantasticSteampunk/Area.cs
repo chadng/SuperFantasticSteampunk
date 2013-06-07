@@ -13,7 +13,6 @@ namespace SuperFantasticSteampunk
         public AreaData Data { get; private set; }
         public List<string> EnemyNames { get; private set; }
         public List<string> ScenerySpriteNames { get; private set; }
-        public TextureData BattleBackgroundTextureData { get; private set; }
         #endregion
 
         #region Constructors
@@ -25,7 +24,6 @@ namespace SuperFantasticSteampunk
             Data = data;
             ScenerySpriteNames = Data.ScenerySpriteNamesToList();
             populateEnemyNames();
-            BattleBackgroundTextureData = ResourceManager.GetTextureData(Data.BattleBackgroundTextureNamesToList().Sample());
         }
         #endregion
 
