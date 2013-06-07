@@ -74,8 +74,8 @@ namespace SuperFantasticSteampunk
 
             whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
             characterClassHeadTextureData = new Dictionary<CharacterClass, TextureData> {
-                { CharacterClass.Marksman, ResourceManager.GetTextureData("marksman_head") },
-                { CharacterClass.Medic, ResourceManager.GetTextureData("medic_head") }
+                { CharacterClass.Marksman, ResourceManager.GetTextureData("battle_ui/marksman_head") },
+                { CharacterClass.Medic, ResourceManager.GetTextureData("battle_ui/medic_head") }
             };
 
             PlayerPartyItemsUsed = 0;

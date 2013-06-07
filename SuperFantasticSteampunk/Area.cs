@@ -22,7 +22,7 @@ namespace SuperFantasticSteampunk
                 throw new Exception("AreaData cannot be null");
 
             Data = data;
-            ScenerySpriteNames = Data.ScenerySpriteNamesToList();
+            ScenerySpriteNames = Data.OverworldScenerySpriteNamesToList();
             populateEnemyNames();
         }
         #endregion

@@ -385,6 +385,7 @@ namespace SuperFantasticSteampunk
             foreach (var data in textureDataList)
             {
                 TextureData textureData = newObjectFromItemData<TextureData>(data);
+                typeof(TextureData).GetProperty("Name").SetValue(textureData, textureData.FileName.Split('.')[0], null);
                 typeof(TextureData).GetProperty("Texture").SetValue(textureData, contentManager.Load<Texture2D>("Textures/" + textureData.FileName), null);
                 textureDataDictionary.Add(textureData.Name, textureData);
                 Logger.Log("Loaded texture data '" + textureData.Name + "'");

@@ -119,9 +119,10 @@ namespace SuperFantasticSteampunk
             if (CurrentOverworldState.OverworldStateRenderer != null)
                 CurrentOverworldState.OverworldStateRenderer.BeforeDraw(renderer);
 
+            drawMap(renderer);
+
             base.draw(renderer);
 
-            drawMap(renderer);
 
             renderer.ResetTint();
 
@@ -161,19 +162,24 @@ namespace SuperFantasticSteampunk
         private void drawMap(Renderer renderer)
         {
             TextureData pixelTexture = ResourceManager.GetTextureData("white_pixel");
+            TileData testTile = Area.Data.OverworldTileTextureNamesToList()[0];
+            TextureData testTexturData = ResourceManager.GetTextureData(testTile.TextureDataName);
 
             Rectangle cameraBoundingBox = camera.GetBoundingBox();
-            int startX = Math.Max(cameraBoundingBox.Left / Map.TileSize, 0);
-            int finishX = Math.Min((cameraBoundingBox.Left + cameraBoundingBox.Width) / Map.TileSize, Map.TileWidth - 1);
-            int startY = Math.Max(cameraBoundingBox.Top / Map.TileSize, 0);
-            int finishY = Math.Min((cameraBoundingBox.Top + cameraBoundingBox.Height) / Map.TileSize, Map.TileHeight - 1);
+            int startX = Math.Max((cameraBoundingBox.Left / Map.TileSize) - 1, 0);
+            int finishX = Math.Min(((cameraBoundingBox.Left + cameraBoundingBox.Width) / Map.TileSize) + 2, Map.TileWidth - 1);
+            int startY = Math.Max((cameraBoundingBox.Top / Map.TileSize) - 1, 0);
+            int finishY = Math.Min(((cameraBoundingBox.Top + cameraBoundingBox.Height) / Map.TileSize) + 2, Map.TileHeight - 1);
 
             for (int x = startX; x <= finishX; ++x)
             {
                 for (int y = startY; y <= finishY; ++y)
                 {
-                    if (Map.CollisionMap[x, y])
-                        renderer.Draw(pixelTexture, new Vector2(x, y) * Map.TileSize, Color.Black, 0.0f, new Vector2(Map.TileSize));
+                    if (Map.CollisionMap[x, y] && x % 2 == 0 && y % 2 == 0)
+                    {
+                        //renderer.Draw(pixelTexture, new Vector2(x, y) * Map.TileSize, Color.Black, 0.0f, new Vector2(Map.TileSize));
+                        renderer.Draw(testTexturData, new Vector2(x + 0.5f, y + 0.5f) * Map.TileSize, Color.White);
+                    }
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
@@ -27,6 +28,7 @@ namespace SuperFantasticSteampunk
         public float Altitude { get; set; }
         public Bone ShadowFollowBone { get; set; }
         public bool Alive { get; private set; }
+        public Nullable<Rectangle> CustomBoundingBox { get; set; }
         #endregion
 
         #region Constructors
@@ -131,6 +133,9 @@ namespace SuperFantasticSteampunk
 
         public Rectangle GetBoundingBoxAt(Vector2 position)
         {
+            if (CustomBoundingBox != null)
+                return transformBoundingBox(CustomBoundingBox.Value, position);
+
             if (Sprite != null)
             {
                 return new Rectangle(
@@ -140,17 +145,11 @@ namespace SuperFantasticSteampunk
                     (int)(Sprite.Data.Height * Scale.Y)
                 );
             }
-            else if (Skeleton != null)
-            {
-                return new Rectangle(
-                    (int)(position.X + (skeletonBoundingBox.Left * Scale.X)),
-                    (int)(position.Y + (skeletonBoundingBox.Top * Scale.Y)),
-                    (int)(skeletonBoundingBox.Width * Scale.X),
-                    (int)(skeletonBoundingBox.Height * Scale.X)
-                );
-            }
-            else
-                return new Rectangle((int)position.X, (int)position.Y, 0, 0);
+
+            if (Skeleton != null)
+                return transformBoundingBox(skeletonBoundingBox, position);
+            
+            return new Rectangle((int)position.X, (int)position.Y, 0, 0);
         }
 
         public virtual void Kill()
@@ -224,6 +223,16 @@ namespace SuperFantasticSteampunk
             regionAttachment.UpdateOffset();
 
             Skeleton.Data.FindSkin("default").AddAttachment(Skeleton.FindSlotIndex(slotName), attachmentName, regionAttachment);
+        }
+
+        private Rectangle transformBoundingBox(Rectangle boundingBox, Vector2 position)
+        {
+            return new Rectangle(
+                (int)(position.X + (boundingBox.Left * Scale.X)),
+                (int)(position.Y + (boundingBox.Top * Scale.Y)),
+                (int)(boundingBox.Width * Scale.X),
+                (int)(boundingBox.Height * Scale.X)
+            );
         }
         #endregion
     }
