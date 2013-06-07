@@ -137,6 +137,16 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Instance Methods
+        public bool PartyMemberHasCompletedThinkAction(PartyMember partyMember)
+        {
+            foreach (ThinkAction action in actions)
+            {
+                if (action.Actor == partyMember)
+                    return true;
+            }
+            return false;
+        }
+
         public override void Start()
         {
             getNextPartyMember();
@@ -172,7 +182,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             if (CurrentThinkActionType == ThinkActionType.None)
             {
-                Battle.PlayerPartyLayout.MovePartyMemberUp(CurrentPartyMember);
+                Battle.PlayerPartyLayout.MovePartyMemberUp(CurrentPartyMember, this);
                 checkUsabilityOfWeaponMenuOptions();
             }
             else
@@ -183,7 +193,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             if (CurrentThinkActionType == ThinkActionType.None)
             {
-                Battle.PlayerPartyLayout.MovePartyMemberDown(CurrentPartyMember);
+                Battle.PlayerPartyLayout.MovePartyMemberDown(CurrentPartyMember, this);
                 checkUsabilityOfWeaponMenuOptions();
             }
             else
@@ -194,7 +204,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             if (CurrentThinkActionType == ThinkActionType.None)
             {
-                Battle.PlayerPartyLayout.MovePartyMemberBack(CurrentPartyMember);
+                Battle.PlayerPartyLayout.MovePartyMemberBack(CurrentPartyMember, this);
                 checkUsabilityOfWeaponMenuOptions();
             }
         }
@@ -203,7 +213,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             if (CurrentThinkActionType == ThinkActionType.None)
             {
-                Battle.PlayerPartyLayout.MovePartyMemberForward(CurrentPartyMember);
+                Battle.PlayerPartyLayout.MovePartyMemberForward(CurrentPartyMember, this);
                 checkUsabilityOfWeaponMenuOptions();
             }
         }

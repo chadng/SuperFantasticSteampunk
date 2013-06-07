@@ -26,28 +26,28 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public void MovePartyMemberUp(PartyMember partyMember)
+        public void MovePartyMemberUp(PartyMember partyMember, BattleStates.Think thinkState)
         {
             if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
-                movePartyMemberAcrossLists(partyMember, true, -1);
+                movePartyMemberAcrossLists(partyMember, true, -1, thinkState);
         }
 
-        public void MovePartyMemberDown(PartyMember partyMember)
+        public void MovePartyMemberDown(PartyMember partyMember, BattleStates.Think thinkState)
         {
             if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
-                movePartyMemberAcrossLists(partyMember, false, 1);
+                movePartyMemberAcrossLists(partyMember, false, 1, thinkState);
         }
 
-        public void MovePartyMemberBack(PartyMember partyMember) // last item/back is towards edge of screen
+        public void MovePartyMemberBack(PartyMember partyMember, BattleStates.Think thinkState) // last item/back is towards edge of screen
         {
             if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
-                movePartyMemberWithinList(partyMember, false, 1);
+                movePartyMemberWithinList(partyMember, false, 1, thinkState);
         }
 
-        public void MovePartyMemberForward(PartyMember partyMember) // first item/forward is towards middle of screen
+        public void MovePartyMemberForward(PartyMember partyMember, BattleStates.Think thinkState) // first item/forward is towards middle of screen
         {
             if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
-                movePartyMemberWithinList(partyMember, true, -1);
+                movePartyMemberWithinList(partyMember, true, -1, thinkState);
         }
 
         public void RemovePartyMember(PartyMember partyMember)
@@ -104,7 +104,7 @@ namespace SuperFantasticSteampunk
             throw new Exception("PartyMember not found in PartyBattleLayout");
         }
 
-        private void movePartyMemberAcrossLists(PartyMember partyMember, bool edgeListIndexIsZero, int nextListRelativeIndex)
+        private void movePartyMemberAcrossLists(PartyMember partyMember, bool edgeListIndexIsZero, int nextListRelativeIndex, BattleStates.Think thinkState)
         {
             if (!party.Contains(partyMember))
                 return;
@@ -117,7 +117,7 @@ namespace SuperFantasticSteampunk
             List<PartyMember> nextList = layout[listIndex + nextListRelativeIndex];
             int partyMemberPosition = Math.Min(list.IndexOf(partyMember), nextList.Count);
             list.Remove(partyMember);
-            if (partyMemberPosition == 0 && nextList.Count > 0)
+            if (partyMemberPosition == 0 && nextList.Count > 0 && thinkState.PartyMemberHasCompletedThinkAction(nextList[partyMemberPosition]))
             {
                 Weapon frontPartyMemberWeapon = nextList[partyMemberPosition].EquippedWeapon;
                 if (frontPartyMemberWeapon != null && frontPartyMemberWeapon.Data.WeaponType == WeaponType.Melee)
@@ -126,7 +126,7 @@ namespace SuperFantasticSteampunk
             nextList.Insert(partyMemberPosition, partyMember);
         }
 
-        private void movePartyMemberWithinList(PartyMember partyMember, bool edgeIndexIsZero, int nextRelativeIndex)
+        private void movePartyMemberWithinList(PartyMember partyMember, bool edgeIndexIsZero, int nextRelativeIndex, BattleStates.Think thinkState)
         {
             if (!party.Contains(partyMember))
                 return;
@@ -137,7 +137,7 @@ namespace SuperFantasticSteampunk
             {
                 list.RemoveAt(partyMemberIndex);
                 int index = partyMemberIndex + nextRelativeIndex;
-                if (index == 0 && list.Count > 0)
+                if (index == 0 && list.Count > 0 && thinkState.PartyMemberHasCompletedThinkAction(list[index]))
                 {
                     Weapon frontPartyMemberWeapon = list[index].EquippedWeapon;
                     if (frontPartyMemberWeapon != null && frontPartyMemberWeapon.Data.WeaponType == WeaponType.Melee)

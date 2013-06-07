@@ -41,7 +41,7 @@ namespace SuperFantasticSteampunk
 
             Map = new Map(100, 100, 5, 5);
 
-            PlayerParty.PrimaryPartyMember.StartOverworld(new Vector2(100.0f));
+            PlayerParty.PrimaryPartyMember.StartOverworld(new Vector2(200.0f));
             addEntity(PlayerParty.PrimaryPartyMember.OverworldEntity);
 
             camera = new Camera(Game1.ScreenSize);
@@ -147,7 +147,7 @@ namespace SuperFantasticSteampunk
 
         private void populateWithEnemies()
         {
-            for (int i = 2; i < 5; ++i)
+            for (int i = 3; i < 6; ++i)
             {
                 Party enemyParty = new Party();
                 enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));

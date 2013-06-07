@@ -77,7 +77,7 @@ namespace SuperFantasticSteampunk
     class Map
     {
         #region Constants
-        public const int TileSize = 32;
+        public const int TileSize = 64;
         private const int corridorPadding = 2;
         #endregion
 
