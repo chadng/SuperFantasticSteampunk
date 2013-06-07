@@ -21,7 +21,7 @@ namespace SuperFantasticSteampunk
         private static SortedDictionary<string, PartyMemberData> partyMemberDataDictionary;
         private static SortedDictionary<string, SpriteData> spriteDataDictionary;
         private static SortedDictionary<string, TextureData> textureDataDictionary;
-        private static SortedDictionary<string, SpriteFont> spriteFontDictionary;
+        private static SortedDictionary<string, Font> fontDictionary;
         private static SortedDictionary<string, AreaData> areaDataDictionary;
         #endregion
 
@@ -49,8 +49,8 @@ namespace SuperFantasticSteampunk
             populateSpriteDataDictionary(contentManager);
             textureDataDictionary = new SortedDictionary<string, TextureData>();
             populateTextureDataDictionary(contentManager);
-            spriteFontDictionary = new SortedDictionary<string, SpriteFont>();
-            populateSpriteFontDictionary(contentManager);
+            fontDictionary = new SortedDictionary<string, Font>();
+            populateFontDictionary(contentManager);
             areaDataDictionary = new SortedDictionary<string, AreaData>();
             populateAreaDataDictionary(contentManager);
 
@@ -70,7 +70,7 @@ namespace SuperFantasticSteampunk
             partyMemberDataDictionary.Clear();
             spriteDataDictionary.Clear();
             textureDataDictionary.Clear();
-            spriteFontDictionary.Clear();
+            fontDictionary.Clear();
             areaDataDictionary.Clear();
 
             PartyMemberTitles.Clear();
@@ -241,14 +241,14 @@ namespace SuperFantasticSteampunk
             return null;
         }
 
-        public static SpriteFont GetSpriteFont(string name)
+        public static Font GetFont(string name)
         {
             if (name == null)
                 return null;
 
-            SpriteFont spriteFont;
-            if (spriteFontDictionary.TryGetValue(name, out spriteFont))
-                return spriteFont;
+            Font font;
+            if (fontDictionary.TryGetValue(name, out font))
+                return font;
             return null;
         }
 
@@ -476,15 +476,14 @@ namespace SuperFantasticSteampunk
             return new KeyValuePair<string, object>(key, ParseItemDataValue(valueType, valueString));
         }
 
-        private static void populateSpriteFontDictionary(ContentManager contentManager)
+        private static void populateFontDictionary(ContentManager contentManager)
         {
-            string spriteFontDirectory = contentManager.RootDirectory + "/Fonts/";
-            IEnumerable<string> spriteFontFileNames = Directory.EnumerateFiles(spriteFontDirectory, "*.xnb");
-            foreach (string spriteFontFileName in spriteFontFileNames)
+            string fontDirectory = contentManager.RootDirectory + "/Fonts/";
+            foreach (string directoryName in Directory.EnumerateDirectories(fontDirectory))
             {
-                string spriteFontName = spriteFontFileName.Replace(spriteFontDirectory, "").Replace(".xnb", "");
-                spriteFontDictionary.Add(spriteFontName, contentManager.Load<SpriteFont>("Fonts/" + spriteFontName));
-                Logger.Log("Loaded font '" + spriteFontName + "'");
+                string fontName = directoryName.Replace(fontDirectory, "");
+                fontDictionary.Add(fontName, new Font(fontName, contentManager));
+                Logger.Log("Loaded font '" + fontName + "'");
             }
         }
 

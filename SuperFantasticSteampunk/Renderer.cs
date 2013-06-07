@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
 
@@ -13,7 +14,7 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Properties
-        public SpriteFont SpriteFont { get; set; }
+        public Font Font { get; set; }
         public Camera Camera { get; set; }
         public Color Tint { get; set; }
         #endregion
@@ -27,7 +28,7 @@ namespace SuperFantasticSteampunk
         #region Constructors
         public Renderer(GraphicsDevice graphicsDevice)
         {
-            SpriteFont = null;
+            Font = null;
             Camera = null;
             ResetTint();
             spriteBatch = new SpriteBatch(graphicsDevice);
@@ -110,7 +111,9 @@ namespace SuperFantasticSteampunk
                 translatePosition(ref position);
                 updateScale(ref scale);
             }
-            spriteBatch.DrawString(SpriteFont, text, position, color, rotation, origin, scale, SpriteEffects.None, 0.0f);
+            float fontSize;
+            SpriteFont spriteFont = Font.GetBestSizeSpriteFont(Font.DefaultSize * scale.Y, out fontSize);
+            spriteBatch.DrawString(spriteFont, text, position, color, rotation, origin, scale / (fontSize / Font.DefaultSize), SpriteEffects.None, 0.0f);
         }
 
         public void End()
