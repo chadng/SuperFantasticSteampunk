@@ -161,73 +161,96 @@
       <Link>Content\Skeletons\monkey.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Forenames.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Forenames.txt">
+      <Link>Content\Forenames.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Items\Areas.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Items\Areas.txt">
+      <Link>Content\Items\Areas.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Items\Items.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Items\Items.txt">
+      <Link>Content\Items\Items.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Items\Shields.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Items\PartyMembers.txt">
+      <Link>Content\Items\PartyMembers.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Items\PartyMembers.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Items\Shields.txt">
+      <Link>Content\Items\Shields.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Items\Sprites.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Items\Sprites.txt">
+      <Link>Content\Items\Sprites.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Items\Weapons.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Items\Weapons.txt">
+      <Link>Content\Items\Weapons.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\KeyboardMapping.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\KeyboardMapping.txt">
+      <Link>Content\KeyboardMapping.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Settings.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Settings.txt">
+      <Link>Content\Settings.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Surnames.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Surnames.txt">
+      <Link>Content\Surnames.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\arrow_down.png">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\arrow_down.png">
+      <Link>Content\Textures\arrow_down.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\scenery\battle_backgrounds\battle_trees_1.png">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\battle_ui\marksman_head.png">
+      <Link>Content\Textures\battle_ui\marksman_head.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\scenery\battle_backgrounds\battle_trees_2.png">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\battle_ui\medic_head.png">
+      <Link>Content\Textures\battle_ui\medic_head.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\scenery\overworld_tiles\tree_1.png">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\scenery\battle\rock_1.png">
+      <Link>Content\Textures\scenery\battle\rock_1.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\weapons\gun_1.png">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\scenery\battle\small_rock_1.png">
+      <Link>Content\Textures\scenery\battle\small_rock_1.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\battle_ui\marksman_head.png">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\scenery\battle_backgrounds\battle_trees_1.png">
+      <Link>Content\Textures\scenery\battle_backgrounds\battle_trees_1.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\battle_ui\medic_head.png">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\scenery\battle_backgrounds\battle_trees_2.png">
+      <Link>Content\Textures\scenery\battle_backgrounds\battle_trees_2.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\scenery\battle\rock_1.png">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\scenery\overworld_tiles\tree_1.png">
+      <Link>Content\Textures\scenery\overworld_tiles\tree_1.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\shadow.png">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\shadow.png">
+      <Link>Content\Textures\shadow.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\scenery\battle\small_rock_1.png">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\Textures.txt">
+      <Link>Content\Textures\Textures.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\Textures.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\weapons\gun_1.png">
+      <Link>Content\Textures\weapons\gun_1.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Textures\white_pixel.png">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\white_pixel.png">
+      <Link>Content\Textures\white_pixel.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Titles.txt">
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Titles.txt">
+      <Link>Content\Titles.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />
@@ -287,46 +310,60 @@
       <Link>Content\Skeletons\monkey.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana10.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana10.xnb">
+      <Link>Content\Fonts\verdana\verdana10.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana12.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana12.xnb">
+      <Link>Content\Fonts\verdana\verdana12.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana14.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana14.xnb">
+      <Link>Content\Fonts\verdana\verdana14.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana16.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana16.xnb">
+      <Link>Content\Fonts\verdana\verdana16.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana18.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana18.xnb">
+      <Link>Content\Fonts\verdana\verdana18.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana20.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana20.xnb">
+      <Link>Content\Fonts\verdana\verdana20.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana22.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana22.xnb">
+      <Link>Content\Fonts\verdana\verdana22.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana24.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana24.xnb">
+      <Link>Content\Fonts\verdana\verdana24.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana26.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana26.xnb">
+      <Link>Content\Fonts\verdana\verdana26.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana28.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana28.xnb">
+      <Link>Content\Fonts\verdana\verdana28.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana30.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana30.xnb">
+      <Link>Content\Fonts\verdana\verdana30.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana4.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana4.xnb">
+      <Link>Content\Fonts\verdana\verdana4.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana6.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana6.xnb">
+      <Link>Content\Fonts\verdana\verdana6.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\verdana\verdana8.xnb">
+    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana8.xnb">
+      <Link>Content\Fonts\verdana\verdana8.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

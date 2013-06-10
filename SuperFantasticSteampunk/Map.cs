@@ -54,7 +54,7 @@ namespace SuperFantasticSteampunk
                 if (x < 0 || x >= columns)
                     continue;
 
-                for (int y = Position.Y; y <= Position.Y + 1; ++y)
+                for (int y = Position.Y - 1; y <= Position.Y + 1; ++y)
                 {
                     if (y < 0 || y >= rows)
                         continue;
