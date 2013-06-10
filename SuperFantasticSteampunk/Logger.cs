@@ -15,7 +15,15 @@ namespace SuperFantasticSteampunk
         public static void Start()
         {
             messageCounter = 0;
-            fileStream = new FileStream("log.txt", FileMode.Create, FileAccess.Write);
+#if WINDOWS
+			string logPath = "log.txt";
+#else
+			string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			string logContainerPath = Path.Combine(documentsPath, "SuperFantasticSteampunk");
+			Directory.CreateDirectory(logContainerPath);
+			string logPath = Path.Combine(logContainerPath, "log.txt");
+#endif
+            fileStream = new FileStream(logPath, FileMode.Create, FileAccess.Write);
             streamWriter = new StreamWriter(fileStream);
         }
 

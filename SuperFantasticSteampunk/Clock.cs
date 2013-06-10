@@ -11,7 +11,6 @@ namespace SuperFantasticSteampunk
 
         #region Instance Fields
         private static float time;
-        private static TextureData pixelTextureData;
         private static Color[] colors;
         #endregion
 
@@ -26,7 +25,6 @@ namespace SuperFantasticSteampunk
         public static void Init(int hour)
         {
             time = hour;
-            pixelTextureData = ResourceManager.GetTextureData("white_pixel");
             colors = new Color[] {
                 new Color(0.2f, 0.2f, 0.3f),
                 new Color(0.2f, 0.2f, 0.3f),

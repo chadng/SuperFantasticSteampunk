@@ -98,7 +98,7 @@ namespace SuperFantasticSteampunk
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("marksman")));
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("medic")));
 
-            Overworld overworld = new Overworld(playerParty, ResourceManager.GetNewArea("forest"));
+            new Overworld(playerParty, ResourceManager.GetNewArea("forest"));
 
             Clock.Init(12);
         }

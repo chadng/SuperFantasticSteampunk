@@ -161,7 +161,6 @@ namespace SuperFantasticSteampunk
 
         private void drawMap(Renderer renderer)
         {
-            TextureData pixelTexture = ResourceManager.GetTextureData("white_pixel");
             TileData testTile = Area.Data.OverworldTileTextureNamesToList()[0];
             TextureData testTexturData = ResourceManager.GetTextureData(testTile.TextureDataName);
 

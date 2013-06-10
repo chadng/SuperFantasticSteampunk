@@ -157,7 +157,7 @@ namespace SuperFantasticSteampunk
                 if (regionAttachment == null)
                     continue;
 
-                regionAttachment.ComputeVertices(slot.Bone, vertices);
+                regionAttachment.ComputeVertices(skeleton.X, skeleton.Y, slot.Bone, vertices);
 
                 if (firstSlot)
                 {
