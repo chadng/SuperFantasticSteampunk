@@ -40,6 +40,8 @@ namespace SuperFantasticSteampunk
         {
             get { return Data.CharacterClass; }
         }
+
+        public Vector2 BattleEntityIdlePosition { get; set; }
         #endregion
 
         #region Constructors
@@ -51,6 +53,7 @@ namespace SuperFantasticSteampunk
             statModifiers = new List<StatModifier>();
             statusEffects = new List<StatusEffect>();
             BattleEntity = null;
+            BattleEntityIdlePosition = Vector2.Zero;
             generateName();
             resetStats();
         }

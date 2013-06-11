@@ -114,6 +114,8 @@ namespace SuperFantasticSteampunk
                 case "setAccelerationY": _setAccelerationY(args); break;
                 case "setRotation": _setRotation(args); break;
                 case "setAngularVelocity": _setAngularVelocity(args); break;
+                case "accelerateTo": _accelerateTo(args); break;
+                case "moveToIdlePosition": _moveToIdlePosition(args); break;
                 case "random": _random(args); break;
                 case "log": _log(args); break;
                 case "safe": _safe(args); break;
@@ -341,6 +343,63 @@ namespace SuperFantasticSteampunk
             float amount = (float)args[1];
 
             getPartyMemberFromSelector(partyMemberSelector).BattleEntity.AngularVelocity = amount;
+        }
+
+        private void _accelerateTo(object[] args)
+        { // accelerateTo(string actorPartyMemberSelector, string targetPartyMemberSelector, float acceleration, Script callback)
+            string actorPartyMemberSelector = (string)args[0];
+            string targetPartyMemberSelector = (string)args[1];
+            float acceleration = (float)args[2];
+            Script callback = (Script)args[3];
+
+            Entity actorEntity = getPartyMemberFromSelector(actorPartyMemberSelector).BattleEntity;
+            Entity targetEntity = getPartyMemberFromSelector(targetPartyMemberSelector).BattleEntity;
+            Vector2 accelerationVector = targetEntity.Position - actorEntity.Position;
+            accelerationVector.Normalize();
+            actorEntity.Acceleration = accelerationVector * acceleration;
+
+            actorEntity.UpdateExtensions.Add(new UpdateExtension((updateExtension, gameTime) => {
+                if (actorEntity.CollidesWith(targetEntity))
+                {
+                    updateExtension.Active = false;
+                    addNestedScriptRunner(callback, 0.0f);
+                }
+            }));
+        }
+
+        private void _moveToIdlePosition(object[] args)
+        { // moveToIdlePosition(string partyMemberSelector, bool decelerate, Script callback)
+            string partyMemberSelector = (string)args[0];
+            float speed = (float)args[1];
+            bool decelerate = (bool)args[2];
+            Script callback = (Script)args[3];
+
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+            Entity entity = partyMember.BattleEntity;
+            Vector2 velocity = partyMember.BattleEntityIdlePosition - entity.Position;
+            bool movingRight = velocity.X > 0.0f;
+            float distance = velocity.Length();
+            velocity.Normalize();
+            entity.Velocity = velocity * speed;
+            float time = distance / speed;
+            Vector2 originalVelocity = entity.Velocity;
+
+            entity.UpdateExtensions.Add(new UpdateExtension((updateExtension, gameTime) => {
+                if (decelerate)
+                {
+                    float currentDistance = (partyMember.BattleEntityIdlePosition - entity.Position).Length();
+                    entity.Velocity = originalVelocity * (currentDistance / distance);
+                }
+                else
+                    time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (time <= 0.0f || entity.Velocity.X == 0.0f || (movingRight && entity.Velocity.X < 0.0f) || (!movingRight && entity.Velocity.X > 0.0f))
+                {
+                    updateExtension.Active = false;
+                    entity.Position = partyMember.BattleEntityIdlePosition;
+                    addNestedScriptRunner(callback, 0.0f);
+                }
+            }));
         }
 
         private void _random(object[] args)

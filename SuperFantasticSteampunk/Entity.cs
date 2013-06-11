@@ -6,6 +6,22 @@ using Spine;
 
 namespace SuperFantasticSteampunk
 {
+    class UpdateExtension
+    {
+        #region Instance Properties
+        public Action<UpdateExtension, GameTime> Action { get; private set; }
+        public bool Active { get; set; }
+        #endregion
+
+        #region Constructors
+        public UpdateExtension(Action<UpdateExtension, GameTime> action)
+        {
+            Action = action;
+            Active = true;
+        }
+        #endregion
+    }
+
     class Entity
     {
         #region Instance Fields
@@ -29,6 +45,7 @@ namespace SuperFantasticSteampunk
         public Bone ShadowFollowBone { get; set; }
         public bool Alive { get; private set; }
         public Nullable<Rectangle> CustomBoundingBox { get; set; }
+        public List<UpdateExtension> UpdateExtensions { get; private set; }
         #endregion
 
         #region Constructors
@@ -39,6 +56,7 @@ namespace SuperFantasticSteampunk
             ZIndex = 0;
             Altitude = 0.0f;
             Alive = true;
+            UpdateExtensions = new List<UpdateExtension>();
         }
 
         public Entity(Skeleton skeleton, Vector2 position)
@@ -168,6 +186,16 @@ namespace SuperFantasticSteampunk
                 updateSkeleton(gameTime);
             else if (Sprite != null)
                 Sprite.Update(gameTime);
+            
+            if (UpdateExtensions.Count > 0)
+            {
+                foreach (UpdateExtension updateExtension in UpdateExtensions)
+                {
+                    if (updateExtension.Active)
+                        updateExtension.Action(updateExtension, gameTime);
+                }
+                UpdateExtensions.RemoveAll(ue => !ue.Active);
+            }
         }
 
         public virtual void Draw(Renderer renderer)

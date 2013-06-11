@@ -336,7 +336,7 @@ namespace SuperFantasticSteampunk
             PlayerPartyLayout.ForEachList(list =>
             {
                 for (int i = 0; i < list.Count; ++i)
-                    list[i].BattleEntity.Position = new Vector2(position.X - (200.0f * i), position.Y);
+                    list[i].BattleEntityIdlePosition = list[i].BattleEntity.Position = new Vector2(position.X - (200.0f * i), position.Y);
                 position.X -= 150.0f;
                 position.Y += 150.0f;
             });
@@ -345,7 +345,7 @@ namespace SuperFantasticSteampunk
             EnemyPartyLayout.ForEachList(list =>
             {
                 for (int i = 0; i < list.Count; ++i)
-                    list[i].BattleEntity.Position = new Vector2(position.X + (200.0f * i), position.Y);
+                    list[i].BattleEntityIdlePosition = list[i].BattleEntity.Position = new Vector2(position.X + (200.0f * i), position.Y);
                 position.X += 150.0f;
                 position.Y += 150.0f;
             });
