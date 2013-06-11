@@ -66,7 +66,7 @@ namespace SuperFantasticSteampunk
                 OverworldEntity = new Entity(ResourceManager.GetNewSkeleton(Data.OverworldSkeletonName), entityPosition);
                 Rectangle customBoundingBox = OverworldEntity.GetBoundingBoxAt(Vector2.Zero);
                 customBoundingBox.Height /= 4;
-                customBoundingBox.Y += customBoundingBox.Height * 4;
+                customBoundingBox.Y += customBoundingBox.Height * 3;
                 OverworldEntity.CustomBoundingBox = customBoundingBox;
                 OverworldEntity.Scale = new Vector2(0.3f);
             }

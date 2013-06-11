@@ -10,7 +10,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>SuperFantasticSteampunk</RootNamespace>
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
-    <AssemblyName>SuperFantasticSteampunks</AssemblyName>
+    <AssemblyName>SuperFantasticSteampunk</AssemblyName>
     <SuppressXamMacUpsell>True</SuppressXamMacUpsell>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">

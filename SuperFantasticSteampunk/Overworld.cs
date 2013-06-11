@@ -162,7 +162,8 @@ namespace SuperFantasticSteampunk
         private void drawMap(Renderer renderer)
         {
             TileData testTile = Area.Data.OverworldTileTextureNamesToList()[0];
-            TextureData testTexturData = ResourceManager.GetTextureData(testTile.TextureDataName);
+            TextureData testTextureData = ResourceManager.GetTextureData(testTile.TextureDataName);
+            TextureData pixelTexture = ResourceManager.GetTextureData("white_pixel");
 
             Rectangle cameraBoundingBox = camera.GetBoundingBox();
             int startX = Math.Max((cameraBoundingBox.Left / Map.TileSize) - 1, 0);
@@ -170,14 +171,22 @@ namespace SuperFantasticSteampunk
             int startY = Math.Max((cameraBoundingBox.Top / Map.TileSize) - 1, 0);
             int finishY = Math.Min(((cameraBoundingBox.Top + cameraBoundingBox.Height) / Map.TileSize) + 2, Map.TileHeight - 1);
 
+            /*for (int x = startX; x <= finishX; ++x)
+            {
+                for (int y = startY; y <= finishY; ++y)
+                {
+                    if (Map.CollisionMap[x, y])
+                        renderer.Draw(pixelTexture, new Vector2(x, y) * Map.TileSize, Color.Black * 0.5f, 0.0f, new Vector2(Map.TileSize));
+                }
+            }*/
+
             for (int x = startX; x <= finishX; ++x)
             {
                 for (int y = startY; y <= finishY; ++y)
                 {
-                    if (Map.CollisionMap[x, y] && x % 2 == 0 && y % 2 == 0)
+                    if (Map.CollisionMap[x, y])// && x % 2 == 0 && y % 2 == 0)
                     {
-                        //renderer.Draw(pixelTexture, new Vector2(x, y) * Map.TileSize, Color.Black, 0.0f, new Vector2(Map.TileSize));
-                        renderer.Draw(testTexturData, new Vector2(x + 0.5f, y + 0.5f) * Map.TileSize, Color.White);
+                        renderer.Draw(testTextureData, new Vector2(x, y) * Map.TileSize, Color.White);
                     }
                 }
             }

@@ -34,7 +34,7 @@ namespace SuperFantasticSteampunk
         {
             Position = position;
             ConnectedRooms = new List<MapRoom>();
-            isCorridor = Game1.Random.NextDouble() <= chanceOfCorridor;
+            isCorridor = position != Point.Zero && Game1.Random.NextDouble() <= chanceOfCorridor;
         }
         #endregion
 
