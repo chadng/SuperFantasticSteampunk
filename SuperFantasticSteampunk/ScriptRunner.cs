@@ -5,7 +5,7 @@ using Spine;
 
 namespace SuperFantasticSteampunk
 {
-    using ScriptAction = Tuple<float, string, object[]>;
+    using ScriptAction = Tuple<float, string, object[], int>;
     
     enum ScriptRunnerMode { Normal, CatchFunction, CatchScript }
 
@@ -36,6 +36,7 @@ namespace SuperFantasticSteampunk
         private float time;
         private List<NestedScriptRunner> nestedScriptRunners;
         private ScriptRunnerMode mode;
+        private bool blocked;
         #endregion
 
         #region Constructors
@@ -49,6 +50,7 @@ namespace SuperFantasticSteampunk
             time = 0.0f;
             nestedScriptRunners = new List<NestedScriptRunner>();
             this.mode = mode;
+            blocked = false;
         }
         #endregion
 
@@ -86,7 +88,7 @@ namespace SuperFantasticSteampunk
                 if (!nestedScriptRunner.ScriptRunner.IsFinished())
                     return false;
             }
-            return scriptActionIndex >= script.Actions.Count;
+            return !blocked && scriptActionIndex >= script.Actions.Count;
         }
 
         private void executeAction(ScriptAction action)
@@ -116,6 +118,7 @@ namespace SuperFantasticSteampunk
                 case "setAngularVelocity": _setAngularVelocity(args); break;
                 case "accelerateTo": _accelerateTo(args); break;
                 case "moveToIdlePosition": _moveToIdlePosition(args); break;
+                case "setIdleAnimation": _setIdleAnimation(args); break;
                 case "random": _random(args); break;
                 case "log": _log(args); break;
                 case "safe": _safe(args); break;
@@ -151,7 +154,7 @@ namespace SuperFantasticSteampunk
             float timeToCurrentAnimationEnd = animationState.Animation.Duration - (animationStateTime % animationState.Animation.Duration);
 
             animationState.AddAnimation(animation, false, animationStateTime + timeToCurrentAnimationEnd);
-            animationState.AddAnimation("idle", true);
+            animationState.AddAnimation(partyMember.BattleEntityIdleAnimationName, true);
 
             if (onStartCallback != null)
                 addNestedScriptRunner(onStartCallback, timeToCurrentAnimationEnd);
@@ -172,7 +175,7 @@ namespace SuperFantasticSteampunk
                 throw new Exception("Animation '" + animationName + "' could not be found");
 
             animationState.SetAnimation(animation, false);
-            animationState.AddAnimation("idle", true);
+            animationState.AddAnimation(partyMember.BattleEntityIdleAnimationName, true);
 
             if (onFinishCallback != null)
                 addNestedScriptRunner(onFinishCallback, animation.Duration);
@@ -358,10 +361,13 @@ namespace SuperFantasticSteampunk
             accelerationVector.Normalize();
             actorEntity.Acceleration = accelerationVector * acceleration;
 
+            this.blocked = true;
+            ScriptRunner self = this;
             actorEntity.UpdateExtensions.Add(new UpdateExtension((updateExtension, gameTime) => {
                 if (actorEntity.CollidesWith(targetEntity))
                 {
                     updateExtension.Active = false;
+                    self.blocked = false;
                     addNestedScriptRunner(callback, 0.0f);
                 }
             }));
@@ -384,6 +390,11 @@ namespace SuperFantasticSteampunk
             float time = distance / speed;
             Vector2 originalVelocity = entity.Velocity;
 
+            this.blocked = true;
+            bool unblocked = false;
+            const float velocityToleranceForUnblocking = 50.0f;
+            const float velocityToleranceForStopping = 1.0f;
+            ScriptRunner self = this;
             entity.UpdateExtensions.Add(new UpdateExtension((updateExtension, gameTime) => {
                 if (decelerate)
                 {
@@ -393,13 +404,30 @@ namespace SuperFantasticSteampunk
                 else
                     time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (time <= 0.0f || entity.Velocity.X == 0.0f || (movingRight && entity.Velocity.X < 0.0f) || (!movingRight && entity.Velocity.X > 0.0f))
+                if (!unblocked && (time <= 0.0f || (movingRight && entity.Velocity.X < velocityToleranceForUnblocking) || (!movingRight && entity.Velocity.X > -velocityToleranceForUnblocking)))
                 {
-                    updateExtension.Active = false;
-                    entity.Position = partyMember.BattleEntityIdlePosition;
+                    self.blocked = false;
+                    unblocked = true;
                     addNestedScriptRunner(callback, 0.0f);
                 }
+
+                if (unblocked && (time <= 0.0f || (movingRight && entity.Velocity.X < velocityToleranceForStopping) || (!movingRight && entity.Velocity.X > -velocityToleranceForStopping)))
+                {
+                    entity.Position = partyMember.BattleEntityIdlePosition;
+                    updateExtension.Active = false;
+                }
             }));
+        }
+
+        private void _setIdleAnimation(object[] args)
+        { // setIdleAnimation(string partyMemberSelector, string animationName)
+            string partyMemberSelector = (string)args[0];
+            string animationName = (string)args[1];
+
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+            if (partyMember.BattleEntity.Skeleton.Data.FindAnimation(animationName) == null)
+                throw new Exception("Animation '" + animationName + "' could not be found");
+            partyMember.BattleEntityIdleAnimationName = animationName;
         }
 
         private void _random(object[] args)

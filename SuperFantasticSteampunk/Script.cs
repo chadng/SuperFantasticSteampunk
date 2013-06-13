@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SuperFantasticSteampunk
 {
-    using ScriptAction = Tuple<float, string, object[]>;
+    using ScriptAction = Tuple<float, string, object[], int>;
 
     class Script
     {
@@ -16,14 +16,14 @@ namespace SuperFantasticSteampunk
         {
             List<string> statements = splitString(scriptString, ';');
             Actions = new List<ScriptAction>(statements.Count);
-            foreach (string statement in statements)
-                Actions.Add(stringToScriptAction(statement));
-            Actions.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+            for (int i = 0; i < statements.Count; ++i)
+                Actions.Add(stringToScriptAction(statements[i], i));
+            Actions.Sort((a, b) => a.Item1 == b.Item1 ? a.Item4.CompareTo(b.Item4) : a.Item1.CompareTo(b.Item1));
         }
         #endregion
 
         #region Instance Methods
-        private ScriptAction stringToScriptAction(string str)
+        private ScriptAction stringToScriptAction(string str, int index)
         {
             List<string> parts = splitString(str, ' ');
             float time = float.Parse(parts[0]);
@@ -33,7 +33,7 @@ namespace SuperFantasticSteampunk
             for (int i = 2; i < parts.Count; ++i)
                 arguments.Add(parseArgumentString(parts[i]));
 
-            return new ScriptAction(time, function, arguments.ToArray());
+            return new ScriptAction(time, function, arguments.ToArray(), index);
         }
 
         private List<string> splitString(string str, char separator)

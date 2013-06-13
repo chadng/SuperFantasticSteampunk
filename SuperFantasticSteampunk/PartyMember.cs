@@ -42,6 +42,7 @@ namespace SuperFantasticSteampunk
         }
 
         public Vector2 BattleEntityIdlePosition { get; set; }
+        public string BattleEntityIdleAnimationName { get; set; }
         #endregion
 
         #region Constructors
@@ -54,6 +55,7 @@ namespace SuperFantasticSteampunk
             statusEffects = new List<StatusEffect>();
             BattleEntity = null;
             BattleEntityIdlePosition = Vector2.Zero;
+            BattleEntityIdleAnimationName = "idle";
             generateName();
             resetStats();
         }
