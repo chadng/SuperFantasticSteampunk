@@ -51,17 +51,17 @@ namespace SuperFantasticSteampunk.OverworldStates
             Time = FadeTimeInSeconds;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
             if (enemyParty != null) // if before battle
             {
-                Time += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Time += delta.Time;
                 if (Time >= FadeTimeInSeconds)
                     PushState(new Encounter(Overworld, enemyParty));
             }
             else
             {
-                Time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Time -= delta.Time;
                 if (Time <= 0.0f)
                     Finish();
             }

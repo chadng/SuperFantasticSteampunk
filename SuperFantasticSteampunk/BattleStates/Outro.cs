@@ -37,9 +37,9 @@ namespace SuperFantasticSteampunk.BattleStates
             Battle.Finish();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
-            Time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Time -= delta.Time;
             if (Time <= 0.0f)
                 Finish();
         }

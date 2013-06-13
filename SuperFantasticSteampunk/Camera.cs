@@ -42,7 +42,7 @@ namespace SuperFantasticSteampunk
             );
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(Delta delta)
         {
             if (Target != null)
             {
@@ -69,24 +69,24 @@ namespace SuperFantasticSteampunk
                 TargetPosition = Position;
             }
 
-            Position = updateVectorToTarget(Position, TargetPosition, gameTime);
-            Scale = updateVectorToTarget(Scale, TargetScale, gameTime);
+            Position = updateVectorToTarget(Position, TargetPosition, delta);
+            Scale = updateVectorToTarget(Scale, TargetScale, delta);
         }
 
-        private Vector2 updateVectorToTarget(Vector2 vector, Vector2 target, GameTime gameTime)
+        private Vector2 updateVectorToTarget(Vector2 vector, Vector2 target, Delta delta)
         {
             if (vector == target)
                 return vector;
 
-            float newX = moveFloatTowardsValue(vector.X, target.X, gameTime);
-            float newY = moveFloatTowardsValue(vector.Y, target.Y, gameTime);
+            float newX = moveFloatTowardsValue(vector.X, target.X, delta);
+            float newY = moveFloatTowardsValue(vector.Y, target.Y, delta);
 
             return new Vector2(newX, newY);
         }
 
-        private float moveFloatTowardsValue(float value, float targetValue, GameTime gameTime)
+        private float moveFloatTowardsValue(float value, float targetValue, Delta delta)
         {
-            return value + ((targetValue - value) * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            return value + ((targetValue - value) * delta.Time);
         }
         #endregion
     }

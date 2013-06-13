@@ -69,12 +69,12 @@ namespace SuperFantasticSteampunk
             currentAnimationFrameIndex = 0;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(Delta delta)
         {
             if (CurrentAnimation == null)
                 return;
 
-            Time += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Time += delta.Time;
             if (Time >= 1.0f / framesPerSecond)
             {
                 if (++currentAnimationFrameIndex >= CurrentAnimation.Data.Length)

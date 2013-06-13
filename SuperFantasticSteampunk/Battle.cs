@@ -134,7 +134,7 @@ namespace SuperFantasticSteampunk
                 ++PlayerPartyItemsUsed;
         }
 
-        protected override void update(GameTime gameTime)
+        protected override void update(Delta delta)
         {
             if (stateChanged)
             {
@@ -143,17 +143,17 @@ namespace SuperFantasticSteampunk
                 Logger.Log(CurrentBattleState.GetType().Name + " battle state started");
             }
 
-            CurrentBattleState.Update(gameTime);
+            CurrentBattleState.Update(delta);
 
             if (CurrentBattleState.KeepPartyMembersStatic)
                 repositionPartyMembers();
 
-            base.update(gameTime);
+            base.update(delta);
 
             if (CurrentBattleState.BattleStateRenderer != null)
-                CurrentBattleState.BattleStateRenderer.Update(gameTime);
+                CurrentBattleState.BattleStateRenderer.Update(delta);
 
-            updateCamera(() => camera.Update(gameTime));
+            updateCamera(() => camera.Update(delta));
         }
 
         protected override void draw(Renderer renderer)

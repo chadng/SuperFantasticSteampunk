@@ -34,12 +34,11 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public void Update(GameTime gameTime)
+        public void Update(Delta delta)
         {
-            float deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            time += deltaT;
-            velocity.Y += gravity * deltaT;
-            position += velocity * deltaT;
+            time += delta.Time;
+            velocity.Y += gravity * delta.Time;
+            position += velocity * delta.Time;
         }
 
         public void Draw(Renderer renderer, TextureData textureData)
@@ -69,13 +68,13 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
-            base.Update(gameTime);
+            base.Update(delta);
             foreach (Particle particle in particles)
             {
                 if (particle.Alive)
-                    particle.Update(gameTime);
+                    particle.Update(delta);
             }
         }
 

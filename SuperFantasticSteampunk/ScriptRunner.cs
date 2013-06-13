@@ -55,11 +55,9 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public void Update(GameTime gameTime)
+        public void Update(Delta delta)
         {
-            float elapsedGameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            time += elapsedGameTime;
+            time += delta.Time;
             while (scriptActionIndex < script.Actions.Count)
             {
                 ScriptAction action = script.Actions[scriptActionIndex];
@@ -75,9 +73,9 @@ namespace SuperFantasticSteampunk
             foreach (NestedScriptRunner nestedScriptRunner in nestedScriptRunners)
             {
                 if (nestedScriptRunner.Time <= 0.0f)
-                    nestedScriptRunner.ScriptRunner.Update(gameTime);
+                    nestedScriptRunner.ScriptRunner.Update(delta);
                 else
-                    nestedScriptRunner.Time -= elapsedGameTime;
+                    nestedScriptRunner.Time -= delta.Time;
             }
         }
 
@@ -363,7 +361,7 @@ namespace SuperFantasticSteampunk
 
             this.blocked = true;
             ScriptRunner self = this;
-            actorEntity.UpdateExtensions.Add(new UpdateExtension((updateExtension, gameTime) => {
+            actorEntity.UpdateExtensions.Add(new UpdateExtension((updateExtension, delta) => {
                 if (actorEntity.CollidesWith(targetEntity))
                 {
                     updateExtension.Active = false;
@@ -395,14 +393,14 @@ namespace SuperFantasticSteampunk
             const float velocityToleranceForUnblocking = 50.0f;
             const float velocityToleranceForStopping = 1.0f;
             ScriptRunner self = this;
-            entity.UpdateExtensions.Add(new UpdateExtension((updateExtension, gameTime) => {
+            entity.UpdateExtensions.Add(new UpdateExtension((updateExtension, delta) => {
                 if (decelerate)
                 {
                     float currentDistance = (partyMember.BattleEntityIdlePosition - entity.Position).Length();
                     entity.Velocity = originalVelocity * (currentDistance / distance);
                 }
                 else
-                    time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    time -= delta.Time;
 
                 if (!unblocked && (time <= 0.0f || (movingRight && entity.Velocity.X < velocityToleranceForUnblocking) || (!movingRight && entity.Velocity.X > -velocityToleranceForUnblocking)))
                 {

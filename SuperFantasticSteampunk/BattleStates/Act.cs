@@ -56,7 +56,7 @@ namespace SuperFantasticSteampunk.BattleStates
             removeDeadPartyMembers();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
             if (Battle.PlayerParty.Count == 0 || Battle.EnemyParty.Count == 0)
             {

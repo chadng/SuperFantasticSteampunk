@@ -168,14 +168,14 @@ namespace SuperFantasticSteampunk.BattleStates
                 finishThinkForCurrentPartyMember();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
             if (actions.Count == Battle.PlayerParty.Count)
             {
                 Finish();
                 return;
             }
-            inputButtonListener.Update(gameTime);
+            inputButtonListener.Update(delta);
         }
 
         private void moveUp()

@@ -48,7 +48,7 @@ namespace SuperFantasticSteampunk.OverworldStates
             PopState();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
             if (State != EncounterState.Pending)
                 Finish();

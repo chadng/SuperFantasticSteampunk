@@ -20,7 +20,7 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public abstract void Update(GameTime gameTime);
+        public abstract void Update(Delta delta);
 
         public abstract void BeforeDraw(Renderer renderer);
 

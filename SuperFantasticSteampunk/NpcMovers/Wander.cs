@@ -25,24 +25,24 @@ namespace SuperFantasticSteampunk.NpcMovers
         #endregion
 
         #region Instance Methods
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
             if (destination == entity.Position)
             {
-                thinkTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                thinkTime += delta.Time;
                 if (thinkTime > thinkDelay)
                 {
-                    chooseNewDestination(gameTime);
+                    chooseNewDestination(delta);
                     thinkTime = 0.0f;
                 }
             }
-            else if (entityPositionCloseEnoughToDestination(gameTime))
+            else if (entityPositionCloseEnoughToDestination(delta))
             {
                 destination = entity.Position;
                 entity.Velocity = Vector2.Zero;
             }
 
-            base.Update(gameTime);
+            base.Update(delta);
         }
 
         public override void Finish()
@@ -50,11 +50,9 @@ namespace SuperFantasticSteampunk.NpcMovers
             entity.Velocity = Vector2.Zero;
         }
 
-        private void chooseNewDestination(GameTime gameTime)
+        private void chooseNewDestination(Delta delta)
         {
             const float maxDistance = 200.0f;
-            float deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             Vector2 originalPosition = entity.Position;
 
             do
@@ -68,13 +66,13 @@ namespace SuperFantasticSteampunk.NpcMovers
                 relativePosition.Normalize();
                 entity.Velocity = relativePosition * movementVelocity;
 
-                entity.Position += entity.Velocity * deltaT;
-            } while (entityPositionCloseEnoughToDestination(gameTime));
+                entity.Position += entity.Velocity * delta.Time;
+            } while (entityPositionCloseEnoughToDestination(delta));
 
             entity.Position = originalPosition;
         }
 
-        private bool entityPositionCloseEnoughToDestination(GameTime gameTime)
+        private bool entityPositionCloseEnoughToDestination(Delta delta)
         {
             const float tolerance = 10.0f;
             bool result = entity.Position.X > destination.X - tolerance && entity.Position.X < destination.X + tolerance && entity.Position.Y > destination.Y - tolerance && entity.Position.Y < destination.Y + tolerance;
@@ -82,7 +80,7 @@ namespace SuperFantasticSteampunk.NpcMovers
                 return result;
 
             Vector2 previousPosition = entity.Position;
-            entity.Position += entity.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            entity.Position += entity.Velocity * delta.Time;
             result = entity.CollidesWith(overworld.Map) || entityCollidesWithOtherEnemy() || entityCollidesWithScenery();
             entity.Position = previousPosition;
 

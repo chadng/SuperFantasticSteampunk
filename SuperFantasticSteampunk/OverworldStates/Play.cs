@@ -45,11 +45,11 @@ namespace SuperFantasticSteampunk.OverworldStates
             initNpcMovers();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
-            handlePlayerMovement(gameTime);
+            handlePlayerMovement(delta);
             foreach (NpcMover npcMover in npcMovers)
-                npcMover.Update(gameTime);
+                npcMover.Update(delta);
 
             handleEnemyCollisions();
         }
@@ -71,7 +71,7 @@ namespace SuperFantasticSteampunk.OverworldStates
             npcMovers.Clear();
         }
 
-        private void handlePlayerMovement(GameTime gameTime)
+        private void handlePlayerMovement(Delta delta)
         {
             Vector2 velocity = Vector2.Zero;
             if (Input.Up())
@@ -90,8 +90,8 @@ namespace SuperFantasticSteampunk.OverworldStates
             }
 
             Entity entity = Overworld.PlayerParty.PrimaryPartyMember.OverworldEntity;
-            handleWallCollisions(entity, gameTime, ref velocity);
-            handleSceneryCollisions(entity, gameTime, ref velocity);
+            handleWallCollisions(entity, delta, ref velocity);
+            handleSceneryCollisions(entity, delta, ref velocity);
             entity.Velocity = velocity;
 
             Overworld.SetEntityAnimationForVelocity(entity);
@@ -113,10 +113,9 @@ namespace SuperFantasticSteampunk.OverworldStates
             }
         }
 
-        private void handleWallCollisions(Entity entity, GameTime gameTime, ref Vector2 velocity)
+        private void handleWallCollisions(Entity entity, Delta delta, ref Vector2 velocity)
         {
-            float deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Vector2 newPosition = entity.Position + (velocity * deltaT);
+            Vector2 newPosition = entity.Position + (velocity * delta.Time);
             Rectangle bounds = entity.GetBoundingBoxAt(newPosition);
 
             Point topLeftTileCoord = new Point(bounds.Left / Map.TileSize, bounds.Top / Map.TileSize);
@@ -129,17 +128,16 @@ namespace SuperFantasticSteampunk.OverworldStates
                     if (Overworld.Map.CollisionMap[x, y])
                     {
                         Rectangle tileRect = new Rectangle(x * Map.TileSize, y * Map.TileSize, Map.TileSize, Map.TileSize);
-                        adjustVelocityForRectangleCollision(entity, deltaT, tileRect, ref velocity);
+                        adjustVelocityForRectangleCollision(entity, delta.Time, tileRect, ref velocity);
                     }
                 }
             }
         }
 
-        private void handleSceneryCollisions(Entity entity, GameTime gameTime, ref Vector2 velocity)
+        private void handleSceneryCollisions(Entity entity, Delta delta, ref Vector2 velocity)
         {
-            float deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
             foreach (Scenery scenery in Overworld.SceneryEntities)
-                adjustVelocityForRectangleCollision(entity, deltaT, scenery.GetBoundingBox(), ref velocity);
+                adjustVelocityForRectangleCollision(entity, delta.Time, scenery.GetBoundingBox(), ref velocity);
         }
 
         private void adjustVelocityForRectangleCollision(Entity entity, float deltaT, Rectangle rect, ref Vector2 velocity)

@@ -9,12 +9,12 @@ namespace SuperFantasticSteampunk
     class UpdateExtension
     {
         #region Instance Properties
-        public Action<UpdateExtension, GameTime> Action { get; private set; }
+        public Action<UpdateExtension, Delta> Action { get; private set; }
         public bool Active { get; set; }
         #endregion
 
         #region Constructors
-        public UpdateExtension(Action<UpdateExtension, GameTime> action)
+        public UpdateExtension(Action<UpdateExtension, Delta> action)
         {
             Action = action;
             Active = true;
@@ -175,24 +175,23 @@ namespace SuperFantasticSteampunk
             Alive = false;
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(Delta delta)
         {
-            float deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Velocity += Acceleration * deltaT;
-            Position += Velocity * deltaT;
-            Rotation += AngularVelocity * deltaT;
+            Velocity += Acceleration * delta.Time;
+            Position += Velocity * delta.Time;
+            Rotation += AngularVelocity * delta.Time;
 
             if (Skeleton != null)
-                updateSkeleton(gameTime);
+                updateSkeleton(delta);
             else if (Sprite != null)
-                Sprite.Update(gameTime);
+                Sprite.Update(delta);
             
             if (UpdateExtensions.Count > 0)
             {
                 foreach (UpdateExtension updateExtension in UpdateExtensions)
                 {
                     if (updateExtension.Active)
-                        updateExtension.Action(updateExtension, gameTime);
+                        updateExtension.Action(updateExtension, delta);
                 }
                 UpdateExtensions.RemoveAll(ue => !ue.Active);
             }
@@ -225,14 +224,14 @@ namespace SuperFantasticSteampunk
                 renderer.Draw(Sprite, Position, Tint, Rotation, Scale);
         }
 
-        private void updateSkeleton(GameTime gameTime)
+        private void updateSkeleton(Delta delta)
         {
             Skeleton.RootBone.X = Position.X;
             Skeleton.RootBone.Y = Position.Y;
             Skeleton.RootBone.ScaleX = Scale.X;
             Skeleton.RootBone.ScaleY = Scale.Y;
             Skeleton.RootBone.Rotation = Rotation;
-            AnimationState.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            AnimationState.Update(delta.Time);
             AnimationState.Apply(Skeleton);
             Skeleton.UpdateWorldTransform();
         }

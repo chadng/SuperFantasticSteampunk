@@ -31,10 +31,10 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        protected override void update(GameTime gameTime)
+        protected override void update(Delta delta)
         {
-            base.update(gameTime);
-            inputButtonListener.Update(gameTime);
+            base.update(delta);
+            inputButtonListener.Update(delta);
         }
 
         protected override void draw(Renderer renderer)

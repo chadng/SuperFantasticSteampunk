@@ -52,7 +52,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 ++currentStatusEffectPartyMemberIndex;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
             if (currentStatusEffectPartyMemberIndex < currentStatusEffectParty.Count)
             {
@@ -68,9 +68,8 @@ namespace SuperFantasticSteampunk.BattleStates
             }
             else if (clockTime < clockHourTransistionTimeInSeconds)
             {
-                float deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                clockTime += deltaT;
-                Clock.Update(deltaT / clockHourTransistionTimeInSeconds);
+                clockTime += delta.Time;
+                Clock.Update(delta.Time / clockHourTransistionTimeInSeconds);
             }
             else
                 Finish();

@@ -73,7 +73,7 @@ namespace SuperFantasticSteampunk.BattleStates
             PopState();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
             if (potentialTargets.Count == 0 || thinkAction.Type == ThinkActionType.None || thinkAction.Type == ThinkActionType.Defend)
             {
@@ -81,7 +81,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 return;
             }
 
-            inputButtonListener.Update(gameTime);
+            inputButtonListener.Update(delta);
         }
 
         private void choosePreviousTarget()

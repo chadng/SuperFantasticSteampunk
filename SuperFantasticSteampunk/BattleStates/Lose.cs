@@ -31,7 +31,7 @@ namespace SuperFantasticSteampunk.BattleStates
             ChangeState(new Outro(Battle));
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
             //TODO: Update game over screen
             Finish();

@@ -17,7 +17,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Instance Methods
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
         }
 

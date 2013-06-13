@@ -27,12 +27,11 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
-            base.Update(gameTime);
+            base.Update(delta);
 
-            time += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
+            time += delta.Time;
             if (time > floatTimeInSeconds)
             {
                 Tint = Color.Transparent;

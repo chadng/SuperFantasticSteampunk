@@ -40,7 +40,7 @@ namespace SuperFantasticSteampunk
                 Current.Finish();
         }
 
-        public static void UpdateCurrent(GameTime gameTime)
+        public static void UpdateCurrent(Delta delta)
         {
             if (Current != null)
             {
@@ -53,13 +53,13 @@ namespace SuperFantasticSteampunk
                 {
                     if (nextScene != null)
                         pushNextScene();
-                    Current.update(gameTime);
+                    Current.update(delta);
                 }
             }
             else if (nextScene != null)
             {
                 pushNextScene();
-                Current.update(gameTime);
+                Current.update(delta);
             }
         }
 
@@ -120,7 +120,7 @@ namespace SuperFantasticSteampunk
                 SceneryEntities.Add(scenery);
         }
 
-        protected virtual void update(GameTime gameTime)
+        protected virtual void update(Delta delta)
         {
             if (entitiesToAdd.Count > 0)
             {
@@ -129,11 +129,11 @@ namespace SuperFantasticSteampunk
             }
 
             foreach (Entity entity in Entities)
-                entity.Update(gameTime);
+                entity.Update(delta);
 
             removeDeadEntities();
 
-            inputButtonListener.Update(gameTime);
+            inputButtonListener.Update(delta);
         }
 
         protected virtual void draw(Renderer renderer)

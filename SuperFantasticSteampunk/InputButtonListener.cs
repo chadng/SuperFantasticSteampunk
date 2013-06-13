@@ -39,7 +39,7 @@ namespace SuperFantasticSteampunk
                 buttonPressedLastFrame.Add(button, false);
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(Delta delta)
         {
             foreach (InputButton button in eventBindings.Keys)
             {

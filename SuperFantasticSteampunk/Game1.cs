@@ -3,6 +3,20 @@ using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk
 {
+    class Delta
+    {
+        #region Instance Properties
+        public float Time { get; private set; }
+        #endregion
+
+        #region Constructors
+        public Delta(float time)
+        {
+            Time = time;
+        }
+        #endregion
+    }
+
     public class Game1 : Game
     {
         #region Constants
@@ -116,7 +130,8 @@ namespace SuperFantasticSteampunk
                 return;
             }
 
-            Scene.UpdateCurrent(gameTime);
+            Delta delta = new Delta((float)gameTime.ElapsedGameTime.TotalSeconds);
+            Scene.UpdateCurrent(delta);
             base.Update(gameTime);
         }
 

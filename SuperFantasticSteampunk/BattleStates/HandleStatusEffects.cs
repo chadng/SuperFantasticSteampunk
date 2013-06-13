@@ -42,7 +42,7 @@ namespace SuperFantasticSteampunk.BattleStates
             PopState();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
             bool allStatusEffectsFinished = true;
 

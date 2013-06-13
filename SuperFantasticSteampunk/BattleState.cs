@@ -38,7 +38,7 @@ namespace SuperFantasticSteampunk
         {
         }
 
-        public abstract void Update(GameTime gameTime);
+        public abstract void Update(Delta delta);
 
         public void ChangeState(BattleState state)
         {

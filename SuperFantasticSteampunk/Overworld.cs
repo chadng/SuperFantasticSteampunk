@@ -91,7 +91,7 @@ namespace SuperFantasticSteampunk
                 setEntitySkeletonAnimationForVelocity(entity);
         }
 
-        protected override void update(GameTime gameTime)
+        protected override void update(Delta delta)
         {
             if (stateChanged)
             {
@@ -100,14 +100,14 @@ namespace SuperFantasticSteampunk
                 Logger.Log(CurrentOverworldState.GetType().Name + " overworld state started");
             }
 
-            CurrentOverworldState.Update(gameTime);
-            base.update(gameTime);
+            CurrentOverworldState.Update(delta);
+            base.update(delta);
 
             if (CurrentOverworldState.OverworldStateRenderer != null)
-                CurrentOverworldState.OverworldStateRenderer.Update(gameTime);
+                CurrentOverworldState.OverworldStateRenderer.Update(delta);
 
-            camera.Update(gameTime);
-            Clock.Update(gameTime);
+            camera.Update(delta);
+            Clock.Update(delta);
         }
 
         protected override void draw(Renderer renderer)

@@ -56,9 +56,9 @@ namespace SuperFantasticSteampunk
             };
         }
 
-        public static void Update(GameTime gameTime)
+        public static void Update(Delta delta)
         {
-            Update(hoursPerSecond * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            Update(hoursPerSecond * delta.Time);
         }
 
         public static void Update(float hours)

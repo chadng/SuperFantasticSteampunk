@@ -38,13 +38,13 @@ namespace SuperFantasticSteampunk.BattleStates
             PopState();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(Delta delta)
         {
             if (scriptRunner == null)
                 Finish();
             else
             {
-                scriptRunner.Update(gameTime);
+                scriptRunner.Update(delta);
                 if (scriptRunner.IsFinished())
                     Finish();
             }
