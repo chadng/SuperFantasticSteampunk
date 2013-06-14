@@ -161,6 +161,10 @@
       <Link>Content\Skeletons\monkey.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.png">
+      <Link>Content\Skeletons\weasel.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Forenames.txt">
       <Link>Content\Forenames.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -211,6 +215,10 @@
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\battle_ui\medic_head.png">
       <Link>Content\Textures\battle_ui\medic_head.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\battle_ui\thief_head.png">
+      <Link>Content\Textures\battle_ui\thief_head.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\scenery\battle\rock_1.png">
@@ -308,6 +316,14 @@
     </None>
     <None Include="..\..\..\..\..\Dropbox\illustrator\game\monkey\spine\monkey.json">
       <Link>Content\Skeletons\monkey.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.atlas">
+      <Link>Content\Skeletons\weasel.atlas</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.json">
+      <Link>Content\Skeletons\weasel.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana10.xnb">
