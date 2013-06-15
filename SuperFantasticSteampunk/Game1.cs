@@ -108,6 +108,7 @@ namespace SuperFantasticSteampunk
 
             Party playerParty = new Party();
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("marksman")));
+            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("warrior")));
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("medic")));
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("thief")));
 

@@ -161,6 +161,10 @@
       <Link>Content\Skeletons\monkey.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\rhino\spine\rhino.png">
+      <Link>Content\Skeletons\rhino.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.png">
       <Link>Content\Skeletons\weasel.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -219,6 +223,10 @@
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\battle_ui\thief_head.png">
       <Link>Content\Textures\battle_ui\thief_head.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\battle_ui\warrior_head.png">
+      <Link>Content\Textures\battle_ui\warrior_head.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\scenery\battle\rock_1.png">
@@ -316,6 +324,14 @@
     </None>
     <None Include="..\..\..\..\..\Dropbox\illustrator\game\monkey\spine\monkey.json">
       <Link>Content\Skeletons\monkey.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Dropbox\illustrator\game\rhino\spine\rhino.atlas">
+      <Link>Content\Skeletons\rhino.atlas</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Dropbox\illustrator\game\rhino\spine\rhino.json">
+      <Link>Content\Skeletons\rhino.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.atlas">
