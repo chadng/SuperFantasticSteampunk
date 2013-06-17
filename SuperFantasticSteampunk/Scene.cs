@@ -140,6 +140,8 @@ namespace SuperFantasticSteampunk
         {
             Entities.Sort((a, b) => a.ZIndex == b.ZIndex ? a.Position.Y.CompareTo(b.Position.Y) : b.ZIndex.CompareTo(a.ZIndex));
             foreach (Entity entity in Entities)
+                entity.DrawShadow(renderer);
+            foreach (Entity entity in Entities)
                 entity.Draw(renderer);
         }
 

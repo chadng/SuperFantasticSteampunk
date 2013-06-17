@@ -7,8 +7,18 @@ namespace SuperFantasticSteampunk.BattleStates
 {
     class SelectTargetRenderer : BattleStateRenderer
     {
+        #region Constants
+        private const float colorAlphaSpeed = 1.0f;
+        private const float minColorAlpha = 0.0f;
+        private const float maxColorAlpha = 0.8f;
+        #endregion
+
         #region Instance Fields
         TextureData arrowTextureData;
+        Effect colorTextureShader;
+        float colorAlpha;
+        bool incColorAlpha;
+        PartyMember currentlySelectedPartyMember;
         #endregion
 
         #region Instance Properties
@@ -23,23 +33,63 @@ namespace SuperFantasticSteampunk.BattleStates
             : base(battleState)
         {
             arrowTextureData = ResourceManager.GetTextureData("arrow_down");
+            colorTextureShader = ResourceManager.GetShader("ColorTexture");
+            colorAlpha = 0.0f;
+            incColorAlpha = true;
+            currentlySelectedPartyMember = null;
         }
         #endregion
 
         #region Instance Methods
         public override void Update(Delta delta)
         {
-            // Update transitions and easing
+            updateColorAlpha(delta);
+            updateCurrentlySelectedPartyMember();
         }
 
         public override void BeforeDraw(Renderer renderer)
         {
-            // Draw elements under party members
+            colorTextureShader.Parameters["TexColor"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, colorAlpha));
         }
 
         public override void AfterDraw(Renderer renderer)
         {
             drawArrowOverPotentialTarget(renderer);
+        }
+
+        private void updateColorAlpha(Delta delta)
+        {
+            if (incColorAlpha)
+            {
+                colorAlpha += colorAlphaSpeed * delta.Time;
+                if (colorAlpha >= maxColorAlpha)
+                {
+                    colorAlpha = maxColorAlpha;
+                    incColorAlpha = false;
+                }
+            }
+            else
+            {
+                colorAlpha -= colorAlphaSpeed * delta.Time;
+                if (colorAlpha <= minColorAlpha)
+                {
+                    colorAlpha = minColorAlpha;
+                    incColorAlpha = true;
+                }
+            }
+        }
+
+        private void updateCurrentlySelectedPartyMember()
+        {
+            if (currentlySelectedPartyMember != battleState.PotentialTarget)
+            {
+                if (currentlySelectedPartyMember != null)
+                    currentlySelectedPartyMember.BattleEntity.Shader = null;
+                currentlySelectedPartyMember = battleState.PotentialTarget;
+                currentlySelectedPartyMember.BattleEntity.Shader = colorTextureShader;
+                colorAlpha = 0.0f;
+                incColorAlpha = true;
+            }
         }
 
         private void drawArrowOverPotentialTarget(Renderer renderer)

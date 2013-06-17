@@ -47,6 +47,7 @@ namespace SuperFantasticSteampunk
         public bool Visible { get; set; }
         public Nullable<Rectangle> CustomBoundingBox { get; set; }
         public List<UpdateExtension> UpdateExtensions { get; private set; }
+        public Effect Shader { get; set; }
         #endregion
 
         #region Constructors
@@ -59,6 +60,7 @@ namespace SuperFantasticSteampunk
             Alive = true;
             Visible = true;
             UpdateExtensions = new List<UpdateExtension>();
+            Shader = null;
         }
 
         public Entity(Skeleton skeleton, Vector2 position)
@@ -215,17 +217,10 @@ namespace SuperFantasticSteampunk
             if (!Visible)
                 return;
 
+            renderer.SetShader(Shader);
+
             if (Skeleton != null)
             {
-                Vector2 shadowPosition = Position;
-                Vector2 shadowScale = new Vector2(1.5f);
-                if (ShadowFollowBone != null)
-                {
-                    shadowPosition.X = ShadowFollowBone.WorldX;
-                    shadowScale += new Vector2(ShadowFollowBone.WorldY - Skeleton.RootBone.WorldY) / 400.0f;
-                }
-                renderer.Draw(shadowTextureData, shadowPosition, Color.White * 0.5f, 0.0f, shadowScale * Scale);
-                
                 if (Altitude == 0.0f)
                     renderer.Draw(Skeleton);
                 else
@@ -238,6 +233,23 @@ namespace SuperFantasticSteampunk
             }
             else if (Sprite != null)
                 renderer.Draw(Sprite, Position, Tint, Rotation, Scale);
+        }
+
+        public virtual void DrawShadow(Renderer renderer)
+        {
+            if (Skeleton == null)
+                return;
+
+            Vector2 shadowPosition = Position;
+            Vector2 shadowScale = new Vector2(1.5f);
+            if (ShadowFollowBone != null)
+            {
+                shadowPosition.X = ShadowFollowBone.WorldX;
+                shadowScale += new Vector2(ShadowFollowBone.WorldY - Skeleton.RootBone.WorldY) / 400.0f;
+            }
+
+            renderer.SetShader(null);
+            renderer.Draw(shadowTextureData, shadowPosition, Color.White * 0.5f, 0.0f, shadowScale * Scale);
         }
 
         private void updateSkeleton(Delta delta)

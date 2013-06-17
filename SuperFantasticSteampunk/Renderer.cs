@@ -18,14 +18,13 @@ namespace SuperFantasticSteampunk
         public Font Font { get; set; }
         public Camera Camera { get; set; }
         public Color Tint { get; set; }
-        public Effect DefaultShader { get; set; }
+        public Effect CurrentShader { get; private set; }
         #endregion
 
         #region Instance Fields
         private SpriteBatch spriteBatch;
         private SkeletonRenderer skeletonRenderer;
         private RendererState state;
-        private Effect currentShader;
         #endregion
 
         #region Constructors
@@ -39,15 +38,18 @@ namespace SuperFantasticSteampunk
             skeletonRenderer = new SkeletonRenderer(graphicsDevice);
             skeletonRenderer.BlendState = BlendState.NonPremultiplied;
             state = RendererState.NoneBegan;
-            currentShader = null;
+            CurrentShader = null;
         }
         #endregion
 
         #region Instance Methods
         public void SetShader(Effect shader)
         {
-            End();
-            currentShader = shader ?? defaultShader;
+            if (shader != CurrentShader)
+            {
+                End();
+                CurrentShader = shader ?? defaultShader;
+            }
         }
 
         public void Draw(Sprite sprite, Vector2 position, Color color, float rotation, Vector2 scale)
@@ -147,7 +149,7 @@ namespace SuperFantasticSteampunk
             {
                 if (state == RendererState.SkeletonRendererBegan)
                     skeletonRenderer.End();
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, null, currentShader);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, null, CurrentShader);
                 state = RendererState.SpriteBatchBegan;
             }
         }
@@ -158,7 +160,7 @@ namespace SuperFantasticSteampunk
             {
                 if (state == RendererState.SpriteBatchBegan)
                     spriteBatch.End();
-                skeletonRenderer.Begin(currentShader);
+                skeletonRenderer.Begin(CurrentShader);
                 state = RendererState.SkeletonRendererBegan;
             }
         }
