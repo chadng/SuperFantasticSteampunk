@@ -23,6 +23,7 @@ namespace SuperFantasticSteampunk
         private SpriteBatch spriteBatch;
         private SkeletonRenderer skeletonRenderer;
         private RendererState state;
+        private Effect shader;
         #endregion
 
         #region Constructors
@@ -35,10 +36,17 @@ namespace SuperFantasticSteampunk
             skeletonRenderer = new SkeletonRenderer(graphicsDevice);
             skeletonRenderer.BlendState = BlendState.NonPremultiplied;
             state = RendererState.NoneBegan;
+            shader = null;
         }
         #endregion
 
         #region Instance Methods
+        public void SetShader(Effect shader)
+        {
+            End();
+            this.shader = shader;
+        }
+
         public void Draw(Sprite sprite, Vector2 position, Color color, float rotation, Vector2 scale)
         {
             beginSpriteBatch();
@@ -136,7 +144,7 @@ namespace SuperFantasticSteampunk
             {
                 if (state == RendererState.SkeletonRendererBegan)
                     skeletonRenderer.End();
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, null, null, shader);
                 state = RendererState.SpriteBatchBegan;
             }
         }
@@ -147,7 +155,7 @@ namespace SuperFantasticSteampunk
             {
                 if (state == RendererState.SpriteBatchBegan)
                     spriteBatch.End();
-                skeletonRenderer.Begin();
+                skeletonRenderer.Begin(shader);
                 state = RendererState.SkeletonRendererBegan;
             }
         }

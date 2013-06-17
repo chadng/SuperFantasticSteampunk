@@ -23,6 +23,7 @@ namespace SuperFantasticSteampunk
         private static SortedDictionary<string, TextureData> textureDataDictionary;
         private static SortedDictionary<string, Font> fontDictionary;
         private static SortedDictionary<string, AreaData> areaDataDictionary;
+        private static SortedDictionary<string, Effect> shaderDictionary;
         #endregion
 
         #region Static Properties
@@ -53,6 +54,8 @@ namespace SuperFantasticSteampunk
             populateFontDictionary(contentManager);
             areaDataDictionary = new SortedDictionary<string, AreaData>();
             populateAreaDataDictionary(contentManager);
+            shaderDictionary = new SortedDictionary<string, Effect>();
+            populateShaderDictionary(contentManager);
 
             PartyMemberTitles = new List<string>(File.ReadAllLines(contentManager.RootDirectory + "/Titles.txt"));
             PartyMemberForenames = new List<string>(File.ReadAllLines(contentManager.RootDirectory + "/Forenames.txt"));
@@ -272,6 +275,17 @@ namespace SuperFantasticSteampunk
             AreaData areaData;
             if (areaDataDictionary.TryGetValue(name, out areaData))
                 return areaData;
+            return null;
+        }
+
+        public static Effect GetShader(string name)
+        {
+            if (name == null)
+                return null;
+
+            Effect shader;
+            if (shaderDictionary.TryGetValue(name, out shader))
+                return shader;
             return null;
         }
 
@@ -497,6 +511,17 @@ namespace SuperFantasticSteampunk
                     result.Add(keyValuePair.Value);
             }
             return result;
+        }
+
+        private static void populateShaderDictionary(ContentManager contentManager)
+        {
+            string shaderDirectory = contentManager.RootDirectory + "/Shaders/";
+            foreach (string filePath in Directory.EnumerateFiles(shaderDirectory, "*.mgfxo"))
+            {
+                string shaderName = filePath.Replace(shaderDirectory, "").Replace(".mgfxo", "");
+                shaderDictionary.Add(shaderName, contentManager.Load<Effect>(filePath.Replace(contentManager.RootDirectory + "/", "")));
+                Logger.Log("Loaded shader '" + shaderName + "'");
+            }
         }
         #endregion
     }
