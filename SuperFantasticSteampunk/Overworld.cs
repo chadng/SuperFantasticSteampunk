@@ -163,7 +163,7 @@ namespace SuperFantasticSteampunk
         {
             TileData testTile = Area.Data.OverworldTileTextureNamesToList()[0];
             TextureData testTextureData = ResourceManager.GetTextureData(testTile.TextureDataName);
-            TextureData pixelTexture = ResourceManager.GetTextureData("white_pixel");
+            //TextureData pixelTexture = ResourceManager.GetTextureData("white_pixel");
 
             Rectangle cameraBoundingBox = camera.GetBoundingBox();
             int startX = Math.Max((cameraBoundingBox.Left / Map.TileSize) - 1, 0);

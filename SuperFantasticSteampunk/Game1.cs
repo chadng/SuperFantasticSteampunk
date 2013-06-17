@@ -15,6 +15,13 @@ namespace SuperFantasticSteampunk
             Time = time;
         }
         #endregion
+
+        #region Instance Methods
+        public void scaleDelta(float scale)
+        {
+            Time *= scale;
+        }
+        #endregion
     }
 
     public class Game1 : Game
@@ -131,6 +138,7 @@ namespace SuperFantasticSteampunk
             }
 
             Delta delta = new Delta((float)gameTime.ElapsedGameTime.TotalSeconds);
+            Input.UpdateInputState();
             Scene.UpdateCurrent(delta);
             base.Update(gameTime);
         }

@@ -216,9 +216,17 @@ namespace SuperFantasticSteampunk
             if (amount > 0 && !ignoreShield)
                 HurtThisTurn = true;
 
+            bool aliveBefore = Alive;
             Health -= amount;
-            if (Health < 0)
+            if (Health <= 0)
+            {
                 Health = 0;
+                if (aliveBefore)
+                {
+                    BattleEntity.Visible = false;
+                    Scene.AddEntity(new ParticleEffect(BattleEntity.GetCenter(), 20, ResourceManager.GetTextureData("arrow_down"), 500.0f, 500.0f, 1.0f, 1.0f));
+                }
+            }
             else if (Health > MaxHealth)
                 Health = MaxHealth;
         }

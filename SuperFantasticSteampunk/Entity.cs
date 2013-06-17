@@ -44,6 +44,7 @@ namespace SuperFantasticSteampunk
         public float Altitude { get; set; }
         public Bone ShadowFollowBone { get; set; }
         public bool Alive { get; private set; }
+        public bool Visible { get; set; }
         public Nullable<Rectangle> CustomBoundingBox { get; set; }
         public List<UpdateExtension> UpdateExtensions { get; private set; }
         #endregion
@@ -56,6 +57,7 @@ namespace SuperFantasticSteampunk
             ZIndex = 0;
             Altitude = 0.0f;
             Alive = true;
+            Visible = true;
             UpdateExtensions = new List<UpdateExtension>();
         }
 
@@ -170,6 +172,17 @@ namespace SuperFantasticSteampunk
             return new Rectangle((int)position.X, (int)position.Y, 0, 0);
         }
 
+        public Vector2 GetCenter()
+        {
+            return GetCenterAt(Position);
+        }
+
+        public Vector2 GetCenterAt(Vector2 position)
+        {
+            Rectangle boundingBox = GetBoundingBoxAt(position);
+            return new Vector2(boundingBox.X + (boundingBox.Width / 2), boundingBox.Y + (boundingBox.Height / 2));
+        }
+
         public virtual void Kill()
         {
             Alive = false;
@@ -199,6 +212,9 @@ namespace SuperFantasticSteampunk
 
         public virtual void Draw(Renderer renderer)
         {
+            if (!Visible)
+                return;
+
             if (Skeleton != null)
             {
                 Vector2 shadowPosition = Position;
