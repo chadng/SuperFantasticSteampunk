@@ -270,6 +270,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />
+    <Content Include="Shaders\BasicTexture.fx" />
+    <Content Include="Shaders\ColorTexture.fx" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
@@ -398,6 +400,14 @@
       <Link>Content\Fonts\verdana\verdana8.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Shaders\BasicTexture.mgfxo">
+      <Link>Content\Shaders\BasicTexture.mgfxo</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Shaders\ColorTexture.mgfxo">
+      <Link>Content\Shaders\ColorTexture.mgfxo</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

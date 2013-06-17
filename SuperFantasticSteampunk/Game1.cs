@@ -110,7 +110,7 @@ namespace SuperFantasticSteampunk
         {
             Input.Initialize(Content);
             ResourceManager.Initialize(Content, GraphicsDevice);
-            renderer = new Renderer(GraphicsDevice);
+            renderer = new Renderer(GraphicsDevice, ResourceManager.GetShader("BasicTexture"));
             renderer.Font = ResourceManager.GetFont("verdana");
 
             Party playerParty = new Party();
