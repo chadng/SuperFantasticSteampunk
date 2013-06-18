@@ -31,10 +31,17 @@ namespace SuperFantasticSteampunk.BattleStates
         public void Draw(TextureData iconContainerTextureData, TextureData iconContainerGlowTextureData, Vector2 containerScale, Vector2 iconScale, Renderer renderer)
         {
             Vector2 iconPosition = Position + (new Vector2(iconContainerTextureData.Width - iconTextureData.Width, iconContainerTextureData.Height - iconTextureData.Height) * 0.5f * Game1.ScreenScaleFactor.X);
-            if (iconContainerGlowTextureData != null)
+            Color containerColor = color;
+            Color iconColor = Color.White;
+            if (iconContainerGlowTextureData == null)
+            {
+                containerColor = new Color(color.ToVector3() * 0.7f);
+                iconColor = new Color(Color.White.ToVector3() * 0.7f);
+            }
+            else
                 renderer.Draw(iconContainerGlowTextureData, Position - (new Vector2(iconContainerGlowTextureData.Width - iconContainerTextureData.Width) * 0.5f * containerScale.X), Color.WhiteSmoke, 0.0f, containerScale, false);
-            renderer.Draw(iconContainerTextureData, Position, color, 0.0f, containerScale, false);
-            renderer.Draw(iconTextureData, iconPosition, Color.White, 0.0f, iconScale, false);
+            renderer.Draw(iconContainerTextureData, Position, containerColor, 0.0f, containerScale, false);
+            renderer.Draw(iconTextureData, iconPosition, iconColor, 0.0f, iconScale, false);
         }
         #endregion
     }
