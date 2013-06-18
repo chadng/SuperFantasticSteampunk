@@ -41,6 +41,18 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Instance Methods
+        public override void Pause()
+        {
+            nullifyCurrentlySelectedPartyMember();
+            base.Pause();
+        }
+
+        public override void Finish()
+        {
+            nullifyCurrentlySelectedPartyMember();
+            base.Finish();
+        }
+
         public override void Update(Delta delta)
         {
             updateColorAlpha(delta);
@@ -98,6 +110,16 @@ namespace SuperFantasticSteampunk.BattleStates
             position.Y -= 400.0f;
             Color color = battleState.Actor.FearsPartyMember(battleState.PotentialTarget) ? Color.Black : Color.White;
             renderer.Draw(arrowTextureData, position, color);
+        }
+
+        private void nullifyCurrentlySelectedPartyMember()
+        {
+            if (currentlySelectedPartyMember == null)
+                return;
+
+            if (currentlySelectedPartyMember.BattleEntity.Shader == colorTextureShader)
+                currentlySelectedPartyMember.BattleEntity.Shader = null;
+            currentlySelectedPartyMember = null;
         }
         #endregion
     }

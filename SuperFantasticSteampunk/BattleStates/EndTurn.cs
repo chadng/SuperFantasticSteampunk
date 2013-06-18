@@ -33,6 +33,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
+            base.Finish();
             handlePartyFinish(Battle.PlayerParty);
             handlePartyFinish(Battle.EnemyParty);
             removeDeadPartyMembers();

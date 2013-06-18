@@ -28,14 +28,23 @@ namespace SuperFantasticSteampunk
 
         #region Instance Methods
         public abstract void Start();
-        public abstract void Finish();
+
+        public virtual void Finish()
+        {
+            if (BattleStateRenderer != null)
+                BattleStateRenderer.Finish();
+        }
 
         public virtual void Pause()
         {
+            if (BattleStateRenderer != null)
+                BattleStateRenderer.Pause();
         }
 
         public virtual void Resume(BattleState previousBattleState)
         {
+            if (BattleStateRenderer != null)
+                BattleStateRenderer.Resume();
         }
 
         public abstract void Update(Delta delta);

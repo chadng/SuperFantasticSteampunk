@@ -33,6 +33,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
+            base.Finish();
             ChangeState(new Think(Battle));
         }
 

@@ -33,6 +33,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
+            base.Finish();
             if (!thinkAction.InfiniteInInventory)
                 Battle.IncrementItemsUsed(Battle.GetPartyForPartyMember(thinkAction.Actor));
             PopState();

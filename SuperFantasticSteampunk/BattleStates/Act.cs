@@ -42,6 +42,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
+            base.Finish();
             currentThinkActionType = ThinkActionType.None;
             ChangeState(new EndTurn(Battle));
         }

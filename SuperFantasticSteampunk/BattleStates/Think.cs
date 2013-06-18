@@ -36,7 +36,6 @@ namespace SuperFantasticSteampunk.BattleStates
     class ThinkMenuOption
     {
         #region Static Fields
-        public static readonly ThinkMenuOption Cancel;
         public static readonly ThinkMenuOption NoWeapon;
         public static readonly ThinkMenuOption NoShield;
         #endregion
@@ -50,7 +49,6 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Static Constructors
         static ThinkMenuOption()
         {
-            Cancel = new ThinkMenuOption("Cancel", -1, false);
             NoWeapon = new ThinkMenuOption("No weapon", -1, false);
             NoShield = new ThinkMenuOption("No shield", -1, false);
         }
@@ -81,6 +79,15 @@ namespace SuperFantasticSteampunk.BattleStates
 
     class Think : BattleState
     {
+        #region Constants
+        public static readonly string[] OuterMenuOptions = {
+            "Move",
+            "Attack",
+            "Defend",
+            "Item",
+            "Run"
+        };
+        #endregion
 
         #region Instance Fields
         private ThinkAction currentThinkAction; // Assigned to just before SelectTarget state is pushed
@@ -89,6 +96,8 @@ namespace SuperFantasticSteampunk.BattleStates
         private List<ThinkMenuOption> itemMenuOptions;
         private List<ThinkAction> actions;
         private InputButtonListener inputButtonListener;
+        private bool inOuterMenu;
+        private int currentOuterMenuOptionIndex;
         #endregion
 
         #region Instance Properties
@@ -96,6 +105,11 @@ namespace SuperFantasticSteampunk.BattleStates
         public int CurrentOptionNameIndex { get; private set; }
         public PartyMember CurrentPartyMember { get; private set; }
         public List<ThinkMenuOption> MenuOptions { get; private set; }
+        
+        public string CurrentOuterMenuOption
+        {
+            get { return OuterMenuOptions[currentOuterMenuOptionIndex]; }
+        }
 
         public override bool KeepPartyMembersStatic
         {
@@ -111,6 +125,8 @@ namespace SuperFantasticSteampunk.BattleStates
             currentThinkAction = null;
             CurrentOptionNameIndex = 0;
             MenuOptions = null;
+            inOuterMenu = true;
+            currentOuterMenuOptionIndex = 0;
 
             weaponMenuOptions = new Dictionary<CharacterClass, List<ThinkMenuOption>>();
             shieldMenuOptions = new Dictionary<CharacterClass, List<ThinkMenuOption>>();
@@ -124,13 +140,9 @@ namespace SuperFantasticSteampunk.BattleStates
             actions = new List<ThinkAction>(battle.PlayerParty.Count);
 
             inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
-                { InputButton.Up, new ButtonEventHandlers(down: moveUp) },
-                { InputButton.Down, new ButtonEventHandlers(down: moveDown) },
-                { InputButton.Left, new ButtonEventHandlers(down: moveLeft) },
-                { InputButton.Right, new ButtonEventHandlers(down: moveRight) },
-                { InputButton.A, new ButtonEventHandlers(down: showAttackMenu, up: hideAttackMenu) },
-                { InputButton.X, new ButtonEventHandlers(down: showDefendMenu, up: hideDefendMenu) },
-                { InputButton.Y, new ButtonEventHandlers(down: showItemMenu, up: hideItemMenu) },
+                { InputButton.Up, new ButtonEventHandlers(down: previousOption) },
+                { InputButton.Down, new ButtonEventHandlers(down: nextOption) },
+                { InputButton.A, new ButtonEventHandlers(up: selectOption) },
                 { InputButton.B, new ButtonEventHandlers(up: cancelAction) }
             });
         }
@@ -156,6 +168,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
+            base.Finish();
             thinkAboutEnemyPartyActions();
             ChangeState(new Act(Battle, actions));
         }
@@ -178,123 +191,108 @@ namespace SuperFantasticSteampunk.BattleStates
             inputButtonListener.Update(delta);
         }
 
-        private void moveUp()
+        private void previousOption()
         {
-            if (CurrentThinkActionType == ThinkActionType.None)
-            {
-                Battle.PlayerPartyLayout.MovePartyMemberUp(CurrentPartyMember, this);
-                checkUsabilityOfWeaponMenuOptions();
-            }
+            chooseRelativeOption(-1);
+        }
+
+        private void nextOption()
+        {
+            chooseRelativeOption(1);
+        }
+
+        private void selectOption()
+        {
+            if (inOuterMenu)
+                selectOuterMenuOption();
             else
-                chooseRelativeOption(-1);
+                selectAction();
         }
 
-        private void moveDown()
+        private void selectOuterMenuOption()
         {
-            if (CurrentThinkActionType == ThinkActionType.None)
+            switch (OuterMenuOptions[currentOuterMenuOptionIndex].ToLower())
             {
-                Battle.PlayerPartyLayout.MovePartyMemberDown(CurrentPartyMember, this);
-                checkUsabilityOfWeaponMenuOptions();
-            }
-            else
-                chooseRelativeOption(1);
-        }
-
-        private void moveLeft()
-        {
-            if (CurrentThinkActionType == ThinkActionType.None)
-            {
-                Battle.PlayerPartyLayout.MovePartyMemberBack(CurrentPartyMember, this);
-                checkUsabilityOfWeaponMenuOptions();
-            }
-        }
-
-        private void moveRight()
-        {
-            if (CurrentThinkActionType == ThinkActionType.None)
-            {
-                Battle.PlayerPartyLayout.MovePartyMemberForward(CurrentPartyMember, this);
-                checkUsabilityOfWeaponMenuOptions();
+            case "move": break; // push move state
+            case "attack": showAttackMenu(); break;
+            case "defend": showDefendMenu(); break;
+            case "item": showItemMenu(); break;
+            case "run": break; // run
             }
         }
 
         private void showAttackMenu()
         {
-            if (CurrentThinkActionType == ThinkActionType.None)
-            {
-                initThinkActionTypeMenu(ThinkActionType.Attack);
-                equipCurrentOption();
-            }
-        }
-
-        private void hideAttackMenu()
-        {
-            if (CurrentThinkActionType == ThinkActionType.Attack)
-                selectAction();
+            initThinkActionTypeMenu(ThinkActionType.Attack);
+            equipCurrentOption();
+            inOuterMenu = false;
         }
 
         private void showDefendMenu()
         {
-            if (CurrentThinkActionType == ThinkActionType.None)
-            {
-                initThinkActionTypeMenu(ThinkActionType.Defend);
-                equipCurrentOption();
-            }
-        }
-
-        private void hideDefendMenu()
-        {
-            if (CurrentThinkActionType == ThinkActionType.Defend)
-                selectAction();
+            initThinkActionTypeMenu(ThinkActionType.Defend);
+            equipCurrentOption();
+            inOuterMenu = false;
         }
 
         private void showItemMenu()
         {
-            if (CurrentThinkActionType == ThinkActionType.None)
-            {
-                initThinkActionTypeMenu(ThinkActionType.UseItem);
-                equipCurrentOption();
-            }
+            initThinkActionTypeMenu(ThinkActionType.UseItem);
+            equipCurrentOption();
+            inOuterMenu = false;
         }
 
-        private void hideItemMenu()
+        private void hideOpenMenu()
         {
-            if (CurrentThinkActionType == ThinkActionType.UseItem)
-                selectAction();
+            initThinkActionTypeMenu(ThinkActionType.None);
+            inOuterMenu = true;
         }
 
         private void cancelAction()
         {
-            if (CurrentThinkActionType == ThinkActionType.None && actions.Count > 0)
+            if (inOuterMenu)
             {
-                ThinkAction lastAction = actions[actions.Count - 1];
-                actions.RemoveAt(actions.Count - 1);
-                CurrentPartyMember = lastAction.Actor;
-                if (!ThinkMenuOption.IsDefaultOptionName(lastAction.OptionName))
+                if (actions.Count > 0)
                 {
-                    Inventory inventory = getInventoryFromThinkActionType(lastAction.Type, CurrentPartyMember.CharacterClass);
-                    if (inventory != null)
-                        inventory.AddItem(lastAction.OptionName);
+                    ThinkAction lastAction = actions[actions.Count - 1];
+                    actions.RemoveAt(actions.Count - 1);
+                    CurrentPartyMember = lastAction.Actor;
+                    if (!ThinkMenuOption.IsDefaultOptionName(lastAction.OptionName))
+                    {
+                        Inventory inventory = getInventoryFromThinkActionType(lastAction.Type, CurrentPartyMember.CharacterClass);
+                        if (inventory != null)
+                            inventory.AddItem(lastAction.OptionName);
+                    }
+                    repopulateMenuOptions();
+                    Logger.Log("Back to action selection for party member " + (actions.Count + 1).ToString());
                 }
-                repopulateMenuOptions();
-                Logger.Log("Back to action selection for party member " + (actions.Count + 1).ToString());
             }
+            else
+                hideOpenMenu();
         }
 
         private void chooseRelativeOption(int relativeIndex)
         {
-            if (CurrentThinkActionType == ThinkActionType.None || MenuOptions == null)
-                return;
+            if (inOuterMenu)
+            {
+                currentOuterMenuOptionIndex += relativeIndex;
+                if (currentOuterMenuOptionIndex >= OuterMenuOptions.Length)
+                    currentOuterMenuOptionIndex = 0;
+                else if (currentOuterMenuOptionIndex < 0)
+                    currentOuterMenuOptionIndex = OuterMenuOptions.Length - 1;
+            }
+            else
+            {
+                CurrentOptionNameIndex += relativeIndex;
+                if (CurrentOptionNameIndex >= MenuOptions.Count)
+                    CurrentOptionNameIndex = MenuOptions.Count - 1;
+                else if (CurrentOptionNameIndex < 0)
+                    CurrentOptionNameIndex = 0;
 
-            CurrentOptionNameIndex += relativeIndex;
-            if (CurrentOptionNameIndex >= MenuOptions.Count)
-                CurrentOptionNameIndex = MenuOptions.Count - 1;
-            else if (CurrentOptionNameIndex < 0)
-                CurrentOptionNameIndex = 0;
+                equipCurrentOption();
 
-            equipCurrentOption();
-
-            Logger.Log("Selected option: " + MenuOptions[CurrentOptionNameIndex].Name);
+                Logger.Log("Selected option: " + MenuOptions[CurrentOptionNameIndex].Name);
+            }
         }
 
         private void equipCurrentOption()
@@ -302,19 +300,13 @@ namespace SuperFantasticSteampunk.BattleStates
             ThinkMenuOption option = MenuOptions[CurrentOptionNameIndex];
             if (CurrentThinkActionType == ThinkActionType.Attack)
             {
-                if (option != ThinkMenuOption.Cancel)
-                {
-                    CurrentPartyMember.EquipWeapon(option.Name);
-                    Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + option.Name + "' weapon");
-                }
+                CurrentPartyMember.EquipWeapon(option.Name);
+                Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + option.Name + "' weapon");
             }
             else if (CurrentThinkActionType == ThinkActionType.Defend)
             {
-                if (option != ThinkMenuOption.Cancel)
-                {
-                    CurrentPartyMember.EquipShield(ThinkMenuOption.IsDefaultOption(option) ? null : option.Name);
-                    Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + option.Name + "' shield");
-                }
+                CurrentPartyMember.EquipShield(ThinkMenuOption.IsDefaultOption(option) ? null : option.Name);
+                Logger.Log(CurrentPartyMember.Data.Name + " equipped '" + option.Name + "' shield");
             }
             else
             {
@@ -334,11 +326,8 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void selectAction()
         {
-            if (CurrentOptionNameIndex == 0 || MenuOptions[CurrentOptionNameIndex].Disabled) // i.e. Cancel
-            {
-                initThinkActionTypeMenu(ThinkActionType.None);
+            if (MenuOptions[CurrentOptionNameIndex].Disabled)
                 return;
-            }
 
             ThinkMenuOption option = MenuOptions[CurrentOptionNameIndex];
             currentThinkAction = new ThinkAction(CurrentThinkActionType, option.Name, CurrentPartyMember);
@@ -365,18 +354,20 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void selectDefaultOptionName()
         {
-            if (MenuOptions == null || MenuOptions.Count < 2)
+            if (MenuOptions == null || MenuOptions.Count < 1)
                 CurrentOptionNameIndex = 0;
-            else if (CurrentThinkActionType == ThinkActionType.Defend && MenuOptions.Count > 2)
-                CurrentOptionNameIndex = 2;
+            else if (CurrentThinkActionType == ThinkActionType.Defend && MenuOptions.Count > 1)
+                CurrentOptionNameIndex = 1;
             else
-                CurrentOptionNameIndex = 1;                
+                CurrentOptionNameIndex = 0;                
         }
 
         private void getNextPartyMember()
         {
             if (actions.Count < Battle.PlayerParty.Count)
             {
+                inOuterMenu = true;
+                currentOuterMenuOptionIndex = 0;
                 IEnumerable<PartyMember> finishedPartyMembers = actions.Select<ThinkAction, PartyMember>(thinkAction => thinkAction.Actor);
                 CurrentPartyMember = Battle.PlayerParty.Find(partyMember => !finishedPartyMembers.Contains(partyMember));
                 Logger.Log("Action selection for party member " + (actions.Count + 1).ToString());
@@ -386,20 +377,11 @@ namespace SuperFantasticSteampunk.BattleStates
         private void repopulateMenuOptions()
         {
             itemMenuOptions.Clear();
-            itemMenuOptions.Add(ThinkMenuOption.Cancel);
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
             {
-                weaponMenuOptions[characterClass].Tap(menuOptions =>
-                {
-                    menuOptions.Clear();
-                    menuOptions.Add(ThinkMenuOption.Cancel);
-                });
-                shieldMenuOptions[characterClass].Tap(menuOptions =>
-                {
-                    menuOptions.Clear();
-                    menuOptions.Add(ThinkMenuOption.Cancel);
-                    menuOptions.Add(ThinkMenuOption.NoShield);
-                });
+                weaponMenuOptions[characterClass].Clear();
+                shieldMenuOptions[characterClass].Clear();
+                shieldMenuOptions[characterClass].Add(ThinkMenuOption.NoShield);
             }
 
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
@@ -420,7 +402,7 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 foreach (ThinkMenuOption menuOption in weaponMenuOptions[characterClass])
                 {
-                    if (menuOption.Name == ThinkMenuOption.Cancel.Name || ThinkMenuOption.IsDefaultOption(menuOption))
+                    if (ThinkMenuOption.IsDefaultOption(menuOption))
                     {
                         menuOption.Disabled = false;
                         continue;
@@ -441,10 +423,9 @@ namespace SuperFantasticSteampunk.BattleStates
                 actions.Add(currentThinkAction);
                 getNextPartyMember();
                 repopulateMenuOptions();
+                currentThinkAction = null;
+                initThinkActionTypeMenu(ThinkActionType.None);
             }
-
-            currentThinkAction = null;
-            initThinkActionTypeMenu(ThinkActionType.None);
         }
 
         private void thinkAboutEnemyPartyActions()

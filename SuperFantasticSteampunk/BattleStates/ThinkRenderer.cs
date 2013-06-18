@@ -39,20 +39,18 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void AfterDraw(Renderer renderer)
         {
-            drawThinkActionTypeMenu(renderer);
+            drawOuterMenu(renderer);
             if (battleState.CurrentThinkActionType != ThinkActionType.None)
                 drawOptionNamesSubMenu(renderer);
             drawArrowOverCurrentPartyMember(renderer);
         }
 
-        private void drawThinkActionTypeMenu(Renderer renderer)
+        private void drawOuterMenu(Renderer renderer)
         {
             Vector2 position = new Vector2(100);
-            foreach (ThinkActionType thinkActionType in Enum.GetValues(typeof(ThinkActionType)))
+            foreach (string menuOption in Think.OuterMenuOptions)
             {
-                if (thinkActionType == ThinkActionType.None)
-                    continue;
-                renderer.DrawText(thinkActionType.ToString(), position, battleState.CurrentThinkActionType == thinkActionType ? Color.Blue : Color.White, 0.0f, Vector2.Zero, Vector2.One);
+                renderer.DrawText(menuOption, position, battleState.CurrentOuterMenuOption == menuOption ? Color.Blue : Color.White, 0.0f, Vector2.Zero, Vector2.One);
                 position.Y += 20.0f;
             }
         }

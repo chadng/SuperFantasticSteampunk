@@ -20,6 +20,18 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
+        public virtual void Finish()
+        {
+        }
+
+        public virtual void Pause()
+        {
+        }
+
+        public virtual void Resume()
+        {
+        }
+
         public abstract void Update(Delta delta);
 
         public abstract void BeforeDraw(Renderer renderer);

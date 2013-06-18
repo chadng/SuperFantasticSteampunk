@@ -34,6 +34,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Finish()
         {
+            base.Finish();
             Battle.OverworldEncounter.State = EncounterState.Won;
             ChangeState(new Outro(Battle));
         }
