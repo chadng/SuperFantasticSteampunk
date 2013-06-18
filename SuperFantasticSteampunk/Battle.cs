@@ -20,7 +20,6 @@ namespace SuperFantasticSteampunk
         private Dictionary<CharacterClass, TextureData> characterClassHeadTextureData;
         private List<TextureData> backgroundTextureData;
         private float lowestBackgroundTextureWidth;
-        private Camera camera;
         #endregion
 
         #region Instance Properties
@@ -36,8 +35,8 @@ namespace SuperFantasticSteampunk
         public PartyBattleLayout EnemyPartyLayout { get; private set; }
 
         public Encounter OverworldEncounter { get; private set; }
-
         public int PlayerPartyItemsUsed { get; private set; }
+        public Camera Camera { get; private set; }
         #endregion
 
         #region Constructors
@@ -60,14 +59,14 @@ namespace SuperFantasticSteampunk
 
             OverworldEncounter = overworldEncounter;
 
-            camera = new Camera(Game1.ScreenSize);
-            camera.Position = camera.Size / 2.0f;
+            Camera = new Camera(Game1.ScreenSize);
+            Camera.Position = Camera.Size / 2.0f;
 
             repositionPartyMembers();
             updateCamera();
-            camera.Scale = camera.TargetScale;
+            Camera.Scale = Camera.TargetScale;
             updateCamera();
-            camera.Position = camera.TargetPosition;
+            Camera.Position = Camera.TargetPosition;
 
             generateBackground();
             generateBackgroundScenery();
@@ -167,13 +166,13 @@ namespace SuperFantasticSteampunk
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.Update(delta);
 
-            updateCamera(() => camera.Update(delta));
+            updateCamera(() => Camera.Update(delta));
         }
 
         protected override void draw(Renderer renderer)
         {
             Game1.BackgroundColor = Game1.GrassColor;
-            renderer.Camera = camera;
+            renderer.Camera = Camera;
             renderer.Tint = Clock.GetCurrentColor();
 
             drawBackground(renderer);
@@ -302,16 +301,16 @@ namespace SuperFantasticSteampunk
             float scaleY = Game1.ScreenSize.Y / (highestY - lowestY);
 
             if (scaleX < scaleY)
-                camera.TargetScale = new Vector2(scaleX);
+                Camera.TargetScale = new Vector2(scaleX);
             else
-                camera.TargetScale = new Vector2(scaleY);
+                Camera.TargetScale = new Vector2(scaleY);
 
             if (midUpdateAction != null)
                 midUpdateAction();
 
             float averageX = (lowestX + highestX) / 2.0f;
             float averageY = (lowestY + highestY) / 2.0f;
-            camera.TargetPosition = new Vector2(averageX, averageY);
+            Camera.TargetPosition = new Vector2(averageX, averageY);
         }
 
         private void getLowestAndHighestPositionalValuesForParties(out float lowestX, out float lowestY, out float highestX, out float highestY)
@@ -368,9 +367,9 @@ namespace SuperFantasticSteampunk
         private void drawBackground(Renderer renderer)
         {
             const float scale = 0.5f;
-            Rectangle cameraBoundingBox = camera.GetBoundingBox();
+            Rectangle cameraBoundingBox = Camera.GetBoundingBox();
 
-            float textureWidth = lowestBackgroundTextureWidth * scale * camera.Scale.X;
+            float textureWidth = lowestBackgroundTextureWidth * scale * Camera.Scale.X;
             int drawCount = (int)Math.Ceiling(cameraBoundingBox.Right / textureWidth) + 1;
             int textureDataIndex = 0;
             for (int i = 0; i < drawCount; ++i)

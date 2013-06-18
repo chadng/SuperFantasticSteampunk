@@ -97,7 +97,6 @@ namespace SuperFantasticSteampunk.BattleStates
         private List<ThinkAction> actions;
         private InputButtonListener inputButtonListener;
         private bool inOuterMenu;
-        private int currentOuterMenuOptionIndex;
         #endregion
 
         #region Instance Properties
@@ -105,15 +104,17 @@ namespace SuperFantasticSteampunk.BattleStates
         public int CurrentOptionNameIndex { get; private set; }
         public PartyMember CurrentPartyMember { get; private set; }
         public List<ThinkMenuOption> MenuOptions { get; private set; }
-        
-        public string CurrentOuterMenuOption
-        {
-            get { return OuterMenuOptions[currentOuterMenuOptionIndex]; }
-        }
+        public int CurrentOuterMenuOptionIndex { get; private set; }
 
         public override bool KeepPartyMembersStatic
         {
             get { return true; }
+        }
+
+        public new ThinkRenderer BattleStateRenderer
+        {
+            get { return base.BattleStateRenderer as ThinkRenderer; }
+            set { base.BattleStateRenderer = value; }
         }
         #endregion
 
@@ -126,7 +127,7 @@ namespace SuperFantasticSteampunk.BattleStates
             CurrentOptionNameIndex = 0;
             MenuOptions = null;
             inOuterMenu = true;
-            currentOuterMenuOptionIndex = 0;
+            CurrentOuterMenuOptionIndex = 0;
 
             weaponMenuOptions = new Dictionary<CharacterClass, List<ThinkMenuOption>>();
             shieldMenuOptions = new Dictionary<CharacterClass, List<ThinkMenuOption>>();
@@ -140,8 +141,8 @@ namespace SuperFantasticSteampunk.BattleStates
             actions = new List<ThinkAction>(battle.PlayerParty.Count);
 
             inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
-                { InputButton.Up, new ButtonEventHandlers(down: previousOption) },
-                { InputButton.Down, new ButtonEventHandlers(down: nextOption) },
+                { InputButton.Left, new ButtonEventHandlers(down: nextOption) },
+                { InputButton.Right, new ButtonEventHandlers(down: previousOption) },
                 { InputButton.A, new ButtonEventHandlers(up: selectOption) },
                 { InputButton.B, new ButtonEventHandlers(up: cancelAction) }
             });
@@ -193,12 +194,22 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void previousOption()
         {
-            chooseRelativeOption(-1);
+            changeOption(-1);
         }
 
         private void nextOption()
         {
-            chooseRelativeOption(1);
+            changeOption(1);
+        }
+
+        private void changeOption(int relativeIndex)
+        {
+            if (inOuterMenu && BattleStateRenderer.IsTransitioningMenu)
+                return;
+
+            chooseRelativeOption(relativeIndex);
+            if (inOuterMenu)
+                BattleStateRenderer.StartMenuTransition(relativeIndex);
         }
 
         private void selectOption()
@@ -211,7 +222,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void selectOuterMenuOption()
         {
-            switch (OuterMenuOptions[currentOuterMenuOptionIndex].ToLower())
+            switch (OuterMenuOptions[CurrentOuterMenuOptionIndex].ToLower())
             {
             case "move": PushState(new MoveActor(Battle, CurrentPartyMember, this)); break;
             case "attack": showAttackMenu(); break;
@@ -291,11 +302,11 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             if (inOuterMenu)
             {
-                currentOuterMenuOptionIndex += relativeIndex;
-                if (currentOuterMenuOptionIndex >= OuterMenuOptions.Length)
-                    currentOuterMenuOptionIndex = 0;
-                else if (currentOuterMenuOptionIndex < 0)
-                    currentOuterMenuOptionIndex = OuterMenuOptions.Length - 1;
+                CurrentOuterMenuOptionIndex += relativeIndex;
+                if (CurrentOuterMenuOptionIndex >= OuterMenuOptions.Length)
+                    CurrentOuterMenuOptionIndex = 0;
+                else if (CurrentOuterMenuOptionIndex < 0)
+                    CurrentOuterMenuOptionIndex = OuterMenuOptions.Length - 1;
             }
             else
             {
@@ -388,7 +399,7 @@ namespace SuperFantasticSteampunk.BattleStates
             if (actions.Count < Battle.PlayerParty.Count)
             {
                 inOuterMenu = true;
-                currentOuterMenuOptionIndex = 0;
+                CurrentOuterMenuOptionIndex = 0;
                 IEnumerable<PartyMember> finishedPartyMembers = actions.Select<ThinkAction, PartyMember>(thinkAction => thinkAction.Actor);
                 CurrentPartyMember = Battle.PlayerParty.Find(partyMember => !finishedPartyMembers.Contains(partyMember));
                 Logger.Log("Action selection for party member " + (actions.Count + 1).ToString());

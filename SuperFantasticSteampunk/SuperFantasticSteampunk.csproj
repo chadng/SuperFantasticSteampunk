@@ -161,6 +161,34 @@
       <Link>Content\Skeletons\fox_chibi.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\attack_icon.png">
+      <Link>Content\Textures\battle_ui\attack_icon.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\defend_icon.png">
+      <Link>Content\Textures\battle_ui\defend_icon.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\icon_container.png">
+      <Link>Content\Textures\battle_ui\icon_container.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\icon_container_glow.png">
+      <Link>Content\Textures\battle_ui\icon_container_glow.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\item_icon.png">
+      <Link>Content\Textures\battle_ui\item_icon.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\move_icon.png">
+      <Link>Content\Textures\battle_ui\move_icon.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\run_icon.png">
+      <Link>Content\Textures\battle_ui\run_icon.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\monkey\spine\monkey.png">
       <Link>Content\Skeletons\monkey.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
