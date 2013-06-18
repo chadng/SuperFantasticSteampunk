@@ -217,7 +217,7 @@ namespace SuperFantasticSteampunk.BattleStates
             case "attack": showAttackMenu(); break;
             case "defend": showDefendMenu(); break;
             case "item": showItemMenu(); break;
-            case "run": break; // run
+            case "run": ChangeState(new Run(Battle)); break;
             }
         }
 

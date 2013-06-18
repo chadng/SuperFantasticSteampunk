@@ -21,14 +21,23 @@ namespace SuperFantasticSteampunk
 
         #region Instance Methods
         public abstract void Start();
-        public abstract void Finish();
+
+        public virtual void Finish()
+        {
+            if (OverworldStateRenderer != null)
+                OverworldStateRenderer.Finish();
+        }
 
         public virtual void Pause()
         {
+            if (OverworldStateRenderer != null)
+                OverworldStateRenderer.Pause();
         }
 
         public virtual void Resume(OverworldState previousOverworldState)
         {
+            if (OverworldStateRenderer != null)
+                OverworldStateRenderer.Resume();
         }
 
         public abstract void Update(Delta delta);

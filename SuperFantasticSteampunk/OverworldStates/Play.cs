@@ -26,10 +26,12 @@ namespace SuperFantasticSteampunk.OverworldStates
         {
             finalizeNpcMovers();
             initNpcMovers();
+            OverworldStateRenderer = new PlayRenderer(this);
         }
 
         public override void Finish()
         {
+            base.Finish();
             finalizeNpcMovers();
         }
 
@@ -51,7 +53,10 @@ namespace SuperFantasticSteampunk.OverworldStates
             foreach (NpcMover npcMover in npcMovers)
                 npcMover.Update(delta);
 
-            handleEnemyCollisions();
+            if (!Overworld.PlayerIsInvincible)
+                handleEnemyCollisions();
+
+            Overworld.UpdateInvincibility(delta);
         }
 
         private void initNpcMovers()

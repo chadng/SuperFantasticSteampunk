@@ -6,10 +6,15 @@ namespace SuperFantasticSteampunk
 {
     class Overworld : Scene
     {
+        #region Constants
+        private const float playerInvincibilityTime = 3.0f;
+        #endregion
+
         #region Instance Fields
         private Stack<OverworldState> states;
         private bool stateChanged;
         private Camera camera;
+        private float playerInvincibilityTimer;
         #endregion
 
         #region Instance Properties
@@ -22,6 +27,11 @@ namespace SuperFantasticSteampunk
         public List<Party> EnemyParties { get; private set; }
         public Map Map { get; private set; }
         public Area Area { get; private set; }
+
+        public bool PlayerIsInvincible
+        {
+            get { return playerInvincibilityTimer > 0.0f; }
+        }
         #endregion
 
         #region Constructors
@@ -49,6 +59,8 @@ namespace SuperFantasticSteampunk
 
             populateWithScenery();
             populateWithEnemies();
+
+            playerInvincibilityTimer = 0.0f;
         }
         #endregion
 
@@ -89,6 +101,17 @@ namespace SuperFantasticSteampunk
                 setEntitySpriteAnimationForVelocity(entity);
             else
                 setEntitySkeletonAnimationForVelocity(entity);
+        }
+
+        public void MakePlayerInvincible()
+        {
+            playerInvincibilityTimer = playerInvincibilityTime;
+        }
+
+        public void UpdateInvincibility(Delta delta)
+        {
+            if (PlayerIsInvincible)
+                playerInvincibilityTimer -= delta.Time;
         }
 
         protected override void update(Delta delta)

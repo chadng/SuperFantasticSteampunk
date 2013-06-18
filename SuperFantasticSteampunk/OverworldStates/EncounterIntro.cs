@@ -36,6 +36,7 @@ namespace SuperFantasticSteampunk.OverworldStates
 
         public override void Finish()
         {
+            base.Finish();
             PopState();
         }
 

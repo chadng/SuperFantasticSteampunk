@@ -222,12 +222,12 @@ namespace SuperFantasticSteampunk
             if (Skeleton != null)
             {
                 if (Altitude == 0.0f)
-                    renderer.Draw(Skeleton);
+                    renderer.Draw(Skeleton, Tint);
                 else
                 {
                     Skeleton.RootBone.Y -= Altitude;
                     Skeleton.UpdateWorldTransform();
-                    renderer.Draw(Skeleton);
+                    renderer.Draw(Skeleton, Tint);
                     Skeleton.RootBone.Y += Altitude;
                 }
             }

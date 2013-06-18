@@ -2,7 +2,7 @@
 
 namespace SuperFantasticSteampunk.OverworldStates
 {
-    enum EncounterState { Pending, Won, Lost }
+    enum EncounterState { Pending, Won, Lost, Ran }
 
     class Encounter : OverworldState
     {
@@ -36,14 +36,21 @@ namespace SuperFantasticSteampunk.OverworldStates
 
         public override void Finish()
         {
-            if (State == EncounterState.Won)
+            base.Finish();
+            switch (State)
             {
+            case EncounterState.Won:
                 Overworld.EnemyParties.Remove(enemyParty);
                 primaryEnemyPartyMemberEntity.Kill();
-            }
-            else if (State == EncounterState.Lost)
-            {
+                break;
+
+            case EncounterState.Lost:
                 //TODO: Lose game
+                break;
+
+            case EncounterState.Ran:
+                Overworld.MakePlayerInvincible();
+                break;
             }
             PopState();
         }

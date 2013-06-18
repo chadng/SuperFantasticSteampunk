@@ -81,12 +81,13 @@ namespace SuperFantasticSteampunk
             Draw(textureData, position, color, 0.0f, new Vector2(1.0f));
         }
 
-        public void Draw(Skeleton skeleton)
+        public void Draw(Skeleton skeleton, Color color)
         {
             beginSkeletonRenderer();
 
             Vector4 colorBefore = new Vector4(skeleton.R, skeleton.G, skeleton.B, skeleton.A);
-            tintSkeleton(skeleton);
+            updateColor(ref color);
+            tintSkeleton(skeleton, color);
 
             if (Camera != null)
             {
@@ -185,16 +186,16 @@ namespace SuperFantasticSteampunk
                 scale *= Camera.Scale;
         }
 
-        private void tintSkeleton(Skeleton skeleton)
+        private void tintSkeleton(Skeleton skeleton, Color color)
         {
-            if (Tint == DefaultTint)
+            if (color == Color.White)
                 return;
 
-            Vector4 vectorTint = Tint.ToVector4();
-            skeleton.R = vectorTint.X;
-            skeleton.G = vectorTint.Y;
-            skeleton.B = vectorTint.Z;
-            skeleton.A = vectorTint.W;
+            Vector4 vectorColor = color.ToVector4();
+            skeleton.R = vectorColor.X;
+            skeleton.G = vectorColor.Y;
+            skeleton.B = vectorColor.Z;
+            skeleton.A = vectorColor.W;
         }
         #endregion
     }

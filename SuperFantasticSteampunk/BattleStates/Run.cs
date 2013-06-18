@@ -2,7 +2,7 @@
 
 namespace SuperFantasticSteampunk.BattleStates
 {
-    class Lose : BattleState
+    class Run : BattleState
     {
         #region Instance Properties
         public override bool KeepPartyMembersStatic
@@ -12,7 +12,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Constructors
-        public Lose(Battle battle)
+        public Run(Battle battle)
             : base(battle)
         {
         }
@@ -26,7 +26,7 @@ namespace SuperFantasticSteampunk.BattleStates
         public override void Finish()
         {
             base.Finish();
-            Battle.OverworldEncounter.State = EncounterState.Lost;
+            Battle.OverworldEncounter.State = EncounterState.Ran;
             ChangeState(new Outro(Battle));
         }
 
