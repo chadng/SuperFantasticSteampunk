@@ -395,14 +395,25 @@ namespace SuperFantasticSteampunk
 
         private static void populateTextureDataDictionary(ContentManager contentManager)
         {
-            List<Dictionary<string, object>> textureDataList = loadItemData(contentManager.RootDirectory + "/Textures/Textures.txt");
+            string textureDirectory = contentManager.RootDirectory + "/Textures/";
+            foreach (string filePath in Directory.EnumerateFiles(textureDirectory, "*.png", SearchOption.AllDirectories))
+            {
+                string textureName = filePath.Replace(textureDirectory, "").Replace(".png", "").Replace('\\', '/');
+                TextureData textureData = new TextureData();
+                typeof(TextureData).GetProperty("Name").SetValue(textureData, textureName, null);
+                typeof(TextureData).GetProperty("Texture").SetValue(textureData, contentManager.Load<Texture2D>(filePath.Replace(contentManager.RootDirectory + "/", "")), null);
+                textureDataDictionary.Add(textureName, textureData);
+                Logger.Log("Loaded texture data '" + textureName + "'");
+            }
+
+            List<Dictionary<string, object>> textureDataList = loadItemData(textureDirectory + "Textures.txt");
             foreach (var data in textureDataList)
             {
-                TextureData textureData = newObjectFromItemData<TextureData>(data);
-                typeof(TextureData).GetProperty("Name").SetValue(textureData, textureData.FileName.Split('.')[0], null);
-                typeof(TextureData).GetProperty("Texture").SetValue(textureData, contentManager.Load<Texture2D>("Textures/" + textureData.FileName), null);
-                textureDataDictionary.Add(textureData.Name, textureData);
-                Logger.Log("Loaded texture data '" + textureData.Name + "'");
+                TextureData newTextureData = newObjectFromItemData<TextureData>(data);
+                TextureData oldTextureData = textureDataDictionary[newTextureData.Name];
+                typeof(TextureData).GetProperty("Texture").SetValue(newTextureData, oldTextureData.Texture, null);
+                textureDataDictionary[newTextureData.Name] = newTextureData;
+                Logger.Log("Updated texture data '" + newTextureData.Name + "'");
             }
         }
 
