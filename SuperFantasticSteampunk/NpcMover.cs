@@ -6,27 +6,27 @@ namespace SuperFantasticSteampunk
     abstract class NpcMover
     {
         #region Static Methods
-        public static NpcMover Create(OverworldMovementType movementType, Entity entity, Entity playerEntity, Overworld overworld)
+        public static NpcMover Create(OverworldMovementType movementType, Party party, Party playerParty, Overworld overworld)
         {
             switch (movementType)
             {
-            case OverworldMovementType.Wander: return new Wander(entity, overworld);
-            case OverworldMovementType.Follow: return new Follow(entity, playerEntity, overworld);
-            case OverworldMovementType.Run: return new Run(entity, playerEntity, overworld);
+            case OverworldMovementType.Wander: return new Wander(party, overworld);
+            case OverworldMovementType.Follow: return new Follow(party, playerParty, overworld);
+            case OverworldMovementType.Run: return new Run(party, playerParty, overworld);
             default: return null;
             }
         }
         #endregion
 
         #region Instance Properties
-        protected Entity entity { get; private set; }
+        protected Party party { get; private set; }
         protected Overworld overworld { get; private set; }
         #endregion
 
         #region Constructors
-        public NpcMover(Entity entity, Overworld overworld)
+        public NpcMover(Party party, Overworld overworld)
         {
-            this.entity = entity;
+            this.party = party;
             this.overworld = overworld;
         }
         #endregion
@@ -34,16 +34,17 @@ namespace SuperFantasticSteampunk
         #region Instance Methods
         public virtual void Update(Delta delta)
         {
-            overworld.SetEntityAnimationForVelocity(entity);
+            overworld.SetEntityAnimationForVelocity(party.PrimaryPartyMember.OverworldEntity);
         }
 
         public abstract void Finish();
 
         protected bool entityCollidesWithOtherEnemy()
         {
-            foreach (Party party in overworld.EnemyParties)
+            Entity entity = party.PrimaryPartyMember.OverworldEntity;
+            foreach (Party enemyParty in overworld.EnemyParties)
             {
-                Entity otherEntity = party.PrimaryPartyMember.OverworldEntity;
+                Entity otherEntity = enemyParty.PrimaryPartyMember.OverworldEntity;
                 if (entity != otherEntity && entity.CollidesWith(otherEntity))
                     return true;
             }
@@ -52,6 +53,7 @@ namespace SuperFantasticSteampunk
 
         protected bool entityCollidesWithScenery()
         {
+            Entity entity = party.PrimaryPartyMember.OverworldEntity;
             foreach (Scenery scenery in overworld.SceneryEntities)
             {
                 if (entity.CollidesWith(scenery))

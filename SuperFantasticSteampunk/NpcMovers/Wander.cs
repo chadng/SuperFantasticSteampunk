@@ -15,9 +15,16 @@ namespace SuperFantasticSteampunk.NpcMovers
         private Vector2 destination;
         #endregion
 
+        #region Instance Properties
+        private Entity entity
+        {
+            get { return party.PrimaryPartyMember.OverworldEntity; }
+        }
+        #endregion
+
         #region Constructors
-        public Wander(Entity entity, Overworld overworld)
-            : base(entity, overworld)
+        public Wander(Party party, Overworld overworld)
+            : base(party, overworld)
         {
             thinkTime = 0.0f;
             destination = entity.Position;

@@ -228,6 +228,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 hideOpenMenu();
             else
             {
+                checkUsabilityOfWeaponMenuOptions();
                 equipCurrentOption();
                 inOuterMenu = false;
             }

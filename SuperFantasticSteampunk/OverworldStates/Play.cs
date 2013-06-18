@@ -61,11 +61,9 @@ namespace SuperFantasticSteampunk.OverworldStates
 
         private void initNpcMovers()
         {
-            Entity playerEntity = Overworld.PlayerParty.PrimaryPartyMember.OverworldEntity;
             foreach (Party party in Overworld.EnemyParties)
             {
-                PartyMember partyMember = party.PrimaryPartyMember;
-                npcMovers.Add(NpcMover.Create(partyMember.Data.OverworldMovementType, partyMember.OverworldEntity, playerEntity, Overworld));
+                npcMovers.Add(NpcMover.Create(party.PrimaryPartyMember.Data.OverworldMovementType, party, Overworld.PlayerParty, Overworld));
             }
         }
 

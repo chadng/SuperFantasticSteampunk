@@ -5,8 +5,8 @@ namespace SuperFantasticSteampunk.NpcMovers
     class Follow : NpcMover
     {
         #region Constructors
-        public Follow(Entity entity, Entity entityToFollow, Overworld overworld)
-            : base(entity, overworld)
+        public Follow(Party party, Party partyToFollow, Overworld overworld)
+            : base(party, overworld)
         {
         }
         #endregion

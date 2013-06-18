@@ -4,10 +4,9 @@ namespace SuperFantasticSteampunk.NpcMovers
 {
     class Run : NpcMover
     {
-
         #region Constructors
-        public Run(Entity entity, Entity entityToAvoid, Overworld overworld)
-            : base(entity, overworld)
+        public Run(Party party, Party partyToAvoid, Overworld overworld)
+            : base(party, overworld)
         {
         }
         #endregion

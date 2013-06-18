@@ -49,6 +49,12 @@ namespace SuperFantasticSteampunk.OverworldStates
                 break;
 
             case EncounterState.Ran:
+                if (primaryEnemyPartyMemberEntity != enemyParty.PrimaryPartyMember.OverworldEntity)
+                {
+                    primaryEnemyPartyMemberEntity.Kill();
+                    Overworld.EnemyParties.Remove(enemyParty);
+                    Overworld.AddEnemyParty(enemyParty, primaryEnemyPartyMemberEntity.Position);
+                }
                 Overworld.MakePlayerInvincible();
                 break;
             }

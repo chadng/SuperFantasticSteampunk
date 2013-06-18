@@ -237,7 +237,7 @@ namespace SuperFantasticSteampunk
 
         public virtual void DrawShadow(Renderer renderer)
         {
-            if (Skeleton == null)
+            if (Skeleton == null || !Visible)
                 return;
 
             Vector2 shadowPosition = Position;
