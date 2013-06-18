@@ -319,7 +319,7 @@ namespace SuperFantasticSteampunk
         private static void populateSkeletonDataDictionary(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             string skeletonDirectory = contentManager.RootDirectory + "/Skeletons/";
-            IEnumerable<string> atlasFileNames = Directory.EnumerateFiles(skeletonDirectory, "*.atlas");
+            IEnumerable<string> atlasFileNames = Directory.GetFiles(skeletonDirectory, "*.atlas");
             foreach (string atlasFileName in atlasFileNames)
             {
                 string skeletonName = atlasFileName.Replace(skeletonDirectory, "").Replace(".atlas", "");
@@ -396,7 +396,7 @@ namespace SuperFantasticSteampunk
         private static void populateTextureDataDictionary(ContentManager contentManager)
         {
             string textureDirectory = contentManager.RootDirectory + "/Textures/";
-            foreach (string filePath in Directory.EnumerateFiles(textureDirectory, "*.png", SearchOption.AllDirectories))
+            foreach (string filePath in Directory.GetFiles(textureDirectory, "*.png", SearchOption.AllDirectories))
             {
                 string textureName = filePath.Replace(textureDirectory, "").Replace(".png", "").Replace('\\', '/');
                 TextureData textureData = new TextureData();
@@ -505,7 +505,7 @@ namespace SuperFantasticSteampunk
         private static void populateFontDictionary(ContentManager contentManager)
         {
             string fontDirectory = contentManager.RootDirectory + "/Fonts/";
-            foreach (string directoryName in Directory.EnumerateDirectories(fontDirectory))
+            foreach (string directoryName in Directory.GetDirectories(fontDirectory))
             {
                 string fontName = directoryName.Replace(fontDirectory, "");
                 fontDictionary.Add(fontName, new Font(fontName, contentManager));
@@ -527,7 +527,7 @@ namespace SuperFantasticSteampunk
         private static void populateShaderDictionary(ContentManager contentManager)
         {
             string shaderDirectory = contentManager.RootDirectory + "/Shaders/";
-            foreach (string filePath in Directory.EnumerateFiles(shaderDirectory, "*.mgfxo"))
+            foreach (string filePath in Directory.GetFiles(shaderDirectory, "*.mgfxo"))
             {
                 string shaderName = filePath.Replace(shaderDirectory, "").Replace(".mgfxo", "");
                 shaderDictionary.Add(shaderName, contentManager.Load<Effect>(filePath.Replace(contentManager.RootDirectory + "/", "")));
