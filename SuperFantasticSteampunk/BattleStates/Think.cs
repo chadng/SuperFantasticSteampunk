@@ -213,7 +213,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             switch (OuterMenuOptions[currentOuterMenuOptionIndex].ToLower())
             {
-            case "move": break; // push move state
+            case "move": PushState(new MoveActor(Battle, CurrentPartyMember, this)); break;
             case "attack": showAttackMenu(); break;
             case "defend": showDefendMenu(); break;
             case "item": showItemMenu(); break;
@@ -224,22 +224,37 @@ namespace SuperFantasticSteampunk.BattleStates
         private void showAttackMenu()
         {
             initThinkActionTypeMenu(ThinkActionType.Attack);
-            equipCurrentOption();
-            inOuterMenu = false;
+            if (menuIsEmpty())
+                hideOpenMenu();
+            else
+            {
+                equipCurrentOption();
+                inOuterMenu = false;
+            }
         }
 
         private void showDefendMenu()
         {
             initThinkActionTypeMenu(ThinkActionType.Defend);
-            equipCurrentOption();
-            inOuterMenu = false;
+            if (menuIsEmpty())
+                hideOpenMenu();
+            else
+            {
+                equipCurrentOption();
+                inOuterMenu = false;
+            }
         }
 
         private void showItemMenu()
         {
             initThinkActionTypeMenu(ThinkActionType.UseItem);
-            equipCurrentOption();
-            inOuterMenu = false;
+            if (menuIsEmpty())
+                hideOpenMenu();
+            else
+            {
+                equipCurrentOption();
+                inOuterMenu = false;
+            }
         }
 
         private void hideOpenMenu()
@@ -320,7 +335,7 @@ namespace SuperFantasticSteampunk.BattleStates
             setThinkActionType(thinkActionType);
             Logger.Log(thinkActionType.ToString() + " action menu opened");
             selectDefaultOptionName();
-            if (MenuOptions != null)
+            if (!menuIsEmpty())
                 Logger.Log("Selected option: " + MenuOptions[CurrentOptionNameIndex].Name);
         }
 
@@ -354,12 +369,17 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void selectDefaultOptionName()
         {
-            if (MenuOptions == null || MenuOptions.Count < 1)
+            if (menuIsEmpty())
                 CurrentOptionNameIndex = 0;
             else if (CurrentThinkActionType == ThinkActionType.Defend && MenuOptions.Count > 1)
                 CurrentOptionNameIndex = 1;
             else
                 CurrentOptionNameIndex = 0;                
+        }
+
+        private bool menuIsEmpty()
+        {
+            return MenuOptions == null || MenuOptions.Count < 1;
         }
 
         private void getNextPartyMember()

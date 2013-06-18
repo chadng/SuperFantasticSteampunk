@@ -16,6 +16,7 @@ namespace SuperFantasticSteampunk
         private Stack<BattleState> states;
         private bool stateChanged;
         private TextureData whitePixelTextureData;
+        private TextureData arrowTextureData;
         private Dictionary<CharacterClass, TextureData> characterClassHeadTextureData;
         private List<TextureData> backgroundTextureData;
         private float lowestBackgroundTextureWidth;
@@ -73,6 +74,7 @@ namespace SuperFantasticSteampunk
             generateFloorScenery();
 
             whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
+            arrowTextureData = ResourceManager.GetTextureData("arrow_down");
             characterClassHeadTextureData = new Dictionary<CharacterClass, TextureData> {
                 { CharacterClass.Warrior, ResourceManager.GetTextureData("battle_ui/warrior_head") },
                 { CharacterClass.Marksman, ResourceManager.GetTextureData("battle_ui/marksman_head") },
@@ -134,6 +136,13 @@ namespace SuperFantasticSteampunk
         {
             if (party == PlayerParty)
                 ++PlayerPartyItemsUsed;
+        }
+
+        public void DrawArrowOverPartyMember(PartyMember partyMember, Color color, Renderer renderer)
+        {
+            Vector2 position = partyMember.BattleEntity.Position;
+            position.Y -= 400.0f;
+            renderer.Draw(arrowTextureData, position, color);
         }
 
         protected override void update(Delta delta)

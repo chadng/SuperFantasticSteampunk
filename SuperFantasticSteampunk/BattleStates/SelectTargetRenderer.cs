@@ -14,7 +14,6 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Instance Fields
-        TextureData arrowTextureData;
         Effect colorTextureShader;
         float colorAlpha;
         bool incColorAlpha;
@@ -32,7 +31,6 @@ namespace SuperFantasticSteampunk.BattleStates
         public SelectTargetRenderer(BattleState battleState)
             : base(battleState)
         {
-            arrowTextureData = ResourceManager.GetTextureData("arrow_down");
             colorTextureShader = ResourceManager.GetShader("ColorTexture");
             colorAlpha = 0.0f;
             incColorAlpha = true;
@@ -106,10 +104,8 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void drawArrowOverPotentialTarget(Renderer renderer)
         {
-            Vector2 position = battleState.PotentialTarget.BattleEntity.Position;
-            position.Y -= 400.0f;
             Color color = battleState.Actor.FearsPartyMember(battleState.PotentialTarget) ? Color.Black : Color.White;
-            renderer.Draw(arrowTextureData, position, color);
+            battleState.Battle.DrawArrowOverPartyMember(battleState.PotentialTarget, color, renderer);
         }
 
         private void nullifyCurrentlySelectedPartyMember()

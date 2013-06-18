@@ -25,7 +25,7 @@ namespace SuperFantasticSteampunk
             inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
                 { InputButton.Down, new ButtonEventHandlers(down: nextOption) },
                 { InputButton.Up, new ButtonEventHandlers(down: previousOption) },
-                { InputButton.A, new ButtonEventHandlers(down: selectOption) }
+                { InputButton.A, new ButtonEventHandlers(up: selectOption) }
             });
         }
         #endregion
