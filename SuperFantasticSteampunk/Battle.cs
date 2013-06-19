@@ -455,6 +455,10 @@ namespace SuperFantasticSteampunk
             if (selectTargetState != null)
                 return selectTargetState.Actor == partyMember;
 
+            BattleStates.MoveActor moveActorState = CurrentBattleState as BattleStates.MoveActor;
+            if (moveActorState != null)
+                return moveActorState.Actor == partyMember;
+
             return false;
         }
         #endregion

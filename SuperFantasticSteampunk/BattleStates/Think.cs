@@ -42,6 +42,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         #region Instance Properties
         public string Name { get; private set; }
+        public string Description { get; private set; }
         public int Amount { get; private set; }
         public bool Disabled { get; set; }
         #endregion
@@ -49,8 +50,8 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Static Constructors
         static ThinkMenuOption()
         {
-            NoWeapon = new ThinkMenuOption("No weapon", -1, false);
-            NoShield = new ThinkMenuOption("No shield", -1, false);
+            NoWeapon = new ThinkMenuOption("No weapon", null, -1, false);
+            NoShield = new ThinkMenuOption("No shield", null, -1, false);
         }
         #endregion
 
@@ -68,9 +69,10 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Constructors
-        public ThinkMenuOption(string name, int amount, bool disabled)
+        public ThinkMenuOption(string name, string description, int amount, bool disabled)
         {
             Name = name;
+            Description = description ?? "No description";
             Amount = amount;
             Disabled = disabled;
         }
@@ -415,20 +417,29 @@ namespace SuperFantasticSteampunk.BattleStates
             itemMenuOptions.Clear();
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
             {
+                if (characterClass == CharacterClass.Enemy)
+                    continue;
+
                 weaponMenuOptions[characterClass].Clear();
                 shieldMenuOptions[characterClass].Clear();
                 shieldMenuOptions[characterClass].Add(ThinkMenuOption.NoShield);
-            }
 
-            foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
-            {
                 foreach (InventoryItem item in Battle.PlayerParty.WeaponInventories[characterClass].GetSortedItems(CurrentPartyMember))
-                    weaponMenuOptions[characterClass].Add(new ThinkMenuOption(item.Key, item.Value, false));
+                {
+                    WeaponData weaponData = ResourceManager.GetWeaponData(item.Key);
+                    weaponMenuOptions[characterClass].Add(new ThinkMenuOption(item.Key, weaponData.Description, item.Value, false));
+                }
                 foreach (InventoryItem item in Battle.PlayerParty.ShieldInventory.GetSortedItems(CurrentPartyMember))
-                    shieldMenuOptions[characterClass].Add(new ThinkMenuOption(item.Key, item.Value, false));
+                {
+                    ShieldData shieldData = ResourceManager.GetShieldData(item.Key);
+                    shieldMenuOptions[characterClass].Add(new ThinkMenuOption(item.Key, shieldData.Description, item.Value, false));
+                }
             }
             foreach (InventoryItem item in Battle.PlayerParty.ItemInventory.GetSortedItems(CurrentPartyMember))
-                itemMenuOptions.Add(new ThinkMenuOption(item.Key, item.Value, false));
+            {
+                ItemData itemData = ResourceManager.GetItemData(item.Key);
+                itemMenuOptions.Add(new ThinkMenuOption(item.Key, itemData.Description, item.Value, false));
+            }
             checkUsabilityOfWeaponMenuOptions();
         }
 
@@ -436,6 +447,9 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
             {
+                if (characterClass == CharacterClass.Enemy)
+                    continue;
+
                 foreach (ThinkMenuOption menuOption in weaponMenuOptions[characterClass])
                 {
                     if (ThinkMenuOption.IsDefaultOption(menuOption))

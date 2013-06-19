@@ -7,6 +7,7 @@
     {
         #region Instance properties
         public string Name { get; private set; }
+        public string Description { get; private set; }
         public WeaponType WeaponType { get; private set; }
         public WeaponUseAgainst WeaponUseAgainst { get; private set; }
         public CharacterClass CharacterClass { get; private set; }

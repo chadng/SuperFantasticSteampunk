@@ -7,16 +7,8 @@ namespace SuperFantasticSteampunk.BattleStates
 {
     class SelectTargetRenderer : BattleStateRenderer
     {
-        #region Constants
-        private const float colorAlphaSpeed = 1.0f;
-        private const float minColorAlpha = 0.0f;
-        private const float maxColorAlpha = 0.8f;
-        #endregion
 
         #region Instance Fields
-        Effect colorTextureShader;
-        float colorAlpha;
-        bool incColorAlpha;
         PartyMember currentlySelectedPartyMember;
         #endregion
 
@@ -31,9 +23,6 @@ namespace SuperFantasticSteampunk.BattleStates
         public SelectTargetRenderer(BattleState battleState)
             : base(battleState)
         {
-            colorTextureShader = ResourceManager.GetShader("ColorTexture");
-            colorAlpha = 0.0f;
-            incColorAlpha = true;
             currentlySelectedPartyMember = null;
         }
         #endregion
@@ -41,25 +30,23 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Pause()
         {
-            nullifyCurrentlySelectedPartyMember();
+            tintOtherPartyMembers(Color.White);
             base.Pause();
         }
 
         public override void Finish()
         {
-            nullifyCurrentlySelectedPartyMember();
+            tintOtherPartyMembers(Color.White);
             base.Finish();
         }
 
         public override void Update(Delta delta)
         {
-            updateColorAlpha(delta);
             updateCurrentlySelectedPartyMember();
         }
 
         public override void BeforeDraw(Renderer renderer)
         {
-            colorTextureShader.Parameters["TexColor"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, colorAlpha));
         }
 
         public override void AfterDraw(Renderer renderer)
@@ -67,38 +54,13 @@ namespace SuperFantasticSteampunk.BattleStates
             drawArrowOverPotentialTarget(renderer);
         }
 
-        private void updateColorAlpha(Delta delta)
-        {
-            if (incColorAlpha)
-            {
-                colorAlpha += colorAlphaSpeed * delta.Time;
-                if (colorAlpha >= maxColorAlpha)
-                {
-                    colorAlpha = maxColorAlpha;
-                    incColorAlpha = false;
-                }
-            }
-            else
-            {
-                colorAlpha -= colorAlphaSpeed * delta.Time;
-                if (colorAlpha <= minColorAlpha)
-                {
-                    colorAlpha = minColorAlpha;
-                    incColorAlpha = true;
-                }
-            }
-        }
-
         private void updateCurrentlySelectedPartyMember()
         {
             if (currentlySelectedPartyMember != battleState.PotentialTarget)
             {
-                if (currentlySelectedPartyMember != null)
-                    currentlySelectedPartyMember.BattleEntity.Shader = null;
                 currentlySelectedPartyMember = battleState.PotentialTarget;
-                currentlySelectedPartyMember.BattleEntity.Shader = colorTextureShader;
-                colorAlpha = 0.0f;
-                incColorAlpha = true;
+                currentlySelectedPartyMember.BattleEntity.Tint = Color.White;
+                tintOtherPartyMembers(new Color(Color.White.ToVector3() * 0.7f));
             }
         }
 
@@ -108,14 +70,13 @@ namespace SuperFantasticSteampunk.BattleStates
             battleState.Battle.DrawArrowOverPartyMember(battleState.PotentialTarget, color, renderer);
         }
 
-        private void nullifyCurrentlySelectedPartyMember()
+        private void tintOtherPartyMembers(Color color)
         {
-            if (currentlySelectedPartyMember == null)
-                return;
-
-            if (currentlySelectedPartyMember.BattleEntity.Shader == colorTextureShader)
-                currentlySelectedPartyMember.BattleEntity.Shader = null;
-            currentlySelectedPartyMember = null;
+            foreach (PartyMember partyMember in battleState.Battle.GetPartyForPartyMember(currentlySelectedPartyMember))
+            {
+                if (partyMember != currentlySelectedPartyMember)
+                    partyMember.BattleEntity.Tint = color;
+            }
         }
         #endregion
     }
