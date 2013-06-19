@@ -151,6 +151,10 @@
     <Compile Include="StatusEffects\Fear.cs" />
     <Compile Include="StatusEffects\Paralysis.cs" />
     <Compile Include="StatusEffects\Poison.cs" />
+    <Compile Include="BattleStates\MoveActor.cs" />
+    <Compile Include="BattleStates\MoveActorRenderer.cs" />
+    <Compile Include="OverworldStates\PlayRenderer.cs" />
+    <Compile Include="BattleStates\Run.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -411,6 +415,34 @@
     </Content>
     <Content Include="..\..\..\Dropbox\SuperFantasticSteampunk\Content\Shaders\ColorTexture.mgfxo">
       <Link>Content\Shaders\ColorTexture.mgfxo</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\Dropbox\illustrator\game\icons\output\attack_icon.png">
+      <Link>Content\Textures\battle_ui\attack_icon.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\Dropbox\illustrator\game\icons\output\defend_icon.png">
+      <Link>Content\Textures\battle_ui\defend_icon.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\Dropbox\illustrator\game\icons\output\icon_container_glow.png">
+      <Link>Content\Textures\battle_ui\icon_container_glow.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\Dropbox\illustrator\game\icons\output\icon_container.png">
+      <Link>Content\Textures\battle_ui\icon_container.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\Dropbox\illustrator\game\icons\output\item_icon.png">
+      <Link>Content\Textures\battle_ui\item_icon.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\Dropbox\illustrator\game\icons\output\move_icon.png">
+      <Link>Content\Textures\battle_ui\move_icon.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\Dropbox\illustrator\game\icons\output\run_icon.png">
+      <Link>Content\Textures\battle_ui\run_icon.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
