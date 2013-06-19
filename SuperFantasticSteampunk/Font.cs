@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -8,7 +9,7 @@ namespace SuperFantasticSteampunk
     class Font
     {
         #region Constants
-        public int DefaultSize = 10;
+        public const int DefaultSize = 10;
         #endregion
 
         #region Instance Fields
@@ -71,6 +72,14 @@ namespace SuperFantasticSteampunk
 
             finalSize = 0;
             return null;
+        }
+
+        public Vector2 MeasureString(string str, float size)
+        {
+            float finalSize;
+            SpriteFont spriteFont = GetBestSizeSpriteFont(size, out finalSize);
+            float scale = size / finalSize;
+            return spriteFont.MeasureString(str) * scale;
         }
 
         private void loadSpriteFonts(ContentManager contentManager)

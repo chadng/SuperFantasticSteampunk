@@ -189,6 +189,38 @@
       <Link>Content\Textures\battle_ui\run_icon.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\battle_ui_borders_output\e.png">
+      <Link>Content\Textures\battle_ui\borders\e.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\battle_ui_borders_output\n.png">
+      <Link>Content\Textures\battle_ui\borders\n.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\battle_ui_borders_output\ne.png">
+      <Link>Content\Textures\battle_ui\borders\ne.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\battle_ui_borders_output\nw.png">
+      <Link>Content\Textures\battle_ui\borders\nw.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\battle_ui_borders_output\s.png">
+      <Link>Content\Textures\battle_ui\borders\s.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\battle_ui_borders_output\se.png">
+      <Link>Content\Textures\battle_ui\borders\se.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\battle_ui_borders_output\sw.png">
+      <Link>Content\Textures\battle_ui\borders\sw.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\battle_ui_borders_output\w.png">
+      <Link>Content\Textures\battle_ui\borders\w.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\monkey\spine\monkey.png">
       <Link>Content\Skeletons\monkey.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

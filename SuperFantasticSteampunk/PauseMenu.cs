@@ -49,7 +49,7 @@ namespace SuperFantasticSteampunk
             for (int i = 0; i < options.Count; ++i)
             {
                 Color color = currentOptionIndex == i ? Color.Blue : Color.White;
-                renderer.DrawText(options[i], new Vector2(200.0f, 200.0f + (i * 50.0f)), color, 0.0f, Vector2.Zero, Vector2.One);
+                renderer.DrawText(options[i], new Vector2(200.0f, 200.0f + (i * 50.0f)), color, 0.0f, Vector2.Zero, Game1.ScreenScaleFactor);
             }
         }
 

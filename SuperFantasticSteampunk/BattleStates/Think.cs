@@ -143,8 +143,10 @@ namespace SuperFantasticSteampunk.BattleStates
             actions = new List<ThinkAction>(battle.PlayerParty.Count);
 
             inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
-                { InputButton.Left, new ButtonEventHandlers(down: nextOption) },
-                { InputButton.Right, new ButtonEventHandlers(down: previousOption) },
+                { InputButton.Up, new ButtonEventHandlers(down: upHandler) },
+                { InputButton.Down, new ButtonEventHandlers(down: downHandler) },
+                { InputButton.Left, new ButtonEventHandlers(down: leftHandler) },
+                { InputButton.Right, new ButtonEventHandlers(down: rightHandler) },
                 { InputButton.A, new ButtonEventHandlers(up: selectOption) },
                 { InputButton.B, new ButtonEventHandlers(up: cancelAction) }
             });
@@ -194,6 +196,30 @@ namespace SuperFantasticSteampunk.BattleStates
                 return;
             }
             inputButtonListener.Update(delta);
+        }
+
+        private void upHandler()
+        {
+            if (!inOuterMenu)
+                previousOption();
+        }
+
+        private void downHandler()
+        {
+            if (!inOuterMenu)
+                nextOption();
+        }
+
+        private void leftHandler()
+        {
+            if (inOuterMenu)
+                nextOption();
+        }
+
+        private void rightHandler()
+        {
+            if (inOuterMenu)
+                previousOption();
         }
 
         private void previousOption()

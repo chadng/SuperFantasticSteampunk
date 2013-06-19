@@ -63,6 +63,20 @@ namespace SuperFantasticSteampunk.BattleStates
         private const float outerMenuOptionAngleTransitionTime = 0.2f;
         private const float outerMenuOptionYScaleTransitionTime = 0.12f;
 
+        private const float subMenuX = 1000.0f;
+        private const float subMenuY = 200.0f;
+        private const float subMenuWidth = 200.0f;
+        private const float subMenuHeight = 500.0f;
+
+        private const int N = 0;
+        private const int NE = 1;
+        private const int E = 2;
+        private const int SE = 3;
+        private const int S = 4;
+        private const int SW = 5;
+        private const int W = 6;
+        private const int NW = 7;
+
         private static readonly SortedDictionary<string, Color> menuOptionColors = new SortedDictionary<string, Color> {
             { "move", Color.Blue },
             { "attack", Color.Red },
@@ -70,6 +84,8 @@ namespace SuperFantasticSteampunk.BattleStates
             { "item", Color.Yellow },
             { "run", Color.Pink }
         };
+
+        private static readonly string[] directions = new string[] { "n", "ne", "e", "se", "s", "sw", "w", "nw" };
         #endregion
 
         #region Instance Fields
@@ -83,6 +99,8 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private readonly float anglePerOption;
         private readonly int halfOptionsLength;
+        private readonly TextureData whitePixelTextureData;
+        private readonly TextureData[] borderTextureData;
         #endregion
 
         #region Instance Properties
@@ -116,6 +134,11 @@ namespace SuperFantasticSteampunk.BattleStates
 
             anglePerOption = MathHelper.TwoPi / Think.OuterMenuOptions.Length;
             halfOptionsLength = Think.OuterMenuOptions.Length / 2;
+
+            whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
+            borderTextureData = new TextureData[directions.Length];
+            for (int i = 0; i < directions.Length; ++i)
+                borderTextureData[i] = ResourceManager.GetTextureData("battle_ui/borders/" + directions[i]);
         }
         #endregion
 
@@ -219,21 +242,65 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void drawOptionNamesSubMenu(Renderer renderer)
         {
-            Vector2 position = new Vector2(200, 100);
+            drawContainer(subMenuX, subMenuY, subMenuWidth, subMenuHeight, renderer);
+            drawOptionNamesText(renderer);
+        }
+
+        private void drawOptionNamesText(Renderer renderer)
+        {
+            const float subMenuPadding = 20.0f;
+            const float fontSize = 14.0f;
+            float fontHeight = renderer.Font.MeasureString("I", fontSize).Y;
+            Vector2 scale = Game1.ScreenScaleFactor;
+            Vector2 fontScale = new Vector2(fontSize / Font.DefaultSize) * scale.X;
+            Vector2 position = new Vector2(subMenuX + subMenuPadding, subMenuY + subMenuPadding);
             for (int i = 0; i < battleState.MenuOptions.Count; ++i)
             {
                 ThinkMenuOption menuOption = battleState.MenuOptions[i];
-                string text = menuOption.Name;
-                if (i > 0)
-                    text += " x " + (menuOption.Amount < 0 ? "*" : menuOption.Amount.ToString());
-                Color color;
-                if (menuOption.Disabled)
-                    color = i == battleState.CurrentOptionNameIndex ? Color.DarkRed : Color.Gray;
-                else
-                    color = i == battleState.CurrentOptionNameIndex ? Color.Blue : Color.White;
-                renderer.DrawText(text, position, color, 0.0f, Vector2.Zero, Vector2.One);
-                position.Y += 20.0f;
+
+                if (i == battleState.CurrentOptionNameIndex)
+                {
+                    renderer.DrawText(">", (position - new Vector2(subMenuPadding, 0.0f)) * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
+                    Vector2 containerSize = renderer.Font.MeasureString(menuOption.Description, fontSize);
+                    drawContainer((position.X + subMenuWidth), position.Y, containerSize.X, (containerSize.Y / scale.Y) * scale.X, renderer);
+                    renderer.DrawText(menuOption.Description, (position + new Vector2(subMenuWidth, 0.0f)) * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
+                }
+
+                renderer.DrawText(menuOption.Name, position * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
+
+                string amountString = menuOption.Amount < 0 ? "~" : menuOption.Amount.ToString();
+                Vector2 amountSize = renderer.Font.MeasureString(amountString, fontSize);
+                renderer.DrawText(amountString, (position + new Vector2(subMenuWidth - (subMenuPadding * 2) - amountSize.X, 0.0f)) * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
+
+                position.Y += fontHeight * 1.1f;
             }
+        }
+
+        private void drawContainer(float x, float y, float width, float height, Renderer renderer)
+        {
+            Vector2 scale = Game1.ScreenScaleFactor;
+            renderer.Draw(whitePixelTextureData, new Vector2(x, y) * scale, new Color(124, 63, 18), 0.0f, new Vector2(width, height) * scale, false);
+
+            TextureData textureData = borderTextureData[NW];
+            renderer.Draw(textureData, new Vector2(x - textureData.Width, y - textureData.Height) * scale, Color.White, 0.0f, scale, false);
+            textureData = borderTextureData[NE];
+            renderer.Draw(textureData, new Vector2(x + width, y - textureData.Height) * scale, Color.White, 0.0f, scale, false);
+            textureData = borderTextureData[SE];
+            renderer.Draw(textureData, new Vector2(x + width, y + height) * scale, Color.White, 0.0f, scale, false);
+            textureData = borderTextureData[SW];
+            renderer.Draw(textureData, new Vector2(x - textureData.Width, y + height) * scale, Color.White, 0.0f, scale, false);
+
+            textureData = borderTextureData[N];
+            Vector2 xScale = new Vector2((1.0f / textureData.Width) * width, 1.0f) * scale;
+            renderer.Draw(textureData, new Vector2(x, y - textureData.Height) * scale, Color.White, 0.0f, xScale, false);
+            textureData = borderTextureData[S];
+            renderer.Draw(textureData, new Vector2(x, y + height) * scale, Color.White, 0.0f, xScale, false);
+
+            textureData = borderTextureData[W];
+            Vector2 yScale = new Vector2(1.0f, (1.0f / textureData.Height) * height) * scale;
+            renderer.Draw(textureData, new Vector2(x - textureData.Width, y) * scale, Color.White, 0.0f, yScale, false);
+            textureData = borderTextureData[E];
+            renderer.Draw(textureData, new Vector2(x + width, y) * scale, Color.White, 0.0f, yScale, false);
         }
         #endregion
     }
