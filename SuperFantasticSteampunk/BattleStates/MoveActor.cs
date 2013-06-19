@@ -41,7 +41,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 { InputButton.B, new ButtonEventHandlers(up: cancel) }
             });
 
-            BattleStateRenderer = new MoveActorRenderer(this);
+            BattleStateRenderer = new MoveActorRenderer(this, thinkState.BattleStateRenderer);
         }
         #endregion
 

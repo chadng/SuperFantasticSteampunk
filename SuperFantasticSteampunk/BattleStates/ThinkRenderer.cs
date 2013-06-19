@@ -6,7 +6,7 @@ using Spine;
 
 namespace SuperFantasticSteampunk.BattleStates
 {
-    class ThinkRendererMenuOption
+    class ThinkRendererOuterMenuOption
     {
         #region Instance Fields
         private TextureData iconTextureData;
@@ -19,7 +19,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Constructors
-        public ThinkRendererMenuOption(TextureData iconTextureData, Color color, int menuOptionIndex)
+        public ThinkRendererOuterMenuOption(TextureData iconTextureData, Color color, int menuOptionIndex)
         {
             this.iconTextureData = iconTextureData;
             this.color = color;
@@ -28,9 +28,12 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Instance Methods
-        public void Draw(TextureData iconContainerTextureData, TextureData iconContainerGlowTextureData, Vector2 containerScale, Vector2 iconScale, Renderer renderer)
+        public void Draw(TextureData iconContainerTextureData, TextureData iconContainerGlowTextureData, Vector2 containerScale, Vector2 iconScale, Vector2 scaleScale, Renderer renderer)
         {
-            Vector2 iconPosition = Position + (new Vector2(iconContainerTextureData.Width - iconTextureData.Width, iconContainerTextureData.Height - iconTextureData.Height) * 0.5f * Game1.ScreenScaleFactor.X);
+            Vector2 position = positionFromScale(iconContainerTextureData, containerScale, scaleScale);
+            containerScale *= scaleScale;
+            iconScale *= scaleScale;
+            Vector2 iconPosition = position + (new Vector2(iconContainerTextureData.Width - iconTextureData.Width, iconContainerTextureData.Height - iconTextureData.Height) * scaleScale * 0.5f * Game1.ScreenScaleFactor.X);
             Color containerColor = color;
             Color iconColor = Color.White;
             if (iconContainerGlowTextureData == null)
@@ -39,9 +42,17 @@ namespace SuperFantasticSteampunk.BattleStates
                 iconColor = new Color(Color.White.ToVector3() * 0.7f);
             }
             else
-                renderer.Draw(iconContainerGlowTextureData, Position - (new Vector2(iconContainerGlowTextureData.Width - iconContainerTextureData.Width) * 0.5f * containerScale.X), Color.WhiteSmoke, 0.0f, containerScale, false);
-            renderer.Draw(iconContainerTextureData, Position, containerColor, 0.0f, containerScale, false);
+                renderer.Draw(iconContainerGlowTextureData, position - (new Vector2(iconContainerGlowTextureData.Width - iconContainerTextureData.Width) * 0.5f * containerScale.X), Color.WhiteSmoke, 0.0f, containerScale, false);
+            renderer.Draw(iconContainerTextureData, position, containerColor, 0.0f, containerScale, false);
             renderer.Draw(iconTextureData, iconPosition, iconColor, 0.0f, iconScale, false);
+        }
+
+        private Vector2 positionFromScale(TextureData containerTextureData, Vector2 containerScale, Vector2 scaleScale)
+        {
+            Vector2 originalDimensions = new Vector2(containerTextureData.Width, containerTextureData.Height) * containerScale;
+            Vector2 scaledDimensions = originalDimensions * scaleScale;
+            Vector2 difference = originalDimensions - scaledDimensions;
+            return Position + (difference / 2.0f);
         }
         #endregion
     }
@@ -49,7 +60,8 @@ namespace SuperFantasticSteampunk.BattleStates
     class ThinkRenderer : BattleStateRenderer
     {
         #region Constants
-        private const float menuTransitionTime = 0.2f;
+        private const float outerMenuOptionAngleTransitionTime = 0.2f;
+        private const float outerMenuOptionYScaleTransitionTime = 0.12f;
 
         private static readonly SortedDictionary<string, Color> menuOptionColors = new SortedDictionary<string, Color> {
             { "move", Color.Blue },
@@ -63,9 +75,11 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Fields
         private TextureData iconContainerTextureData;
         private TextureData iconContainerGlowTextureData;
-        private float menuTransitionAngle;
-        private List<ThinkRendererMenuOption> menuOptions;
-        private List<ThinkRendererMenuOption> sortedMenuOptions;
+        private float outerMenuOptionTransitionAngle;
+        private float outerMenuOptionTransitionYScale;
+        private bool incOuterMenuOptionYScale;
+        private List<ThinkRendererOuterMenuOption> menuOptions;
+        private List<ThinkRendererOuterMenuOption> sortedMenuOptions;
 
         private readonly float anglePerOption;
         private readonly int halfOptionsLength;
@@ -74,7 +88,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Properties
         public bool IsTransitioningMenu
         {
-            get { return menuTransitionAngle != 0.0f; }
+            get { return outerMenuOptionTransitionAngle != 0.0f || outerMenuOptionTransitionYScale != 1.0f; }
         }
 
         protected new Think battleState
@@ -87,18 +101,18 @@ namespace SuperFantasticSteampunk.BattleStates
         public ThinkRenderer(BattleState battleState)
             : base(battleState)
         {
-            menuOptions = new List<ThinkRendererMenuOption>(Think.OuterMenuOptions.Length);
-            sortedMenuOptions = new List<ThinkRendererMenuOption>(Think.OuterMenuOptions.Length);
+            menuOptions = new List<ThinkRendererOuterMenuOption>(Think.OuterMenuOptions.Length);
+            sortedMenuOptions = new List<ThinkRendererOuterMenuOption>(Think.OuterMenuOptions.Length);
             for (int i = 0; i < Think.OuterMenuOptions.Length; ++i)
             {
                 string optionName = Think.OuterMenuOptions[i].ToLower();
-                ThinkRendererMenuOption menuOption = new ThinkRendererMenuOption(ResourceManager.GetTextureData("battle_ui/" + optionName + "_icon"), menuOptionColors[optionName], i);
+                ThinkRendererOuterMenuOption menuOption = new ThinkRendererOuterMenuOption(ResourceManager.GetTextureData("battle_ui/" + optionName + "_icon"), menuOptionColors[optionName], i);
                 menuOptions.Add(menuOption);
                 sortedMenuOptions.Add(menuOption);
             }
             iconContainerTextureData = ResourceManager.GetTextureData("battle_ui/icon_container");
             iconContainerGlowTextureData = ResourceManager.GetTextureData("battle_ui/icon_container_glow");
-            menuTransitionAngle = 0.0f;
+            ResetOuterMenuTransitions();
 
             anglePerOption = MathHelper.TwoPi / Think.OuterMenuOptions.Length;
             halfOptionsLength = Think.OuterMenuOptions.Length / 2;
@@ -106,19 +120,51 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Instance Methods
-        public void StartMenuTransition(int relativeOptionIndex)
+        public void StartOuterMenuOptionTransition(int relativeOptionIndex)
         {
-            menuTransitionAngle = anglePerOption * (relativeOptionIndex > 0 ? 1.0f : -1.0f);
+            outerMenuOptionTransitionAngle = anglePerOption * (relativeOptionIndex > 0 ? 1.0f : -1.0f);
+        }
+
+        public void StartOuterMenuOptionSelectTransition()
+        {
+            incOuterMenuOptionYScale = false;
+        }
+
+        public void StartOuterMenuOptionDeselectTransition()
+        {
+            incOuterMenuOptionYScale = true;
+        }
+
+        public void ResetOuterMenuTransitions()
+        {
+            outerMenuOptionTransitionAngle = 0.0f;
+            outerMenuOptionTransitionYScale = 1.0f;
+            incOuterMenuOptionYScale = true;
         }
 
         public override void Update(Delta delta)
         {
-            if (menuTransitionAngle != 0.0f)
+            if (outerMenuOptionTransitionAngle != 0.0f)
             {
-                bool inc = menuTransitionAngle < 0.0f;
-                menuTransitionAngle += (anglePerOption / menuTransitionTime) * delta.Time * (inc ? 1.0f : -1.0f);
-                if ((inc && menuTransitionAngle > 0.0f) || (!inc && menuTransitionAngle < 0.0f))
-                    menuTransitionAngle = 0.0f;
+                bool inc = outerMenuOptionTransitionAngle < 0.0f;
+                outerMenuOptionTransitionAngle += (anglePerOption / outerMenuOptionAngleTransitionTime) * delta.Time * (inc ? 1.0f : -1.0f);
+                if ((inc && outerMenuOptionTransitionAngle > 0.0f) || (!inc && outerMenuOptionTransitionAngle < 0.0f))
+                    outerMenuOptionTransitionAngle = 0.0f;
+            }
+            else if (incOuterMenuOptionYScale)
+            {
+                if (outerMenuOptionTransitionYScale < 1.0f)
+                {
+                    outerMenuOptionTransitionYScale += delta.Time / outerMenuOptionYScaleTransitionTime;
+                    if (outerMenuOptionTransitionYScale > 1.0f)
+                        outerMenuOptionTransitionYScale = 1.0f;
+                }
+            }
+            else if (outerMenuOptionTransitionYScale > 0.0f)
+            {
+                outerMenuOptionTransitionYScale -= delta.Time / outerMenuOptionYScaleTransitionTime;
+                if (outerMenuOptionTransitionYScale < 0.0f)
+                    outerMenuOptionTransitionYScale = 0.0f;
             }
         }
 
@@ -150,15 +196,25 @@ namespace SuperFantasticSteampunk.BattleStates
 
             for (int i = startIndex, counter = 0; counter < Think.OuterMenuOptions.Length; ++counter, currentAngle += anglePerOption)
             {
-                Vector2 ovalPosition = new Vector2((float)Math.Cos(currentAngle + menuTransitionAngle), (float)Math.Sin(currentAngle + menuTransitionAngle) / 2.0f);
+                Vector2 ovalPosition = new Vector2((float)Math.Cos(currentAngle + outerMenuOptionTransitionAngle), (float)Math.Sin(currentAngle + outerMenuOptionTransitionAngle) / 2.0f);
                 menuOptions[i].Position = startPosition + (ovalPosition * 75.0f * Game1.ScreenScaleFactor.X);
                 if (++i >= Think.OuterMenuOptions.Length)
                     i = 0;
             }
 
             sortedMenuOptions.Sort((a, b) => a.Position.Y.CompareTo(b.Position.Y));
-            foreach (ThinkRendererMenuOption menuOption in sortedMenuOptions)
-                menuOption.Draw(iconContainerTextureData, menuOption.MenuOptionIndex == battleState.CurrentOuterMenuOptionIndex ? iconContainerGlowTextureData : null, containerScale, iconScale, renderer);
+            Vector2 scaleScale = new Vector2(1.0f, outerMenuOptionTransitionYScale);
+            foreach (ThinkRendererOuterMenuOption menuOption in sortedMenuOptions)
+            {
+                TextureData glowTextureData = null;
+                Vector2 thisScaleScale = scaleScale;
+                if (menuOption.MenuOptionIndex == battleState.CurrentOuterMenuOptionIndex)
+                {
+                    glowTextureData = iconContainerGlowTextureData;
+                    thisScaleScale = Vector2.One;
+                }
+                menuOption.Draw(iconContainerTextureData, glowTextureData, containerScale, iconScale, thisScaleScale, renderer);
+            }
         }
 
         private void drawOptionNamesSubMenu(Renderer renderer)

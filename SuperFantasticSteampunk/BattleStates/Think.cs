@@ -180,6 +180,8 @@ namespace SuperFantasticSteampunk.BattleStates
 
             if (previousBattleState is SelectTarget)
                 finishThinkForCurrentPartyMember();
+            else if (previousBattleState is MoveActor)
+                BattleStateRenderer.StartOuterMenuOptionDeselectTransition();
         }
 
         public override void Update(Delta delta)
@@ -209,7 +211,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
             chooseRelativeOption(relativeIndex);
             if (inOuterMenu)
-                BattleStateRenderer.StartMenuTransition(relativeIndex);
+                BattleStateRenderer.StartOuterMenuOptionTransition(relativeIndex);
         }
 
         private void selectOption()
@@ -222,6 +224,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void selectOuterMenuOption()
         {
+            BattleStateRenderer.StartOuterMenuOptionSelectTransition();
             switch (OuterMenuOptions[CurrentOuterMenuOptionIndex].ToLower())
             {
             case "move": PushState(new MoveActor(Battle, CurrentPartyMember, this)); break;
@@ -273,6 +276,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             initThinkActionTypeMenu(ThinkActionType.None);
             inOuterMenu = true;
+            BattleStateRenderer.StartOuterMenuOptionDeselectTransition();
         }
 
         private void cancelAction()
@@ -457,6 +461,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 repopulateMenuOptions();
                 currentThinkAction = null;
                 initThinkActionTypeMenu(ThinkActionType.None);
+                BattleStateRenderer.ResetOuterMenuTransitions();
             }
         }
 
