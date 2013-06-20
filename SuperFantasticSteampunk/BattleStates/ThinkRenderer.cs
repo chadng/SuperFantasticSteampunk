@@ -303,24 +303,25 @@ namespace SuperFantasticSteampunk.BattleStates
             Vector2 scale = Game1.ScreenScaleFactor;
             renderer.Draw(whitePixelTextureData, new Vector2(x, y) * scale, new Color(124, 63, 18), 0.0f, new Vector2(width, height) * scale, false);
 
+            Vector2 halfScale = scale * 0.5f;
             TextureData textureData = borderTextureData[NW];
-            renderer.Draw(textureData, new Vector2(x - textureData.Width, y - textureData.Height) * scale, Color.White, 0.0f, scale, false);
+            renderer.Draw(textureData, new Vector2(x - (textureData.Width * 0.5f), y - (textureData.Height * 0.5f)) * scale, Color.White, 0.0f, halfScale, false);
             textureData = borderTextureData[NE];
-            renderer.Draw(textureData, new Vector2(x + width, y - textureData.Height) * scale, Color.White, 0.0f, scale, false);
+            renderer.Draw(textureData, new Vector2(x + width, y - (textureData.Height * 0.5f)) * scale, Color.White, 0.0f, halfScale, false);
             textureData = borderTextureData[SE];
-            renderer.Draw(textureData, new Vector2(x + width, y + height) * scale, Color.White, 0.0f, scale, false);
+            renderer.Draw(textureData, new Vector2(x + width, y + height) * scale, Color.White, 0.0f, halfScale, false);
             textureData = borderTextureData[SW];
-            renderer.Draw(textureData, new Vector2(x - textureData.Width, y + height) * scale, Color.White, 0.0f, scale, false);
+            renderer.Draw(textureData, new Vector2(x - (textureData.Width * 0.5f), y + height) * scale, Color.White, 0.0f, halfScale, false);
 
             textureData = borderTextureData[N];
-            Vector2 xScale = new Vector2((1.0f / textureData.Width) * width, 1.0f) * scale;
-            renderer.Draw(textureData, new Vector2(x, y - textureData.Height) * scale, Color.White, 0.0f, xScale, false);
+            Vector2 xScale = new Vector2((1.0f / textureData.Width) * width, 0.5f);
+            renderer.Draw(textureData, new Vector2(x, y - (textureData.Height * 0.5f)) * scale, Color.White, 0.0f, xScale, false);
             textureData = borderTextureData[S];
             renderer.Draw(textureData, new Vector2(x, y + height) * scale, Color.White, 0.0f, xScale, false);
 
             textureData = borderTextureData[W];
-            Vector2 yScale = new Vector2(1.0f, (1.0f / textureData.Height) * height) * scale;
-            renderer.Draw(textureData, new Vector2(x - textureData.Width, y) * scale, Color.White, 0.0f, yScale, false);
+            Vector2 yScale = new Vector2(0.5f, (1.0f / textureData.Height) * height);
+            renderer.Draw(textureData, new Vector2(x - (textureData.Width * 0.5f), y) * scale, Color.White, 0.0f, yScale, false);
             textureData = borderTextureData[E];
             renderer.Draw(textureData, new Vector2(x + width, y) * scale, Color.White, 0.0f, yScale, false);
         }

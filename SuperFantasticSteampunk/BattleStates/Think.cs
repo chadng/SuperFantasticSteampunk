@@ -501,7 +501,10 @@ namespace SuperFantasticSteampunk.BattleStates
                 repopulateMenuOptions();
                 currentThinkAction = null;
                 initThinkActionTypeMenu(ThinkActionType.None);
-                BattleStateRenderer.ResetOuterMenuTransitions();
+                if (actions.Count == Battle.PlayerParty.Count)
+                    BattleStateRenderer = null;
+                else
+                    BattleStateRenderer.ResetOuterMenuTransitions();
             }
         }
 
