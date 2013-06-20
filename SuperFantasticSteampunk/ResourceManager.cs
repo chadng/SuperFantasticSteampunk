@@ -112,11 +112,12 @@ namespace SuperFantasticSteampunk
             if (weaponData == null)
                 return null;
             else
-                return new Weapon(weaponData);
+                return new Weapon(weaponData, name);
         }
 
         public static WeaponData GetWeaponData(string name)
         {
+            name = getItemDataNameFromFullName(name, weaponDataDictionary.Keys);
             if (name == null)
                 return null;
 
@@ -133,6 +134,7 @@ namespace SuperFantasticSteampunk
 
         public static Shield GetNewShield(string name)
         {
+            name = getItemDataNameFromFullName(name, shieldDataDictionary.Keys);
             if (name == null)
                 return null;
 
@@ -140,7 +142,7 @@ namespace SuperFantasticSteampunk
             if (shieldData == null)
                 return null;
             else
-                return new Shield(shieldData);
+                return new Shield(shieldData, name);
         }
 
         public static ShieldData GetShieldData(string name)
@@ -538,6 +540,26 @@ namespace SuperFantasticSteampunk
                 shaderDictionary.Add(shaderName, contentManager.Load<Effect>(filePath.Replace(contentManager.RootDirectory + "/", "")));
                 Logger.Log("Loaded shader '" + shaderName + "'");
             }
+        }
+
+        private static string getItemDataNameFromFullName(string name, IEnumerable<string> allKeys)
+        {
+            if (name == null)
+                return null;
+
+            List<string> allNames = new List<string>(allKeys);
+
+            string[] parts = name.Split(' ');
+            if (parts.Length == 0)
+                return null;
+            if (parts.Length == 1)
+                return allNames.IndexOf(parts[0]) >= 0 ? parts[0] : null;
+            if (parts.Length == 2)
+                return allNames.IndexOf(parts[1]) >= 0 ? parts[1] : null;
+            if (parts.IndexOf("of") < 0)
+                return allNames.IndexOf(parts[parts.Length - 1]) >= 0 ? parts[parts.Length - 1] : null;
+
+            return allNames.IndexOf(parts[parts.Length - 3]) >= 0 ? parts[parts.Length - 3] : null;
         }
         #endregion
     }

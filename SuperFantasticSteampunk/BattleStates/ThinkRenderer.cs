@@ -65,7 +65,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private const float subMenuX = 1000.0f;
         private const float subMenuY = 200.0f;
-        private const float subMenuWidth = 200.0f;
+        private const float subMenuWidth = 500.0f;
         private const float defaultMaxVisibleSubMenuOptions = 15;
         private const float subMenuFontSize = 14.0f;
         private const float subMenuPadding = 20.0f;

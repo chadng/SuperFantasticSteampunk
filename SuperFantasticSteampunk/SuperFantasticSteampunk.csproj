@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Area.cs" />
     <Compile Include="AreaData.cs" />
+    <Compile Include="Attributes.cs" />
     <Compile Include="Battle.cs" />
     <Compile Include="BattleState.cs" />
     <Compile Include="BattleStateRenderer.cs" />
