@@ -218,13 +218,14 @@ namespace SuperFantasticSteampunk
 
             bool aliveBefore = Alive;
             Health -= amount;
+
+            Battle battle = Scene.Current as Battle;
             if (Health <= 0)
             {
                 Health = 0;
                 if (aliveBefore)
                 {
                     BattleEntity.Visible = false;
-                    Battle battle = Scene.Current as Battle;
                     if (battle != null)
                     {
                         Scene.AddEntity(new ParticleEffect(BattleEntity.GetCenter(), 20, ResourceManager.GetTextureData("particles/cloud_1"), 500.0f, 500.0f, 0.6f, 0.6f, true));
@@ -234,6 +235,9 @@ namespace SuperFantasticSteampunk
             }
             else if (Health > MaxHealth)
                 Health = MaxHealth;
+
+            if (battle != null)
+                Scene.AddEntity(new FloatingText(amount.ToString(), Color.Red, BattleEntity.Position));
         }
 
         public int CalculateDamageTaken(PartyMember enemy)

@@ -54,7 +54,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 {
                     if (!statusEffect.BeforeActIsFinished())
                     {
-                        statusEffect.BeforeActUpdate(thinkAction);
+                        statusEffect.BeforeActUpdate(thinkAction, delta);
                         allStatusEffectsFinished = false;
                     }
                 });
@@ -64,7 +64,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 {
                     if (!statusEffect.EndTurnIsFinished())
                     {
-                        statusEffect.EndTurnUpdate(partyMember);
+                        statusEffect.EndTurnUpdate(partyMember, delta);
                         allStatusEffectsFinished = false;
                     }
                 });

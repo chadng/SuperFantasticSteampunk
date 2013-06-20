@@ -38,9 +38,9 @@ namespace SuperFantasticSteampunk.StatusEffects
             finished = false;
         }
 
-        public override void BeforeActUpdate(ThinkAction thinkAction)
+        public override void BeforeActUpdate(ThinkAction thinkAction, Delta delta)
         {
-            base.BeforeActUpdate(thinkAction);
+            base.BeforeActUpdate(thinkAction, delta);
             if (Game1.Random.Next(100) <= chanceOfEffect)
                 thinkAction.Active = false;
             finished = true;

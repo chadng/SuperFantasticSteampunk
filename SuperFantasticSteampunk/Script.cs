@@ -17,7 +17,10 @@ namespace SuperFantasticSteampunk
             List<string> statements = splitString(scriptString, ';');
             Actions = new List<ScriptAction>(statements.Count);
             for (int i = 0; i < statements.Count; ++i)
-                Actions.Add(stringToScriptAction(statements[i], i));
+            {
+                if (!statements[i].StartsWith("//"))
+                    Actions.Add(stringToScriptAction(statements[i], i));
+            }
             Actions.Sort((a, b) => a.Item1 == b.Item1 ? a.Item4.CompareTo(b.Item4) : a.Item1.CompareTo(b.Item1));
         }
         #endregion

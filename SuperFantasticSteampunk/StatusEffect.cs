@@ -17,7 +17,7 @@ namespace SuperFantasticSteampunk
         {
         }
 
-        public virtual void BeforeActUpdate(ThinkAction thinkAction)
+        public virtual void BeforeActUpdate(ThinkAction thinkAction, Delta delta)
         {
         }
 
@@ -25,7 +25,7 @@ namespace SuperFantasticSteampunk
         {
         }
 
-        public virtual void EndTurnUpdate(PartyMember partyMember)
+        public virtual void EndTurnUpdate(PartyMember partyMember, Delta delta)
         {
         }
 
