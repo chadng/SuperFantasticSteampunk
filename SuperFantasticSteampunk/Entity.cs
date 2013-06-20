@@ -48,6 +48,7 @@ namespace SuperFantasticSteampunk
         public Nullable<Rectangle> CustomBoundingBox { get; set; }
         public List<UpdateExtension> UpdateExtensions { get; private set; }
         public Effect Shader { get; set; }
+        public bool PauseAnimation { get; set; }
         #endregion
 
         #region Constructors
@@ -61,6 +62,7 @@ namespace SuperFantasticSteampunk
             Visible = true;
             UpdateExtensions = new List<UpdateExtension>();
             Shader = null;
+            PauseAnimation = false;
         }
 
         public Entity(Skeleton skeleton, Vector2 position)
@@ -259,7 +261,8 @@ namespace SuperFantasticSteampunk
             Skeleton.RootBone.ScaleX = Scale.X;
             Skeleton.RootBone.ScaleY = Scale.Y;
             Skeleton.RootBone.Rotation = Rotation;
-            AnimationState.Update(delta.Time);
+            if (!PauseAnimation)
+                AnimationState.Update(delta.Time);
             AnimationState.Apply(Skeleton);
             Skeleton.UpdateWorldTransform();
         }
