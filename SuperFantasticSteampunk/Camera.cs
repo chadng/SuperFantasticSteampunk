@@ -5,6 +5,18 @@ namespace SuperFantasticSteampunk
 {
     class Camera
     {
+        #region Constants
+        private const float shakeCooldown = 0.8f;
+        private const float shakeSpeed = 1.0f;
+        #endregion
+
+        #region Instance Fields
+        private Vector2 shakePosition;
+        private Vector2 shakeTarget;
+        private float shakeTimer;
+        private float shakeTime;
+        #endregion
+
         #region Instance Properties
         public Entity Target { get; set; }
         public Vector2 Size { get; private set; }
@@ -17,6 +29,10 @@ namespace SuperFantasticSteampunk
         #region Constructors
         public Camera(Vector2 size)
         {
+            shakePosition = Vector2.Zero;
+            shakeTarget = Vector2.Zero;
+            shakeTimer = 0.0f;
+            shakeTime = 0.0f;
             Target = null;
             Size = size;
             Position = Vector2.Zero;
@@ -40,6 +56,21 @@ namespace SuperFantasticSteampunk
                 (int)Size.X,
                 (int)Size.Y
             );
+        }
+
+        public void Shake(Vector2 magnitude, float shakeTime)
+        {
+            shakeTimer = 0.0f;
+            if (magnitude.Length() < 0.01f)
+            {
+                shakePosition = Vector2.Zero;
+                shakeTarget = Vector2.Zero;
+                this.shakeTime = 0.0f;
+                return;
+            }
+            shakePosition = magnitude;
+            shakeTarget = -shakePosition * shakeCooldown;
+            this.shakeTime = shakeTime;
         }
 
         public void Update(Delta delta)
@@ -71,6 +102,8 @@ namespace SuperFantasticSteampunk
 
             Position = updateVectorToTarget(Position, TargetPosition, delta);
             Scale = updateVectorToTarget(Scale, TargetScale, delta);
+
+            updateScreenShake(delta);
         }
 
         private Vector2 updateVectorToTarget(Vector2 vector, Vector2 target, Delta delta)
@@ -87,6 +120,19 @@ namespace SuperFantasticSteampunk
         private float moveFloatTowardsValue(float value, float targetValue, Delta delta)
         {
             return value + ((targetValue - value) * delta.Time);
+        }
+
+        private void updateScreenShake(Delta delta)
+        {
+            if (shakeTarget == Vector2.Zero)
+                return;
+
+            shakeTimer += delta.Time;
+            if (shakeTimer > shakeTime)
+                Shake(shakeTarget, shakeTime);
+            else
+                shakePosition = Vector2.Lerp(shakePosition, shakeTarget, shakeTimer / shakeTime);
+            Position += shakePosition;
         }
         #endregion
     }
