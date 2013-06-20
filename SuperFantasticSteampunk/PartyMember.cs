@@ -237,7 +237,7 @@ namespace SuperFantasticSteampunk
                 Health = MaxHealth;
 
             if (battle != null)
-                Scene.AddEntity(new FloatingText(amount.ToString(), Color.Red, BattleEntity.Position));
+                Scene.AddEntity(new FloatingText(amount.ToString(), Color.Red, BattleEntity.GetCenter(), 5.0f, true));
         }
 
         public int CalculateDamageTaken(PartyMember enemy)

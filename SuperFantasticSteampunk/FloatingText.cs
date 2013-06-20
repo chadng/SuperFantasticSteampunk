@@ -12,17 +12,23 @@ namespace SuperFantasticSteampunk
         #region Instance Fields
         private string text;
         private float time;
+        private Vector2 scale;
+        private bool center;
+        private Vector2 textOrigin;
         #endregion
 
         #region Constructors
-        public FloatingText(string text, Color color, Vector2 position)
+        public FloatingText(string text, Color color, Vector2 position, float scale, bool center)
             : base(position)
         {
             this.text = text;
+            this.scale = new Vector2(scale);
+            this.center = center;
             Tint = color;
             time = 0.0f;
             Velocity = new Vector2(0.0f, -floatSpeed);
             ZIndex = -1;
+            textOrigin = new Vector2(-1.0f);
         }
         #endregion
 
@@ -47,7 +53,17 @@ namespace SuperFantasticSteampunk
 
         public override void Draw(Renderer renderer)
         {
-            renderer.DrawText(text, Position, Tint, 0.0f, Vector2.Zero, new Vector2(5.0f), true);
+            if (textOrigin.X < 0.0f)
+                calculateTextOrigin(renderer);
+            renderer.DrawText(text, Position, Tint, 0.0f, textOrigin, scale, true);
+        }
+
+        private void calculateTextOrigin(Renderer renderer)
+        {
+            if (center)
+                textOrigin = renderer.Font.MeasureString(text, Font.DefaultSize * scale.X) / 2;
+            else
+                textOrigin = Vector2.Zero;
         }
         #endregion
     }

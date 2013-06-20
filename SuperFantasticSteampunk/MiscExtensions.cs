@@ -178,7 +178,7 @@ namespace SuperFantasticSteampunk
             foreach (Slot slot in skeleton.DrawOrder)
             {
                 RegionAttachment regionAttachment = slot.Attachment as RegionAttachment;
-                if (regionAttachment == null)
+                if (regionAttachment == null || regionAttachment.Name.ToLower().IndexOf("tail") >= 0)
                     continue;
 
                 regionAttachment.ComputeVertices(skeleton.X, skeleton.Y, slot.Bone, vertices);
