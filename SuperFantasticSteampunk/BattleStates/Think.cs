@@ -434,6 +434,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 CurrentOuterMenuOptionIndex = 0;
                 IEnumerable<PartyMember> finishedPartyMembers = actions.Select<ThinkAction, PartyMember>(thinkAction => thinkAction.Actor);
                 CurrentPartyMember = Battle.PlayerParty.Find(partyMember => !finishedPartyMembers.Contains(partyMember));
+                setOuterMenuOptionIndexForCurrentPartyMember();
                 Logger.Log("Action selection for party member " + (actions.Count + 1).ToString());
             }
         }
@@ -497,6 +498,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 if (inventory != null)
                     inventory.UseItem(currentThinkAction.OptionName, CurrentPartyMember);
                 actions.Add(currentThinkAction);
+                Battle.LastUsedThinkActionTypes.AddOrReplace(CurrentPartyMember, new Wrapper<ThinkActionType>(currentThinkAction.Type));
                 getNextPartyMember();
                 repopulateMenuOptions();
                 currentThinkAction = null;
@@ -506,6 +508,28 @@ namespace SuperFantasticSteampunk.BattleStates
                 else
                     BattleStateRenderer.ResetOuterMenuTransitions();
             }
+        }
+
+
+        private void setOuterMenuOptionIndexForCurrentPartyMember()
+        {
+            if (CurrentPartyMember == null)
+                return;
+            Wrapper<ThinkActionType> thinkActionTypeWrapper;
+            if (Battle.LastUsedThinkActionTypes.TryGetValue(CurrentPartyMember, out thinkActionTypeWrapper))
+            {
+                switch (thinkActionTypeWrapper.Value)
+                {
+                case ThinkActionType.Attack: CurrentOuterMenuOptionIndex = OuterMenuOptions.IndexOf("Attack"); break;
+                case ThinkActionType.Defend: CurrentOuterMenuOptionIndex = OuterMenuOptions.IndexOf("Defend"); break;
+                case ThinkActionType.UseItem: CurrentOuterMenuOptionIndex = OuterMenuOptions.IndexOf("Item"); break;
+                default: CurrentOuterMenuOptionIndex = 0; break;
+                }
+                if (CurrentOuterMenuOptionIndex < 0)
+                    CurrentOuterMenuOptionIndex = 0;
+            }
+            else
+                CurrentOuterMenuOptionIndex = 0;
         }
 
         private void thinkAboutEnemyPartyActions()

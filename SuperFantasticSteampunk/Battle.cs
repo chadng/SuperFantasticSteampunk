@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Spine;
 using SuperFantasticSteampunk.OverworldStates;
@@ -37,6 +38,7 @@ namespace SuperFantasticSteampunk
         public Encounter OverworldEncounter { get; private set; }
         public int PlayerPartyItemsUsed { get; private set; }
         public Camera Camera { get; private set; }
+        public ConditionalWeakTable<PartyMember, Wrapper<BattleStates.ThinkActionType>> LastUsedThinkActionTypes { get; private set; }
         #endregion
 
         #region Constructors
@@ -82,6 +84,7 @@ namespace SuperFantasticSteampunk
             };
 
             PlayerPartyItemsUsed = 0;
+            LastUsedThinkActionTypes = new ConditionalWeakTable<PartyMember, Wrapper<BattleStates.ThinkActionType>>();
         }
         #endregion
 

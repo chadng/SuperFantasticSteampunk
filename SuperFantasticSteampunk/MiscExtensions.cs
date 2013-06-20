@@ -7,6 +7,20 @@ using Spine;
 
 namespace SuperFantasticSteampunk
 {
+    class Wrapper<T>
+    {
+        #region Instance Properties
+        public T Value { get; set; }
+        #endregion
+
+        #region Constructors
+        public Wrapper(T value)
+        {
+            Value = value;
+        }
+        #endregion
+    }
+
     static class MiscExtensions
     {
         #region Constants
@@ -139,6 +153,16 @@ namespace SuperFantasticSteampunk
                     return true;
             }
             return false;
+        }
+
+        public static int IndexOf<T>(this T[] self, T item)
+        {
+            for (int i = 0; i < self.Length; ++i)
+            {
+                if (EqualityComparer<T>.Default.Equals(self[i], item))
+                    return i;
+            }
+            return -1;
         }
 
         public static Rectangle GenerateBoundingBox(this SkeletonData self)
