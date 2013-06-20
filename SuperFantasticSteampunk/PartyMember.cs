@@ -217,6 +217,15 @@ namespace SuperFantasticSteampunk
                 HurtThisTurn = true;
 
             bool aliveBefore = Alive;
+            bool heal = amount < 0;
+            if (heal)
+            {
+                int finalHealth = Health - amount;
+                if (finalHealth > MaxHealth)
+                    amount = -(MaxHealth - Health);
+            }
+            else if (amount > Health)
+                amount = Health;
             Health -= amount;
 
             Battle battle = Scene.Current as Battle;
@@ -237,7 +246,7 @@ namespace SuperFantasticSteampunk
                 Health = MaxHealth;
 
             if (battle != null)
-                Scene.AddEntity(new FloatingText(amount.ToString(), Color.Red, BattleEntity.GetCenter(), 5.0f, true));
+                Scene.AddEntity(new FloatingText(Math.Abs(amount).ToString(), heal ? Color.Blue : Color.Red, BattleEntity.GetCenter(), 5.0f, true));
         }
 
         public int CalculateDamageTaken(PartyMember enemy)
