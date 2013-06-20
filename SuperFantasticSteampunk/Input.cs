@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace SuperFantasticSteampunk
 {
-    enum InputButton { Up, Down, Left, Right, AltUp, AltDown, AltLeft, AltRight, A, B, X, Y, Pause, LeftShoulder }
+    enum InputButton { Up, Down, Left, Right, AltUp, AltDown, AltLeft, AltRight, A, B, X, Y, Pause, LeftTrigger }
 
     static class Input
     {
@@ -16,6 +16,7 @@ namespace SuperFantasticSteampunk
 
         #region Constants
         private const float thumbStickDeadZone = 0.6f;
+        private const float triggerDeadZone = 0.2f;
         #endregion
 
         #region Static Fields
@@ -41,7 +42,7 @@ namespace SuperFantasticSteampunk
             buttonCheckBindings.Add(InputButton.B, B);
             buttonCheckBindings.Add(InputButton.X, X);
             buttonCheckBindings.Add(InputButton.Y, Y);
-            buttonCheckBindings.Add(InputButton.LeftShoulder, LeftShoulder);
+            buttonCheckBindings.Add(InputButton.LeftTrigger, LeftTrigger);
             buttonCheckBindings.Add(InputButton.Pause, Pause);
 
             keyboardMapping = new Dictionary<InputButton, Keys>();
@@ -129,9 +130,17 @@ namespace SuperFantasticSteampunk
             return keyboardY() || gamePadY();
         }
 
-        public static bool LeftShoulder()
+        public static bool LeftTrigger()
         {
-            return keyboardLeftShoulder() || gamePadLeftShoulder();
+            return LeftTriggerAmount() > 0.0f;
+        }
+
+        public static float LeftTriggerAmount()
+        {
+            float result = keyboardLeftTriggerAmount();
+            if (result == 0.0f)
+                result = gamePadLeftTriggerAmount();
+            return result;
         }
 
         public static bool Pause()
@@ -199,9 +208,9 @@ namespace SuperFantasticSteampunk
             return keyboardState.IsKeyDown(keyboardMapping[InputButton.Y]);
         }
 
-        private static bool keyboardLeftShoulder()
+        private static float keyboardLeftTriggerAmount()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.LeftShoulder]);
+            return keyboardState.IsKeyDown(keyboardMapping[InputButton.LeftTrigger]) ? 1.0f : 0.0f;
         }
 
         private static bool keyboardPause()
@@ -269,9 +278,13 @@ namespace SuperFantasticSteampunk
             return gamePadState.IsButtonDown(Buttons.Y);
         }
 
-        private static bool gamePadLeftShoulder()
+        private static float gamePadLeftTriggerAmount()
         {
-            return gamePadState.IsButtonDown(Buttons.LeftShoulder);
+            if (gamePadState.IsButtonDown(Buttons.LeftShoulder))
+                return 1.0f;
+            if (gamePadState.Triggers.Left > triggerDeadZone)
+                return (gamePadState.Triggers.Left - triggerDeadZone) / (1.0f - triggerDeadZone);
+            return 0.0f;
         }
 
         private static bool gamePadPause()

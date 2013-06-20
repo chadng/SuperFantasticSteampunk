@@ -149,8 +149,8 @@ namespace SuperFantasticSteampunk
 
         protected override void update(Delta delta)
         {
-            if (Input.LeftShoulder() && !(CurrentBattleState is BattleStates.Think) && !(CurrentBattleState is BattleStates.SelectTarget))
-                delta.scaleDelta(4.0f);
+            if (!(CurrentBattleState is BattleStates.Think) && !(CurrentBattleState is BattleStates.SelectTarget))
+                delta.scaleDelta(MathHelper.Lerp(1.0f, 4.0f, Input.LeftTriggerAmount()));
 
             if (stateChanged)
             {
