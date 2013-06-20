@@ -402,6 +402,11 @@ namespace SuperFantasticSteampunk
                 TextureData textureData = new TextureData();
                 typeof(TextureData).GetProperty("Name").SetValue(textureData, textureName, null);
                 typeof(TextureData).GetProperty("Texture").SetValue(textureData, contentManager.Load<Texture2D>(filePath.Replace(contentManager.RootDirectory + "/", "")), null);
+                if (textureName.StartsWith("particles/"))
+                {
+                    typeof(TextureData).GetProperty("OriginX").SetValue(textureData, textureData.Width / 2, null);
+                    typeof(TextureData).GetProperty("OriginY").SetValue(textureData, textureData.Height / 2, null);
+                }
                 textureDataDictionary.Add(textureName, textureData);
                 Logger.Log("Loaded texture data '" + textureName + "'");
             }

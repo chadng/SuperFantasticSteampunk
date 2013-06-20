@@ -224,7 +224,7 @@ namespace SuperFantasticSteampunk
                 if (aliveBefore)
                 {
                     BattleEntity.Visible = false;
-                    Scene.AddEntity(new ParticleEffect(BattleEntity.GetCenter(), 20, ResourceManager.GetTextureData("arrow_down"), 500.0f, 500.0f, 1.0f, 1.0f));
+                    Scene.AddEntity(new ParticleEffect(BattleEntity.GetCenter(), 20, ResourceManager.GetTextureData("particles/cloud_1"), 500.0f, 500.0f, 0.6f, 0.6f, true));
                 }
             }
             else if (Health > MaxHealth)

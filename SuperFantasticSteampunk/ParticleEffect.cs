@@ -4,6 +4,9 @@ namespace SuperFantasticSteampunk
 {
     class Particle
     {
+        #region Constants
+        private const float radialVelocity = MathHelper.Pi;
+        #endregion
 
         #region Instance Fields
         private readonly float lifeTime;
@@ -12,6 +15,8 @@ namespace SuperFantasticSteampunk
         private Vector2 velocity;
         private float gravity;
         private float scale;
+        private bool rotate;
+        private float rotation;
         #endregion
 
         #region Instance Properties
@@ -22,7 +27,7 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Constructors
-        public Particle(Vector2 position, float speed, float gravity, float maxScale, float lifeTime)
+        public Particle(Vector2 position, float speed, float gravity, float maxScale, float lifeTime, bool rotate)
         {
             time = 0.0f;
             this.position = position;
@@ -30,6 +35,8 @@ namespace SuperFantasticSteampunk
             this.lifeTime = lifeTime + (float)((Game1.Random.NextDouble() * 0.5) - 0.25);
             scale = (float)(maxScale * (1.0 - (Game1.Random.NextDouble() * 0.4)));
             velocity = new Vector2((float)((Game1.Random.NextDouble() - 0.5) * 2.0), (float)((Game1.Random.NextDouble() - 0.5) * 2.0)) * speed;
+            this.rotate = rotate;
+            rotation = rotate ? (float)(Game1.Random.NextDouble() * MathHelper.TwoPi) : 0.0f;
         }
         #endregion
 
@@ -39,12 +46,14 @@ namespace SuperFantasticSteampunk
             time += delta.Time;
             velocity.Y += gravity * delta.Time;
             position += velocity * delta.Time;
+            if (rotate)
+                rotation += radialVelocity * delta.Time;
         }
 
         public void Draw(Renderer renderer, TextureData textureData)
         {
             float alpha = 1.0f - (time / lifeTime);
-            renderer.Draw(textureData, position, Color.White * alpha, 0.0f, new Vector2(scale));
+            renderer.Draw(textureData, position, Color.White * alpha, rotation, new Vector2(scale));
         }
         #endregion
     }
@@ -57,13 +66,13 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Constructors
-        public ParticleEffect(Vector2 position, int particleCount, TextureData textureData, float particleSpeed, float particleGravity, float maxScale, float lifeTime)
+        public ParticleEffect(Vector2 position, int particleCount, TextureData textureData, float particleSpeed, float particleGravity, float maxScale, float lifeTime, bool rotate)
             : base(position)
         {
             this.textureData = textureData;
             particles = new Particle[particleCount];
             for (int i = 0; i < particleCount; ++i)
-                particles[i] = new Particle(position, particleSpeed, particleGravity, maxScale, lifeTime);
+                particles[i] = new Particle(position, particleSpeed, particleGravity, maxScale, lifeTime, rotate);
         }
         #endregion
 
