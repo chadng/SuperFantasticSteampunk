@@ -180,6 +180,7 @@
     <Folder Include="Content\Skeletons\" />
     <Folder Include="Content\Shaders\" />
     <Folder Include="Content\Textures\battle_ui\borders\" />
+    <Folder Include="Content\Textures\particles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\Dropbox\SuperFantasticSteampunk\Content\Forenames.txt">
@@ -476,6 +477,14 @@
     </Content>
     <Content Include="..\..\..\Dropbox\illustrator\game\misc\battle_ui_borders_output\w.png">
       <Link>Content\Textures\battle_ui\borders\w.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\Dropbox\illustrator\game\misc\particles_output\cloud_1.png">
+      <Link>Content\Textures\particles\cloud_1.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\Dropbox\illustrator\game\misc\particles_output\poison_bubble.png">
+      <Link>Content\Textures\particles\poison_bubble.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
