@@ -66,9 +66,10 @@ namespace SuperFantasticSteampunk.BattleStates
         private const float subMenuX = 1000.0f;
         private const float subMenuY = 200.0f;
         private const float subMenuWidth = 500.0f;
-        private const float defaultMaxVisibleSubMenuOptions = 15;
+        private const int maxVisibleSubMenuOptions = 10;
         private const float subMenuFontSize = 14.0f;
         private const float subMenuPadding = 20.0f;
+        private const float fontHeightScale = 1.1f;
 
         private const int N = 0;
         private const int NE = 1;
@@ -103,7 +104,6 @@ namespace SuperFantasticSteampunk.BattleStates
         private readonly int halfOptionsLength;
         private readonly TextureData whitePixelTextureData;
         private readonly TextureData[] borderTextureData;
-        private readonly int maxVisibleSubMenuOptions;
         #endregion
 
         #region Instance Properties
@@ -142,8 +142,6 @@ namespace SuperFantasticSteampunk.BattleStates
             borderTextureData = new TextureData[directions.Length];
             for (int i = 0; i < directions.Length; ++i)
                 borderTextureData[i] = ResourceManager.GetTextureData("battle_ui/borders/" + directions[i]);
-
-            maxVisibleSubMenuOptions = (int)Math.Floor(Math.Min(defaultMaxVisibleSubMenuOptions, defaultMaxVisibleSubMenuOptions * Game1.ScreenScaleFactor.Y));
         }
         #endregion
 
@@ -254,7 +252,7 @@ namespace SuperFantasticSteampunk.BattleStates
         private float getSubMenuHeight(int optionCount, Renderer renderer)
         {
             float fontHeight = renderer.Font.MeasureString("I", subMenuFontSize).Y;
-            return (fontHeight * optionCount);
+            return fontHeight * fontHeightScale * optionCount;
         }
 
         private void drawOptionNamesText(Renderer renderer)
@@ -264,17 +262,22 @@ namespace SuperFantasticSteampunk.BattleStates
             Vector2 fontScale = new Vector2(subMenuFontSize / Font.DefaultSize) * Game1.ScreenScaleFactor.X;
             Vector2 position = new Vector2(subMenuX + subMenuPadding, subMenuY);
 
-            int remainder;
-            int optionsAbove = Math.DivRem(maxVisibleSubMenuOptions - 1, 2, out remainder);
-            int optionsBelow = optionsAbove + remainder;
-            int startIndex = battleState.CurrentOptionNameIndex - optionsAbove;
-            int finishIndex = battleState.CurrentOptionNameIndex + optionsBelow;
-            if (startIndex < 0)
-                finishIndex -= startIndex;
-            else if (finishIndex >= battleState.MenuOptions.Count)
-                startIndex -= battleState.MenuOptions.Count - (finishIndex - 1);
-            startIndex = Math.Max(startIndex, 0);
-            finishIndex = Math.Min(finishIndex, battleState.MenuOptions.Count - 1);
+            int startIndex = 0;
+            int finishIndex = battleState.MenuOptions.Count - 1;
+            if (battleState.MenuOptions.Count > maxVisibleSubMenuOptions)
+            {
+                int remainder;
+                int optionsAbove = Math.DivRem(maxVisibleSubMenuOptions - 1, 2, out remainder);
+                int optionsBelow = optionsAbove + remainder;
+                startIndex = battleState.CurrentOptionNameIndex - optionsAbove;
+                finishIndex = battleState.CurrentOptionNameIndex + optionsBelow;
+                if (startIndex < 0)
+                    finishIndex -= startIndex;
+                else if (finishIndex >= battleState.MenuOptions.Count)
+                    startIndex = battleState.MenuOptions.Count - maxVisibleSubMenuOptions;
+                startIndex = Math.Max(startIndex, 0);
+                finishIndex = Math.Min(finishIndex, battleState.MenuOptions.Count - 1);
+            }
 
             for (int i = startIndex; i <= finishIndex; ++i)
             {
@@ -294,7 +297,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 Vector2 amountSize = renderer.Font.MeasureString(amountString, subMenuFontSize);
                 renderer.DrawText(amountString, (position + new Vector2(subMenuWidth - (subMenuPadding * 2) - amountSize.X, 0.0f)) * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
 
-                position.Y += fontHeight * 1.1f;
+                position.Y += fontHeight * fontHeightScale;
             }
         }
 
