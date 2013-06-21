@@ -237,7 +237,7 @@ namespace SuperFantasticSteampunk
                     BattleEntity.Visible = false;
                     if (battle != null)
                     {
-                        Scene.AddEntity(new ParticleEffect(BattleEntity.GetCenter(), 20, ResourceManager.GetTextureData("particles/cloud_1"), 500.0f, 500.0f, 0.6f, 0.6f, true));
+                        Scene.AddEntity(new ParticleEffect(BattleEntity.GetCenter(), Color.White, 20, ResourceManager.GetTextureData("particles/cloud_1"), 500.0f, 500.0f, 0.6f, 0.6f, true));
                         battle.Camera.Shake(new Vector2(3.0f, 0.0f), 0.1f);
                     }
                 }

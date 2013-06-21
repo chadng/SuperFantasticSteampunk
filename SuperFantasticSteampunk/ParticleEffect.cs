@@ -50,10 +50,10 @@ namespace SuperFantasticSteampunk
                 rotation += radialVelocity * delta.Time;
         }
 
-        public void Draw(Renderer renderer, TextureData textureData)
+        public void Draw(Color tint, Renderer renderer, TextureData textureData)
         {
             float alpha = 1.0f - (time / lifeTime);
-            renderer.Draw(textureData, position, Color.White * alpha, rotation, new Vector2(scale));
+            renderer.Draw(textureData, position, new Color(tint.R, tint.G, tint.B, (byte)(255 * alpha)), rotation, new Vector2(scale));
         }
         #endregion
     }
@@ -63,13 +63,15 @@ namespace SuperFantasticSteampunk
         #region Instance Fields
         TextureData textureData;
         private Particle[] particles;
+        private Color tint;
         #endregion
 
         #region Constructors
-        public ParticleEffect(Vector2 position, int particleCount, TextureData textureData, float particleSpeed, float particleGravity, float maxScale, float lifeTime, bool rotate)
+        public ParticleEffect(Vector2 position, Color tint, int particleCount, TextureData textureData, float particleSpeed, float particleGravity, float maxScale, float lifeTime, bool rotate)
             : base(position)
         {
             this.textureData = textureData;
+            this.tint = tint;
             particles = new Particle[particleCount];
             for (int i = 0; i < particleCount; ++i)
                 particles[i] = new Particle(position, particleSpeed, particleGravity, maxScale, lifeTime, rotate);
@@ -92,7 +94,7 @@ namespace SuperFantasticSteampunk
             foreach (Particle particle in particles)
             {
                 if (particle.Alive)
-                    particle.Draw(renderer, textureData);
+                    particle.Draw(tint, renderer, textureData);
             }
         }
         #endregion

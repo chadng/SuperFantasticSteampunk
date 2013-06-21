@@ -60,6 +60,9 @@ namespace SuperFantasticSteampunk
 
         public void Shake(Vector2 magnitude, float shakeTime)
         {
+            if (magnitude.LengthSquared() < shakeTarget.LengthSquared())
+                return;
+
             shakeTimer = 0.0f;
             if (magnitude.Length() < 0.01f)
             {

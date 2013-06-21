@@ -194,7 +194,18 @@ namespace SuperFantasticSteampunk
                 targets.Add(selectedTarget);
             }
             else
+            {
                 targets = getTargetsFromEnhancement(selectedTarget, actor.EquippedWeapon.Attributes.Enhancement);
+                if (actor.EquippedWeapon.Attributes.Enhancement == Enhancement.Explosive)
+                {
+                    TextureData cloudTextureData = ResourceManager.GetTextureData("particles/cloud_1");
+                    Vector2 position = selectedTarget.BattleEntity.GetCenter();
+                    Scene.AddEntity(new ParticleEffect(position, Color.Red, 12, cloudTextureData, 800.0f, 500.0f, 0.8f, 0.6f, true));
+                    Scene.AddEntity(new ParticleEffect(position, Color.Orange, 12, cloudTextureData, 800.0f, 500.0f, 0.8f, 0.6f, true));
+                    Scene.AddEntity(new ParticleEffect(position, Color.White, 12, cloudTextureData, 800.0f, 500.0f, 0.8f, 0.6f, true));
+                    battle.Camera.Shake(new Vector2(4.0f), 0.1f);
+                }
+            }
 
             foreach (PartyMember target in targets)
             {
