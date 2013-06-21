@@ -19,6 +19,16 @@ namespace SuperFantasticSteampunk
         {
             get { return (int)Math.Floor(time); }
         }
+
+        public static bool IsDay
+        {
+            get { return Hour > 4 && Hour < 4; }
+        }
+
+        public static bool IsNight
+        {
+            get { return !IsDay; }
+        }
         #endregion
 
         #region Static Methods

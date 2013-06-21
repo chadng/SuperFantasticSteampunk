@@ -259,9 +259,13 @@ namespace SuperFantasticSteampunk
 
         private int calculateFinalAttackStat()
         {
+            if (EquippedWeapon == null)
+                return 0;
+
             int result = 0;
-            if (EquippedWeapon != null)
-                result += EquippedWeapon.Data.Power;
+            result += EquippedWeapon.Data.Power;
+            result = modifyStatFromAttributes(result, EquippedWeapon.Attributes);
+
             foreach (StatModifier statModifier in statModifiers)
                 result += EquippedWeapon.Data.WeaponType == WeaponType.Ranged ? statModifier.RangedAttack : statModifier.MeleeAttack;
             return result;
@@ -271,10 +275,28 @@ namespace SuperFantasticSteampunk
         {
             int result = 0;
             if (EquippedShield != null)
+            {
                 result += EquippedShield.Data.Defence;
+                result = modifyStatFromAttributes(result, EquippedShield.Attributes);
+            }
             foreach (StatModifier statModifier in statModifiers)
                 result += statModifier.Defence;
             return result;
+        }
+
+        private int modifyStatFromAttributes(int stat, Attributes attributes)
+        {
+            int modifier = (int)Math.Ceiling(stat * 0.2f);
+
+            if (attributes.Handling == Handling.Light)
+                stat -= modifier;
+            else if (attributes.Handling == Handling.Heavy)
+                stat += modifier;
+
+            if ((attributes.Affiliation == Affiliation.Light && Clock.IsDay) || (attributes.Affiliation == Affiliation.Darkness && Clock.IsNight))
+                stat += modifier;
+
+            return stat;
         }
 
         private void resetStats()

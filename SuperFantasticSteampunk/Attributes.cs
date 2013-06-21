@@ -5,25 +5,32 @@ using System.Text;
 namespace SuperFantasticSteampunk
 {
     enum Handling { None, Light, Heavy, Uncomfortable }
-    enum Enhancement { None, Piercing, Explosive, Relentless, Spiky }
+    enum Enhancement { None, Piercing, Explosive, Relentless, Inaccurate, Spiky }
     enum Status { None, Poisonous, Shocking, Scary }
     enum Affiliation { None, Light, Darkness, Doom }
 
     class Attributes
     {
         #region Constants
-        private static readonly Dictionary<Handling, int> handlingChances = new Dictionary<Handling, int> {
+        private static readonly Dictionary<Handling, int> weaponHandlingChances = new Dictionary<Handling, int> {
             { Handling.None, 3 },
             { Handling.Light, 2 },
-            { Handling.Heavy, 1 },
+            { Handling.Heavy, 2 },
             { Handling.Uncomfortable, 1 }
+        };
+
+        private static readonly Dictionary<Handling, int> shieldHandlingChances = new Dictionary<Handling, int> {
+            { Handling.None, 3 },
+            { Handling.Light, 2 },
+            { Handling.Heavy, 1 }
         };
 
         private static readonly Dictionary<Enhancement, int> weaponEnhancementChances = new Dictionary<Enhancement, int> {
             { Enhancement.None, 4 },
             { Enhancement.Piercing, 1 },
             { Enhancement.Explosive, 1 },
-            { Enhancement.Relentless, 2 }
+            { Enhancement.Relentless, 2 },
+            { Enhancement.Inaccurate, 2 }
         };
 
         private static readonly Dictionary<Enhancement, int> shieldEnhancementChances = new Dictionary<Enhancement, int> {
@@ -45,7 +52,8 @@ namespace SuperFantasticSteampunk
             { Affiliation.Doom, 1 }
         };
 
-        private static readonly List<Handling> handlings;
+        private static readonly List<Handling> weaponHandlings;
+        private static readonly List<Handling> shieldHandlings;
         private static readonly List<Enhancement> weaponEnhancements;
         private static readonly List<Enhancement> shieldEnhancements;
         private static readonly List<Status> statuses;
@@ -60,7 +68,8 @@ namespace SuperFantasticSteampunk
         #region Static Constructors
         static Attributes()
         {
-            populateAttributesList(out handlings, handlingChances);
+            populateAttributesList(out weaponHandlings, weaponHandlingChances);
+            populateAttributesList(out shieldHandlings, shieldHandlingChances);
             populateAttributesList(out weaponEnhancements, weaponEnhancementChances);
             populateAttributesList(out shieldEnhancements, shieldEnhancementChances);
             populateAttributesList(out statuses, statusChances);
@@ -109,7 +118,7 @@ namespace SuperFantasticSteampunk
         #region Constructors
         public Attributes(bool isWeapon)
         {
-            Handling = handlings.Sample();
+            Handling = (isWeapon ? weaponHandlings : shieldHandlings).Sample();
             Enhancement = (isWeapon ? weaponEnhancements : shieldEnhancements).Sample();
             Status = statuses.Sample();
             Affiliation = affiliations.Sample();

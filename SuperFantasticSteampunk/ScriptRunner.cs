@@ -185,13 +185,40 @@ namespace SuperFantasticSteampunk
             string targetPartyMemberSelector = (string)args[1];
 
             PartyMember actor = getPartyMemberFromSelector(actorPartyMemberSelector);
-            PartyMember target = getPartyMemberFromSelector(targetPartyMemberSelector);
+            PartyMember selectedTarget = getPartyMemberFromSelector(targetPartyMemberSelector);
 
-            int damage = target.CalculateDamageTaken(actor);
-            target.DoDamage(damage, false);
+            List<PartyMember> targets;
+            if (actor.EquippedWeapon == null)
+            {
+                targets = new List<PartyMember>(1);
+                targets.Add(selectedTarget);
+            }
+            else
+                targets = getTargetsFromEnhancement(selectedTarget, actor.EquippedWeapon.Attributes.Enhancement);
 
-            if (target.EquippedShield != null)
-                addNestedScriptRunner(target.EquippedShield.Data.Script, 0.0f);
+            foreach (PartyMember target in targets)
+            {
+                int damage = target.CalculateDamageTaken(actor);
+                target.DoDamage(damage, false);
+                if (actor.EquippedWeapon != null)
+                    applyStatusEffectsFromAttributes(target, actor, actor.EquippedWeapon.Attributes);
+
+                if (target.EquippedShield != null)
+                {
+                    if (actor.EquippedWeapon.Data.WeaponType == WeaponType.Melee)
+                    {
+                        if (target.EquippedShield.Attributes.Enhancement == Enhancement.Spiky)
+                            actor.DoDamage(Math.Max(damage / 10, 1), true);
+                        applyStatusEffectsFromAttributes(actor, target, target.EquippedShield.Attributes);
+                    }
+
+                    if (target.EquippedShield.Data.Script != null)
+                        addNestedScriptRunner(target.EquippedShield.Data.Script, 0.0f);
+                }
+            }
+
+            if (actor.EquippedWeapon != null && actor.EquippedWeapon.Attributes.Handling == Handling.Uncomfortable)
+                actor.DoDamage(Math.Max(actor.CalculateDamageTaken(actor) / 10, 1), true);
         }
 
         private void _addHealth(object[] args)
@@ -504,6 +531,54 @@ namespace SuperFantasticSteampunk
             if (newMode == ScriptRunnerMode.Normal && mode != ScriptRunnerMode.Normal)
                 newMode = ScriptRunnerMode.CatchScript;
             nestedScriptRunners.Add(new NestedScriptRunner(delay, new ScriptRunner(script, battle, actor, target, newMode)));
+        }
+
+        private List<PartyMember> getTargetsFromEnhancement(PartyMember target, Enhancement enhancement)
+        {
+            PartyBattleLayout layout = battle.GetPartyBattleLayoutForPartyMember(target);
+            List<PartyMember> result;
+            switch (enhancement)
+            {
+            case Enhancement.Piercing:
+            case Enhancement.Relentless:
+                result = new List<PartyMember>(layout.PartyMembersList(target)); // new list isn't created in PartyBattleLayout#PartyMembersList
+                break;
+            case Enhancement.Explosive:
+                result = layout.PartyMembersArea(target);
+                break;
+            case Enhancement.Inaccurate:
+                const double chanceOfMiss = 0.4;
+                result = new List<PartyMember>(1);
+                if (Game1.Random.NextDouble() <= chanceOfMiss)
+                {
+                    List<PartyMember> targetList = layout.PartyMembersList(target);
+                    List<PartyMember> otherList = layout.RelativeList(targetList, Game1.Random.Next(1) == 0 ? 1 : -1);
+                    if (otherList != null && otherList.Count > 0)
+                        result.Add(otherList[0]);
+                }
+                else
+                    result.Add(target);
+                break;
+            default: result = new List<PartyMember>(0); break;
+            }
+            return result;
+        }
+
+        private void applyStatusEffectsFromAttributes(PartyMember partyMember, PartyMember inflictor, Attributes attributes)
+        {
+            StatusEffect statusEffect;
+            switch (attributes.Status)
+            {
+            case Status.Poisonous: statusEffect = new StatusEffects.Poison(); break;
+            case Status.Shocking: statusEffect = new StatusEffects.Paralysis(); break;
+            case Status.Scary: statusEffect = new StatusEffects.Fear(inflictor); break;
+            default: statusEffect = null; break;
+            }
+            if (statusEffect != null)
+                partyMember.AddStatusEffect(statusEffect);
+
+            if (attributes.Affiliation == Affiliation.Doom)
+                partyMember.AddStatusEffect(new StatusEffects.Doom(inflictor));
         }
         #endregion
     }

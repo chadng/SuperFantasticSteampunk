@@ -64,6 +64,28 @@ namespace SuperFantasticSteampunk
             return getListWithPartyMember(partyMember);
         }
 
+        public List<PartyMember> PartyMembersArea(PartyMember partyMember)
+        {
+            List<PartyMember> result = new List<PartyMember>(5);
+            result.Add(partyMember);
+
+            List<PartyMember> partyMemberList = getListWithPartyMember(partyMember);
+            int partyMemberIndex = partyMemberList.IndexOf(partyMember);
+            if (partyMemberIndex > 0)
+                result.Add(partyMemberList[partyMemberIndex - 1]);
+            if (partyMemberIndex + 1 < partyMemberList.Count)
+                result.Add(partyMemberList[partyMemberIndex + 1]);
+
+            List<PartyMember> adjacentPartyMemberList = RelativeList(partyMemberList, 1);
+            if (adjacentPartyMemberList != null && partyMemberIndex < adjacentPartyMemberList.Count)
+                result.Add(adjacentPartyMemberList[partyMemberIndex]);
+            adjacentPartyMemberList = RelativeList(partyMemberList, -1);
+            if (adjacentPartyMemberList != null && partyMemberIndex < adjacentPartyMemberList.Count)
+                result.Add(adjacentPartyMemberList[partyMemberIndex]);
+
+            return result;
+        }
+
         public bool PartyMemberInFrontLine(PartyMember partyMember)
         {
             if (party.Contains(partyMember))
