@@ -2,44 +2,6 @@
 
 namespace SuperFantasticSteampunk.StatusEffects
 {
-    class PoisonBubble : Entity
-    {
-        #region Constants
-        private const float alphaSpeed = 0.75f;
-        #endregion
-
-        #region Instance Fields
-        private TextureData textureData;
-        private float alpha;
-        #endregion
-
-        #region Constructors
-        public PoisonBubble(Vector2 position, TextureData textureData)
-            : base(position)
-        {
-            this.textureData = textureData;
-            alpha = 1.0f;
-            Velocity = new Vector2(0.0f, -200.0f);
-            ZIndex = -1;
-        }
-        #endregion
-
-        #region Instance Methods
-        public override void Update(Delta delta)
-        {
-            base.Update(delta);
-            alpha -= alphaSpeed * delta.Time;
-            if (alpha <= 0.0f)
-                Kill();
-        }
-
-        public override void Draw(Renderer renderer)
-        {
-            renderer.Draw(textureData, Position, new Color(1.0f, 1.0f, 1.0f, alpha), 0.0f, new Vector2(0.3f));
-        }
-        #endregion
-    }
-
     class Poison : StatusEffect
     {
         #region Constants
@@ -147,7 +109,7 @@ namespace SuperFantasticSteampunk.StatusEffects
                 Rectangle boundingBox = partyMember.BattleEntity.GetBoundingBox();
                 float x = boundingBox.X + (boundingBox.Width / 2) + Game1.Random.Next(boundingBox.Width / 2) - (boundingBox.Width / 4);
                 float y = boundingBox.Y + (boundingBox.Height / 2) + (Game1.Random.Next(boundingBox.Height / 4) - (boundingBox.Height / 8));
-                Scene.AddEntity(new PoisonBubble(new Vector2(x, y), bubbleParticleTextureData));
+                Scene.AddEntity(new FloatingParticle(new Vector2(x, y), new Vector2(0.0f, -200.0f), new Vector2(0.3f), 1.4f, bubbleParticleTextureData));
             }
         }
         #endregion

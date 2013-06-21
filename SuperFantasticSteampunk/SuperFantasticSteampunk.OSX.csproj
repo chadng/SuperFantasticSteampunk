@@ -155,6 +155,9 @@
     <Compile Include="BattleStates\MoveActorRenderer.cs" />
     <Compile Include="OverworldStates\PlayRenderer.cs" />
     <Compile Include="BattleStates\Run.cs" />
+    <Compile Include="Attributes.cs" />
+    <Compile Include="EquippableItem.cs" />
+    <Compile Include="FloatingParticle.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -485,6 +488,14 @@
     </Content>
     <Content Include="..\..\..\Dropbox\illustrator\game\misc\particles_output\poison_bubble.png">
       <Link>Content\Textures\particles\poison_bubble.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\Dropbox\illustrator\game\misc\particles_output\fear.png">
+      <Link>Content\Textures\particles\fear.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\Dropbox\illustrator\game\misc\particles_output\paralysis.png">
+      <Link>Content\Textures\particles\paralysis.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

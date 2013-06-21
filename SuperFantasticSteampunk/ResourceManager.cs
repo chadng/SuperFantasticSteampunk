@@ -549,7 +549,7 @@ namespace SuperFantasticSteampunk
 
             List<string> allNames = new List<string>(allKeys);
 
-            string[] parts = name.Split(' ');
+            string[] parts = name.ToLower().Split(' ');
             if (parts.Length == 0)
                 return null;
             if (parts.Length == 1)

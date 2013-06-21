@@ -166,6 +166,11 @@ namespace SuperFantasticSteampunk
 
             base.update(delta);
 
+            foreach (PartyMember partyMember in PlayerParty)
+                partyMember.Update(delta);
+            foreach (PartyMember partyMember in EnemyParty)
+                partyMember.Update(delta);
+
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.Update(delta);
 

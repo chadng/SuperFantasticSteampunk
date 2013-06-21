@@ -246,7 +246,14 @@ namespace SuperFantasticSteampunk
                 Health = MaxHealth;
 
             if (battle != null)
+            {
+                if (amount > 0)
+                {
+                    BattleEntity.AnimationState.SetAnimation("hurt", false);
+                    BattleEntity.AnimationState.AddAnimation(BattleEntityIdleAnimationName, true);
+                }
                 Scene.AddEntity(new FloatingText(Math.Abs(amount).ToString(), heal ? Color.Blue : Color.Red, BattleEntity.GetCenter(), 5.0f, true));
+            }
         }
 
         public int CalculateDamageTaken(PartyMember enemy)
@@ -255,6 +262,14 @@ namespace SuperFantasticSteampunk
             int damageToBlock = calcuateFinalDefenceStat();
             int damage = damageToDo - damageToBlock;
             return damage < 0 ? 0 : damage;
+        }
+
+        public void Update(Delta delta)
+        {
+            if (EquippedWeapon != null)
+                EquippedWeapon.Update(delta);
+            else if (EquippedShield != null)
+                EquippedShield.Update(delta);
         }
 
         private int calculateFinalAttackStat()
@@ -327,12 +342,20 @@ namespace SuperFantasticSteampunk
                 return;
 
             if (EquippedWeapon != null && EquippedWeapon.TextureData != null)
+            {
                 BattleEntity.SetSkeletonAttachment("weapon", EquippedWeapon.Data.Name, EquippedWeapon.TextureData);
+                EquippedWeapon.SkeletonRegionAttachment = BattleEntity.Skeleton.GetAttachment("weapon", EquippedWeapon.Data.Name) as RegionAttachment;
+                EquippedWeapon.SkeletonBone = BattleEntity.Skeleton.FindBone("weapon");
+            }
             else
                 BattleEntity.SetSkeletonAttachment("weapon", "none", forceNoTextureData: true);
 
             if (EquippedShield != null && EquippedShield.TextureData != null)
+            {
                 BattleEntity.SetSkeletonAttachment("shield", EquippedShield.Data.Name, EquippedShield.TextureData);
+                EquippedShield.SkeletonRegionAttachment = BattleEntity.Skeleton.GetAttachment("shield", EquippedShield.Data.Name) as RegionAttachment;
+                EquippedShield.SkeletonBone = BattleEntity.Skeleton.FindBone("shield");
+            }
             else
                 BattleEntity.SetSkeletonAttachment("shield", "none", forceNoTextureData: true);
         }
