@@ -183,7 +183,7 @@ namespace SuperFantasticSteampunk
             EquippedShield = null;
             if (name == null)
                 EquippedWeapon = null;
-            else if (EquippedWeapon == null || EquippedWeapon.Data.Name != name)
+            else
                 EquippedWeapon = ResourceManager.GetNewWeapon(name);
             updateBattleEntitySkeleton();
         }
@@ -206,7 +206,7 @@ namespace SuperFantasticSteampunk
             EquippedWeapon = null;
             if (name == null)
                 EquippedShield = null;
-            else if (EquippedShield == null || EquippedShield.Data.Name != name)
+            else
                 EquippedShield = ResourceManager.GetNewShield(name);
             updateBattleEntitySkeleton();
         }

@@ -134,7 +134,6 @@ namespace SuperFantasticSteampunk
 
         public static Shield GetNewShield(string name)
         {
-            name = getItemDataNameFromFullName(name, shieldDataDictionary.Keys);
             if (name == null)
                 return null;
 
@@ -147,6 +146,7 @@ namespace SuperFantasticSteampunk
 
         public static ShieldData GetShieldData(string name)
         {
+            name = getItemDataNameFromFullName(name, shieldDataDictionary.Keys);
             if (name == null)
                 return null;
 

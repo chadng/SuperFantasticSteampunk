@@ -559,7 +559,10 @@ namespace SuperFantasticSteampunk
                 else
                     result.Add(target);
                 break;
-            default: result = new List<PartyMember>(0); break;
+            default:
+                result = new List<PartyMember>(1);
+                result.Add(target);
+                break;
             }
             return result;
         }
