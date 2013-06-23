@@ -78,6 +78,8 @@
     <Compile Include="BattleStates\Win.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Clock.cs" />
+    <Compile Include="EquippableItem.cs" />
+    <Compile Include="FloatingParticle.cs" />
     <Compile Include="FloatingText.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="InputButtonListener.cs" />
@@ -224,6 +226,14 @@
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\particles_output\cloud_1.png">
       <Link>Content\Textures\particles\cloud_1.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\particles_output\fear.png">
+      <Link>Content\Textures\particles\fear.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\particles_output\paralysis.png">
+      <Link>Content\Textures\particles\paralysis.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\particles_output\poison_bubble.png">
