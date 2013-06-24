@@ -9,7 +9,7 @@ namespace SuperFantasticSteampunk
     class Font
     {
         #region Constants
-        public const int DefaultSize = 10;
+        public const int DefaultSize = 14;
         #endregion
 
         #region Instance Fields
@@ -59,10 +59,15 @@ namespace SuperFantasticSteampunk
 
                 if (size < keyValuePair.Key)
                 {
-                    if (previousSpriteFont == null || size > previousSpriteFontSize)
+                    if (previousSpriteFont == null)// || size > previousSpriteFontSize)
                     {
                         finalSize = keyValuePair.Key;
                         return keyValuePair.Value;
+                    }
+                    else
+                    {
+                        finalSize = previousSpriteFontSize;
+                        return previousSpriteFont;
                     }
                 }
 
@@ -78,8 +83,7 @@ namespace SuperFantasticSteampunk
         {
             float finalSize;
             SpriteFont spriteFont = GetBestSizeSpriteFont(size, out finalSize);
-            float scale = size / finalSize;
-            return spriteFont.MeasureString(str) * scale;
+            return spriteFont.MeasureString(str);
         }
 
         private void loadSpriteFonts(ContentManager contentManager)

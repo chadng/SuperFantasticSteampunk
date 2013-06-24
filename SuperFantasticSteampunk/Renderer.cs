@@ -127,7 +127,7 @@ namespace SuperFantasticSteampunk
             }
             float fontSize;
             SpriteFont spriteFont = Font.GetBestSizeSpriteFont(Font.DefaultSize * scale.Y, out fontSize);
-            spriteBatch.DrawString(spriteFont, text, position, color, rotation, origin, scale / (fontSize / Font.DefaultSize), SpriteEffects.None, 0.0f);
+            spriteBatch.DrawString(spriteFont, text, new Vector2((float)Math.Round(position.X), (float)Math.Round(position.Y)), color, rotation, origin, Vector2.One, SpriteEffects.None, 0.0f);
         }
 
         public void End()
