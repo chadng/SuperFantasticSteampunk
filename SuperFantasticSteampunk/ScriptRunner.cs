@@ -204,6 +204,7 @@ namespace SuperFantasticSteampunk
                     Scene.AddEntity(new ParticleEffect(position, Color.Orange, 12, cloudTextureData, 800.0f, 500.0f, 0.8f, 0.6f, true));
                     Scene.AddEntity(new ParticleEffect(position, Color.White, 12, cloudTextureData, 800.0f, 500.0f, 0.8f, 0.6f, true));
                     battle.Camera.Shake(new Vector2(4.0f), 0.1f);
+                    battle.SetCameraUpdateDelay(1.0f);
                 }
             }
 

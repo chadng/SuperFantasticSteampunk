@@ -12,6 +12,7 @@ namespace SuperFantasticSteampunk.BattleStates
         private List<ThinkAction> useItemThinkActions;
         private ThinkActionType currentThinkActionType;
         private int currentThinkActionIndex;
+        private bool currentThinkActionFinished;
         private bool statusEffectsCompleteForAction;
         #endregion
 
@@ -37,6 +38,7 @@ namespace SuperFantasticSteampunk.BattleStates
             attackThinkActions.Sort(speedComparer);
             useItemThinkActions.Sort(speedComparer);
             currentThinkActionType = ThinkActionType.UseItem;
+            currentThinkActionFinished = false;
             statusEffectsCompleteForAction = false;
         }
 
@@ -51,7 +53,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             base.Resume(previousBattleState);
             if (previousBattleState is Attack || previousBattleState is UseItem)
-                getNextThinkAction();
+                currentThinkActionFinished = true;
             else if (previousBattleState is HandleStatusEffects)
                 statusEffectsCompleteForAction = true;
             removeDeadPartyMembers();
@@ -62,6 +64,12 @@ namespace SuperFantasticSteampunk.BattleStates
             if (Battle.PlayerParty.Count == 0 || Battle.EnemyParty.Count == 0)
             {
                 Finish();
+                return;
+            }
+            else if (currentThinkActionFinished)
+            {
+                if (allPartyMembersIdle())
+                    getNextThinkAction();
                 return;
             }
 
@@ -135,7 +143,26 @@ namespace SuperFantasticSteampunk.BattleStates
         private void getNextThinkAction()
         {
             ++currentThinkActionIndex;
+            currentThinkActionFinished = false;
             statusEffectsCompleteForAction = false;
+        }
+
+        private bool allPartyMembersIdle()
+        {
+            return allPartyMembersIdle(Battle.PlayerParty) && allPartyMembersIdle(Battle.EnemyParty);
+        }
+
+        private bool allPartyMembersIdle(Party party)
+        {
+            foreach (PartyMember partyMember in party)
+            {
+                if (partyMember.Alive && partyMember.BattleEntity != null)
+                {
+                    if (partyMember.BattleEntity.AnimationState.Animation.Name != partyMember.BattleEntityIdleAnimationName)
+                        return false;
+                }
+            }
+            return true;
         }
         #endregion
     }

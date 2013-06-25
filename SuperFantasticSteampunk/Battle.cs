@@ -21,6 +21,7 @@ namespace SuperFantasticSteampunk
         private Dictionary<CharacterClass, TextureData> characterClassHeadTextureData;
         private List<TextureData> backgroundTextureData;
         private float lowestBackgroundTextureWidth;
+        private float cameraUpdateDelay;
         #endregion
 
         #region Instance Properties
@@ -63,6 +64,7 @@ namespace SuperFantasticSteampunk
 
             Camera = new Camera(Game1.ScreenSize);
             Camera.Position = Camera.Size / 2.0f;
+            cameraUpdateDelay = 0.0f;
 
             repositionPartyMembers();
             updateCamera();
@@ -147,6 +149,12 @@ namespace SuperFantasticSteampunk
             renderer.Draw(arrowTextureData, position, color);
         }
 
+        public void SetCameraUpdateDelay(float time)
+        {
+            if (time > cameraUpdateDelay)
+                cameraUpdateDelay = time;
+        }
+
         protected override void update(Delta delta)
         {
             if (!(CurrentBattleState is BattleStates.Think) && !(CurrentBattleState is BattleStates.SelectTarget))
@@ -174,7 +182,13 @@ namespace SuperFantasticSteampunk
             if (CurrentBattleState.BattleStateRenderer != null)
                 CurrentBattleState.BattleStateRenderer.Update(delta);
 
-            updateCamera(() => Camera.Update(delta));
+            if (cameraUpdateDelay > 0.0f)
+            {
+                cameraUpdateDelay -= delta.Time;
+                Camera.Update(delta);
+            }
+            else
+                updateCamera(() => Camera.Update(delta));
         }
 
         protected override void draw(Renderer renderer)

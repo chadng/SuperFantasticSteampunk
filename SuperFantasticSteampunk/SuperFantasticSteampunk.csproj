@@ -248,6 +248,14 @@
       <Link>Content\Skeletons\rhino.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\marksman_output\pistol.png">
+      <Link>Content\Textures\weapons\marksman\pistol.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\marksman_output\shotgun.png">
+      <Link>Content\Textures\weapons\marksman\shotgun.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.png">
       <Link>Content\Skeletons\weasel.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -338,10 +346,6 @@
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\Textures.txt">
       <Link>Content\Textures\Textures.txt</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\weapons\gun_1.png">
-      <Link>Content\Textures\weapons\gun_1.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Textures\white_pixel.png">
