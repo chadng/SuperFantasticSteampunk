@@ -108,7 +108,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void chooseTargetAcrossLists(int relativeIndex)
         {
-            List<PartyMember> partyMemberList = partyBattleLayout.PartyMembersList(PotentialTarget);
+            List<PartyMember> partyMemberList = partyBattleLayout.GetListWithPartyMember(PotentialTarget);
 
             int nextListIndex = partyBattleLayout.IndexOfList(partyMemberList) + relativeIndex;
             if (nextListIndex < 0 || nextListIndex >= partyBattleLayout.ListCount)
@@ -132,7 +132,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void chooseTargetWithinList(int relativeIndex)
         {
-            List<PartyMember> partyMemberList = partyBattleLayout.PartyMembersList(PotentialTarget);
+            List<PartyMember> partyMemberList = partyBattleLayout.GetListWithPartyMember(PotentialTarget);
             int nextIndex = partyMemberList.IndexOf(PotentialTarget) + relativeIndex;
             if (nextIndex < 0 || nextIndex >= partyMemberList.Count)
                 return;

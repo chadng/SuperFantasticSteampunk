@@ -8,6 +8,7 @@ namespace SuperFantasticSteampunk
         #region Instance Fields
         private Party party;
         private List<List<PartyMember>> layout;
+        private List<Trap> traps;
         #endregion
 
         #region Instance Properties
@@ -29,6 +30,7 @@ namespace SuperFantasticSteampunk
             layout = new List<List<PartyMember>>(party.Count);
             foreach (PartyMember partyMember in party)
                 layout.Add(newListWithPartyMember(partyMember));
+            traps = new List<Trap>();
         }
         #endregion
 
@@ -66,9 +68,9 @@ namespace SuperFantasticSteampunk
             }
         }
 
-        public List<PartyMember> PartyMembersList(PartyMember partyMember)
+        public void RemoveTrap(Trap trap)
         {
-            return getListWithPartyMember(partyMember);
+            traps.Remove(trap);
         }
 
         public List<PartyMember> PartyMembersArea(PartyMember partyMember)
@@ -76,7 +78,7 @@ namespace SuperFantasticSteampunk
             List<PartyMember> result = new List<PartyMember>(5);
             result.Add(partyMember);
 
-            List<PartyMember> partyMemberList = getListWithPartyMember(partyMember);
+            List<PartyMember> partyMemberList = GetListWithPartyMember(partyMember);
             int partyMemberIndex = partyMemberList.IndexOf(partyMember);
             if (partyMemberIndex > 0)
                 result.Add(partyMemberList[partyMemberIndex - 1]);
@@ -96,8 +98,26 @@ namespace SuperFantasticSteampunk
         public bool PartyMemberInFrontLine(PartyMember partyMember)
         {
             if (party.Contains(partyMember))
-                return getListWithPartyMember(partyMember).IndexOf(partyMember) == 0;
+                return GetListWithPartyMember(partyMember).IndexOf(partyMember) == 0;
             return false;
+        }
+
+        public List<PartyMember> GetListWithPartyMember(PartyMember partyMember)
+        {
+            foreach (List<PartyMember> list in layout)
+            {
+                if (list.Contains(partyMember))
+                    return list;
+            }
+            throw new Exception("PartyMember not found in PartyBattleLayout");
+        }
+
+        public List<PartyMember> GetListBehindTrap(Trap trap)
+        {
+            int index = traps.IndexOf(trap);
+            if (index < 0 || index >= layout.Count)
+                throw new Exception("Trap not found in PartyBattleLayout");
+            return layout[index];
         }
 
         public void ForEachList(Action<List<PartyMember>> action)
@@ -128,22 +148,12 @@ namespace SuperFantasticSteampunk
             return result;
         }
 
-        private List<PartyMember> getListWithPartyMember(PartyMember partyMember)
-        {
-            foreach (List<PartyMember> list in layout)
-            {
-                if (list.Contains(partyMember))
-                    return list;
-            }
-            throw new Exception("PartyMember not found in PartyBattleLayout");
-        }
-
         private void movePartyMemberAcrossLists(PartyMember partyMember, bool edgeListIndexIsZero, int nextListRelativeIndex, BattleStates.Think thinkState)
         {
             if (!party.Contains(partyMember))
                 return;
 
-            List<PartyMember> list = getListWithPartyMember(partyMember);
+            List<PartyMember> list = GetListWithPartyMember(partyMember);
             int listIndex = layout.IndexOf(list);
             if (listIndex == (edgeListIndexIsZero ? 0 : layout.Count - 1)) // if the edge list
                 return;
@@ -165,7 +175,7 @@ namespace SuperFantasticSteampunk
             if (!party.Contains(partyMember))
                 return;
 
-            List<PartyMember> list = getListWithPartyMember(partyMember);
+            List<PartyMember> list = GetListWithPartyMember(partyMember);
             int partyMemberIndex = list.IndexOf(partyMember);
             if (partyMemberIndex != (edgeIndexIsZero ? 0 : list.Count - 1)) // if not at the end already
             {

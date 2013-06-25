@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk
 {
@@ -60,6 +61,21 @@ namespace SuperFantasticSteampunk
 
     class ParticleEffect : Entity
     {
+        #region Static Methods
+        public static void AddExplosion(Vector2 position, Battle battle)
+        {
+            if (battle == null)
+                throw new Exception("Battle cannot be null");
+
+            TextureData cloudTextureData = ResourceManager.GetTextureData("particles/cloud_1");
+            Scene.AddEntity(new ParticleEffect(position, Color.Red, 12, cloudTextureData, 800.0f, 500.0f, 0.8f, 0.6f, true));
+            Scene.AddEntity(new ParticleEffect(position, Color.Orange, 12, cloudTextureData, 800.0f, 500.0f, 0.8f, 0.6f, true));
+            Scene.AddEntity(new ParticleEffect(position, Color.White, 12, cloudTextureData, 800.0f, 500.0f, 0.8f, 0.6f, true));
+            battle.Camera.Shake(new Vector2(4.0f), 0.1f);
+            battle.SetCameraUpdateDelay(1.0f);
+        }
+        #endregion
+
         #region Instance Fields
         TextureData textureData;
         private Particle[] particles;

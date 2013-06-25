@@ -150,6 +150,23 @@ namespace SuperFantasticSteampunk
                 statusEffects.Add(statusEffect);
         }
 
+        public void ApplyStatusEffectsFromAttributes(PartyMember inflictor, Attributes attributes)
+        {
+            StatusEffect statusEffect;
+            switch (attributes.Status)
+            {
+            case Status.Poisonous: statusEffect = new StatusEffects.Poison(); break;
+            case Status.Shocking: statusEffect = new StatusEffects.Paralysis(); break;
+            case Status.Scary: statusEffect = new StatusEffects.Fear(inflictor); break;
+            default: statusEffect = null; break;
+            }
+            if (statusEffect != null)
+                AddStatusEffect(statusEffect);
+
+            if (attributes.Affiliation == Affiliation.Doom)
+                AddStatusEffect(new StatusEffects.Doom(inflictor));
+        }
+
         public void ForEachStatusEffect(Action<StatusEffect> action)
         {
             statusEffects.ForEach(action);
@@ -211,7 +228,7 @@ namespace SuperFantasticSteampunk
             updateBattleEntitySkeleton();
         }
 
-        public void DoDamage(int amount, bool ignoreShield)
+        public void DoDamage(int amount, bool ignoreShield, bool playAnimation = true)
         {
             if (amount > 0 && !ignoreShield)
                 HurtThisTurn = true;
@@ -247,7 +264,7 @@ namespace SuperFantasticSteampunk
 
             if (battle != null)
             {
-                if (amount > 0)
+                if (amount > 0 && playAnimation)
                 {
                     BattleEntity.AnimationState.SetAnimation("hurt", false);
                     BattleEntity.AnimationState.AddAnimation(BattleEntityIdleAnimationName, true);
@@ -258,10 +275,12 @@ namespace SuperFantasticSteampunk
 
         public int CalculateDamageTaken(PartyMember enemy)
         {
-            int damageToDo = enemy.calculateFinalAttackStat();
-            int damageToBlock = calcuateFinalDefenceStat();
-            int damage = damageToDo - damageToBlock;
-            return damage < 0 ? 0 : damage;
+            return calculateDamageTaken(enemy.calculateFinalAttackStat());
+        }
+
+        public int CalculateDamageTaken(Trap trap)
+        {
+            return calculateDamageTaken(trap.Data.Power);
         }
 
         public void Update(Delta delta)
@@ -284,6 +303,13 @@ namespace SuperFantasticSteampunk
             foreach (StatModifier statModifier in statModifiers)
                 result += EquippedWeapon.Data.WeaponType == WeaponType.Ranged ? statModifier.RangedAttack : statModifier.MeleeAttack;
             return result;
+        }
+
+        private int calculateDamageTaken(int damageToDo)
+        {
+            int damageToBlock = calcuateFinalDefenceStat();
+            int damage = damageToDo - damageToBlock;
+            return damage < 0 ? 0 : damage;
         }
 
         private int calcuateFinalDefenceStat()

@@ -131,6 +131,7 @@
     <Compile Include="StatusEffects\Paralysis.cs" />
     <Compile Include="StatusEffects\Poison.cs" />
     <Compile Include="TextureData.cs" />
+    <Compile Include="Trap.cs" />
     <Compile Include="Weapon.cs" />
     <Compile Include="WeaponData.cs" />
   </ItemGroup>

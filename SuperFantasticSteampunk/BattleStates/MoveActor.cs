@@ -48,7 +48,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
-            originalActorList = Battle.PlayerPartyLayout.PartyMembersList(Actor);
+            originalActorList = Battle.PlayerPartyLayout.GetListWithPartyMember(Actor);
             originalActorListIndex = originalActorList.IndexOf(Actor);
         }
 
