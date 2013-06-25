@@ -158,22 +158,22 @@ namespace SuperFantasticSteampunk
         public Rectangle GetBoundingBoxAt(Vector2 position)
         {
             if (CustomBoundingBox != null)
-                return transformBoundingBox(CustomBoundingBox.Value, position);
+                return transformBoundingBox(CustomBoundingBox.Value, position - new Vector2(0.0f, Altitude));
 
             if (Sprite != null)
             {
                 return new Rectangle(
                     (int)(position.X - (Sprite.Data.OriginX * Scale.X)),
-                    (int)(position.Y - (Sprite.Data.OriginY * Scale.Y)),
+                    (int)(position.Y - Altitude- (Sprite.Data.OriginY * Scale.Y)),
                     (int)(Sprite.Data.Width * Scale.X),
                     (int)(Sprite.Data.Height * Scale.Y)
                 );
             }
 
             if (Skeleton != null)
-                return transformBoundingBox(skeletonBoundingBox, position);
+                return transformBoundingBox(skeletonBoundingBox, position - new Vector2(0.0f, Altitude));
             
-            return new Rectangle((int)position.X, (int)position.Y, 0, 0);
+            return new Rectangle((int)position.X, (int)(position.Y - Altitude), 0, 0);
         }
 
         public Vector2 GetCenter()
@@ -234,7 +234,7 @@ namespace SuperFantasticSteampunk
                 }
             }
             else if (Sprite != null)
-                renderer.Draw(Sprite, Position, Tint, Rotation, Scale);
+                renderer.Draw(Sprite, Position - new Vector2(0.0f, Altitude), Tint, Rotation, Scale);
         }
 
         public virtual void DrawShadow(Renderer renderer)

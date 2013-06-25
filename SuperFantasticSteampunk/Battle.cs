@@ -142,8 +142,8 @@ namespace SuperFantasticSteampunk
 
         public void DrawArrowOverPartyMember(PartyMember partyMember, Color color, Renderer renderer)
         {
-            Vector2 position = partyMember.BattleEntity.Position;
-            position.Y -= 400.0f;
+            Rectangle boundingBox = partyMember.BattleEntity.GetBoundingBox();
+            Vector2 position = new Vector2(boundingBox.X + (boundingBox.Width / 2) - (arrowTextureData.Width / 2), boundingBox.Y - arrowTextureData.Height);
             renderer.Draw(arrowTextureData, position, color);
         }
 
@@ -428,7 +428,7 @@ namespace SuperFantasticSteampunk
 
             TextureData textureData = characterClassHeadTextureData[partyMember.CharacterClass];
 
-            if (partyMemberIsSelected(partyMember))
+            if (partyMemberIsThinking(partyMember))
             {
                 Vector2 underlayPosition = position - (new Vector2(10.0f) * screenScaleFactor);
                 Vector2 underlayScale = new Vector2((headPadding.X * 2.0f) + barPadding.X + barSize.X + (textureData.Width * screenScaleFactor.X), ((headPadding.Y * 1.4f) + (textureData.Height * minScale.Y)));
@@ -436,6 +436,11 @@ namespace SuperFantasticSteampunk
             }
 
             renderer.Draw(textureData, position, Color.White, 0.0f, minScale, false);
+            
+            if (partyMemberIsSelected(partyMember))
+            {
+                renderer.Draw(arrowTextureData, position + new Vector2((textureData.Width / 2) - (arrowTextureData.Width / 2), -arrowTextureData.Height), Color.White, 0.0f, minScale, false);
+            }
 
             renderer.DrawText(partyMember.Name, position + new Vector2(0.0f, (textureData.Height + 5.0f) * minScale.Y), Color.White, 0.0f, Vector2.Zero, minScale);
 
@@ -453,7 +458,7 @@ namespace SuperFantasticSteampunk
             renderer.Draw(whitePixelTextureData, position, color, 0.0f, new Vector2(size.X * percentage, size.Y), false);
         }
 
-        private bool partyMemberIsSelected(PartyMember partyMember)
+        private bool partyMemberIsThinking(PartyMember partyMember)
         {
             BattleStates.Think thinkState = CurrentBattleState as BattleStates.Think;
             if (thinkState != null)
@@ -466,6 +471,15 @@ namespace SuperFantasticSteampunk
             BattleStates.MoveActor moveActorState = CurrentBattleState as BattleStates.MoveActor;
             if (moveActorState != null)
                 return moveActorState.Actor == partyMember;
+
+            return false;
+        }
+
+        private bool partyMemberIsSelected(PartyMember partyMember)
+        {
+            BattleStates.SelectTarget selectTargetState = CurrentBattleState as BattleStates.SelectTarget;
+            if (selectTargetState != null)
+                return selectTargetState.PotentialTarget == partyMember;
 
             return false;
         }
