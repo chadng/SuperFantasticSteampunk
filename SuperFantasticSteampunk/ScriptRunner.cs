@@ -207,10 +207,26 @@ namespace SuperFantasticSteampunk
                 }
             }
 
+            int damage = -1;
             foreach (PartyMember target in targets)
             {
-                int damage = target.CalculateDamageTaken(actor);
-                target.DoDamage(damage, false);
+                bool breakNow = false;
+                if (actor.EquippedWeapon.Attributes.Enhancement == Enhancement.Relentless)
+                {
+                    if (damage < 0)
+                        damage = target.CalculateDamageTaken(actor);
+                    int damageDealt = Math.Min(damage, target.Health);
+                    target.DoDamage(damage, false);
+                    damage -= damageDealt;
+                    if (damage <= 0)
+                        breakNow = true;
+                }
+                else
+                {
+                    damage = target.CalculateDamageTaken(actor);
+                    target.DoDamage(damage, false);
+                }
+
                 if (actor.EquippedWeapon != null)
                     applyStatusEffectsFromAttributes(target, actor, actor.EquippedWeapon.Attributes);
 
@@ -226,6 +242,9 @@ namespace SuperFantasticSteampunk
                     if (target.EquippedShield.Data.Script != null)
                         addNestedScriptRunner(target.EquippedShield.Data.Script, 0.0f);
                 }
+
+                if (breakNow)
+                    break;
             }
 
             if (actor.EquippedWeapon != null && actor.EquippedWeapon.Attributes.Handling == Handling.Uncomfortable)
