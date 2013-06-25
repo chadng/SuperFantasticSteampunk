@@ -10,6 +10,13 @@ namespace SuperFantasticSteampunk
         private List<List<PartyMember>> layout;
         #endregion
 
+        #region Instance Properties
+        public int ListCount
+        {
+            get { return layout.Count; }
+        }
+        #endregion
+
         #region Constructors
         public PartyBattleLayout(Party party)
         {
@@ -105,6 +112,11 @@ namespace SuperFantasticSteampunk
                 return null;
             else
                 return layout[index];
+        }
+
+        public int IndexOfList(List<PartyMember> list)
+        {
+            return layout.IndexOf(list);
         }
 
         private List<PartyMember> newListWithPartyMember(PartyMember partyMember)

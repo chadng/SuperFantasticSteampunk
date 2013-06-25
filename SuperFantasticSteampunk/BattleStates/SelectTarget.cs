@@ -8,8 +8,7 @@ namespace SuperFantasticSteampunk.BattleStates
     {
         #region Instance Fields
         private ThinkAction thinkAction;
-        private List<PartyMember> potentialTargets;
-        private int currentPotentialTargetIndex;
+        private PartyBattleLayout partyBattleLayout;
         private InputButtonListener inputButtonListener;
         #endregion
 
@@ -19,10 +18,7 @@ namespace SuperFantasticSteampunk.BattleStates
             get { return thinkAction.Actor; }
         }
 
-        public PartyMember PotentialTarget
-        {
-            get { return potentialTargets[currentPotentialTargetIndex]; }
-        }
+        public PartyMember PotentialTarget { get; private set; }
 
         public override bool KeepPartyMembersStatic
         {
@@ -37,11 +33,11 @@ namespace SuperFantasticSteampunk.BattleStates
             if (thinkAction == null)
                 throw new Exception("ThinkAction cannot be null");
             this.thinkAction = thinkAction;
-            potentialTargets = new List<PartyMember>();
-            currentPotentialTargetIndex = 0;
             inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
-                { InputButton.Up, new ButtonEventHandlers(down: choosePreviousTarget) },
-                { InputButton.Down, new ButtonEventHandlers(down: chooseNextTarget) },
+                { InputButton.Up, new ButtonEventHandlers(down: chooseTargetUp) },
+                { InputButton.Down, new ButtonEventHandlers(down: chooseTargetDown) },
+                { InputButton.Left, new ButtonEventHandlers(down: chooseTargetLeft) },
+                { InputButton.Right, new ButtonEventHandlers(down: chooseTargetRight) },
                 { InputButton.A, new ButtonEventHandlers(up: selectTarget) },
                 { InputButton.B, new ButtonEventHandlers(up: cancelTargetSelection) }
             });
@@ -51,19 +47,22 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
+            partyBattleLayout = null;
             if (thinkAction.Type == ThinkActionType.Attack)
             {
                 WeaponData weaponData = ResourceManager.GetWeaponData(thinkAction.OptionName);
-                if (weaponData != null)
+                if (weaponData != null && weaponData.WeaponUseAgainst == WeaponUseAgainst.Enemy)
                 {
-                    if (weaponData.WeaponUseAgainst == WeaponUseAgainst.Player || weaponData.WeaponUseAgainst == WeaponUseAgainst.Both)
-                        potentialTargets.AddRange(Battle.PlayerParty);
-                    if (weaponData.WeaponUseAgainst == WeaponUseAgainst.Enemy || weaponData.WeaponUseAgainst == WeaponUseAgainst.Both)
-                        potentialTargets.AddRange(Battle.EnemyParty);
+                    partyBattleLayout = Battle.EnemyPartyLayout;
+                    PotentialTarget = Battle.EnemyParty[0];
                 }
             }
-            else
-                potentialTargets.AddRange(Battle.PlayerParty);
+
+            if (partyBattleLayout == null)
+            {
+                partyBattleLayout = Battle.PlayerPartyLayout;
+                PotentialTarget = Battle.PlayerParty[0];
+            }
 
             BattleStateRenderer = new SelectTargetRenderer(this);
         }
@@ -76,7 +75,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(Delta delta)
         {
-            if (potentialTargets.Count == 0 || thinkAction.Type == ThinkActionType.None || thinkAction.Type == ThinkActionType.Defend)
+            if (PotentialTarget == null || thinkAction.Type == ThinkActionType.None || thinkAction.Type == ThinkActionType.Defend)
             {
                 Finish();
                 return;
@@ -85,22 +84,64 @@ namespace SuperFantasticSteampunk.BattleStates
             inputButtonListener.Update(delta);
         }
 
-        private void choosePreviousTarget()
+        private void chooseTargetUp()
         {
-            if (--currentPotentialTargetIndex < 0)
-                currentPotentialTargetIndex = potentialTargets.Count - 1;
+            chooseTargetAcrossLists(-1);
         }
 
-        private void chooseNextTarget()
+        private void chooseTargetDown()
         {
-            if (++currentPotentialTargetIndex >= potentialTargets.Count)
-                currentPotentialTargetIndex = 0;
+            chooseTargetAcrossLists(1);
+        }
+
+        private void chooseTargetLeft()
+        {
+            int relativeIndex = partyBattleLayout == Battle.PlayerPartyLayout ? 1 : -1;
+            chooseTargetWithinList(relativeIndex);
+        }
+
+        private void chooseTargetRight()
+        {
+            int relativeIndex = partyBattleLayout == Battle.PlayerPartyLayout ? -1 : 1;
+            chooseTargetWithinList(relativeIndex);
+        }
+
+        private void chooseTargetAcrossLists(int relativeIndex)
+        {
+            List<PartyMember> partyMemberList = partyBattleLayout.PartyMembersList(PotentialTarget);
+
+            int nextListIndex = partyBattleLayout.IndexOfList(partyMemberList) + relativeIndex;
+            if (nextListIndex < 0 || nextListIndex >= partyBattleLayout.ListCount)
+                return;
+
+            List<PartyMember> nextPartyMemberList = partyBattleLayout.RelativeList(partyMemberList, relativeIndex);
+            if (nextPartyMemberList == null || nextPartyMemberList.Count == 0) // A list in the middle might be empty so check next list
+            {
+                chooseTargetAcrossLists(relativeIndex + relativeIndex);
+                return;
+            }
+
+            int index = partyMemberList.IndexOf(PotentialTarget);
+            if (index < 0)
+                return;
+            if (index >= nextPartyMemberList.Count)
+                index = nextPartyMemberList.Count - 1;
+
+            PotentialTarget = nextPartyMemberList[index];
+        }
+
+        private void chooseTargetWithinList(int relativeIndex)
+        {
+            List<PartyMember> partyMemberList = partyBattleLayout.PartyMembersList(PotentialTarget);
+            int nextIndex = partyMemberList.IndexOf(PotentialTarget) + relativeIndex;
+            if (nextIndex < 0 || nextIndex >= partyMemberList.Count)
+                return;
+            PotentialTarget = partyMemberList[nextIndex];
         }
 
         private void selectTarget()
         {
-
-            thinkAction.Target = potentialTargets[currentPotentialTargetIndex];
+            thinkAction.Target = PotentialTarget;
             Finish();
         }
 
