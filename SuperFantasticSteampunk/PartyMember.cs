@@ -11,7 +11,6 @@ namespace SuperFantasticSteampunk
     {
         #region Instance Fields
         private List<StatModifier> statModifiers;
-        private List<StatusEffect> statusEffects;
         private string battleEntityIdleAnimationNameOverride;
         private bool hasIdleWeaponAnimation;
         private bool hasIdleShieldAnimation;
@@ -27,6 +26,8 @@ namespace SuperFantasticSteampunk
         public int MaxHealth { get; private set; }
         public int Health { get; private set; }
         public int Speed { get; private set; }
+
+        public List<StatusEffect> StatusEffects { get; private set; }
 
         public Entity BattleEntity { get; private set; }
         public Entity OverworldEntity { get; private set; }
@@ -64,7 +65,7 @@ namespace SuperFantasticSteampunk
                 throw new Exception("PartyMemberData cannot be null");
             Data = partyMemberData;
             statModifiers = new List<StatModifier>();
-            statusEffects = new List<StatusEffect>();
+            StatusEffects = new List<StatusEffect>();
             BattleEntity = null;
             BattleEntityIdlePosition = Vector2.Zero;
             battleEntityIdleAnimationNameOverride = null;
@@ -97,7 +98,7 @@ namespace SuperFantasticSteampunk
         public void StartBattle()
         {
             statModifiers.Clear();
-            statusEffects.Clear();
+            StatusEffects.Clear();
             calculateStatsFromModifiers();
 
             BattleEntity = new Entity(ResourceManager.GetNewSkeleton(Data.BattleSkeletonName), new Vector2());
@@ -122,17 +123,17 @@ namespace SuperFantasticSteampunk
         public void FinishBattle()
         {
             statModifiers.Clear();
-            statusEffects.Clear();
+            StatusEffects.Clear();
             BattleEntity = null;
             HurtThisTurn = false;
         }
 
         public void EndTurn()
         {
-            for (int i = statusEffects.Count - 1; i >= 0; --i)
+            for (int i = StatusEffects.Count - 1; i >= 0; --i)
             {
-                if (!statusEffects[i].Active)
-                    statusEffects.RemoveAt(i);
+                if (!StatusEffects[i].Active)
+                    StatusEffects.RemoveAt(i);
             }
             for (int i = statModifiers.Count - 1; i >= 0; --i)
             {
@@ -162,7 +163,7 @@ namespace SuperFantasticSteampunk
         public void AddStatusEffect(StatusEffect statusEffect)
         {
             if (!HasStatusEffect(statusEffect.Type))
-                statusEffects.Add(statusEffect);
+                StatusEffects.Add(statusEffect);
         }
 
         public void ApplyStatusEffectsFromAttributes(PartyMember inflictor, Attributes attributes, Battle battle)
@@ -186,12 +187,12 @@ namespace SuperFantasticSteampunk
 
         public void ForEachStatusEffect(Action<StatusEffect> action)
         {
-            statusEffects.ForEach(action);
+            StatusEffects.ForEach(action);
         }
 
         public bool HasStatusEffect(StatusEffectType statusEffectType)
         {
-            foreach (StatusEffect statusEffect in statusEffects)
+            foreach (StatusEffect statusEffect in StatusEffects)
             {
                 if (statusEffect.Type == statusEffectType)
                     return true;
@@ -201,7 +202,7 @@ namespace SuperFantasticSteampunk
 
         public bool FearsPartyMember(PartyMember other)
         {
-            foreach (StatusEffect statusEffect in statusEffects)
+            foreach (StatusEffect statusEffect in StatusEffects)
             {
                 if (statusEffect.Type == StatusEffectType.Fear)
                 {

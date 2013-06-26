@@ -9,6 +9,7 @@ namespace SuperFantasticSteampunk.BattleStates
         private ThinkAction thinkAction;
         private PartyMember partyMember;
         private StatusEffectEvent statusEffectEvent;
+        private int currentStatusEffectIndex;
         #endregion
 
         #region Constructors
@@ -26,15 +27,8 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
-            switch (statusEffectEvent)
-            {
-            case StatusEffectEvent.BeforeAct:
-                partyMember.ForEachStatusEffect(statusEffect => statusEffect.BeforeActStart(thinkAction));
-                break;
-            case StatusEffectEvent.EndTurn:
-                partyMember.ForEachStatusEffect(statusEffect => statusEffect.EndTurnStart(partyMember));
-                break;
-            }
+            currentStatusEffectIndex = -1;
+            getNextStatusEffect();
         }
 
         public override void Finish()
@@ -45,34 +39,47 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(Delta delta)
         {
-            bool allStatusEffectsFinished = true;
+            if (currentStatusEffectIndex >= partyMember.StatusEffects.Count)
+            {
+                Finish();
+                return;
+            }
 
+            bool statusEffectFinished = false;
+            StatusEffect statusEffect = partyMember.StatusEffects[currentStatusEffectIndex];
             switch (statusEffectEvent)
             {
             case StatusEffectEvent.BeforeAct:
-                partyMember.ForEachStatusEffect(statusEffect =>
-                {
-                    if (!statusEffect.BeforeActIsFinished())
-                    {
-                        statusEffect.BeforeActUpdate(thinkAction, delta);
-                        allStatusEffectsFinished = false;
-                    }
-                });
+                if (statusEffect.BeforeActIsFinished())
+                    statusEffectFinished = true;
+                else
+                    statusEffect.BeforeActUpdate(thinkAction, delta);
                 break;
             case StatusEffectEvent.EndTurn:
-                partyMember.ForEachStatusEffect(statusEffect =>
-                {
-                    if (!statusEffect.EndTurnIsFinished())
-                    {
-                        statusEffect.EndTurnUpdate(partyMember, delta);
-                        allStatusEffectsFinished = false;
-                    }
-                });
+                if (statusEffect.EndTurnIsFinished())
+                    statusEffectFinished = true;
+                else
+                    statusEffect.EndTurnUpdate(partyMember, delta);
                 break;
+            default: break;
             }
 
-            if (allStatusEffectsFinished)
-                Finish();
+            if (statusEffectFinished)
+                getNextStatusEffect();
+        }
+
+        private void getNextStatusEffect()
+        {
+            if (++currentStatusEffectIndex >= partyMember.StatusEffects.Count)
+                return;
+
+            StatusEffect statusEffect = partyMember.StatusEffects[currentStatusEffectIndex];
+            switch (statusEffectEvent)
+            {
+            case StatusEffectEvent.BeforeAct: statusEffect.BeforeActStart(thinkAction); break;
+            case StatusEffectEvent.EndTurn: statusEffect.EndTurnStart(partyMember); break;
+            default: break;
+            }
         }
         #endregion
     }
