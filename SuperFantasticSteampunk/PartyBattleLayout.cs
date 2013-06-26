@@ -8,7 +8,7 @@ namespace SuperFantasticSteampunk
         #region Instance Fields
         private Party party;
         private List<List<PartyMember>> layout;
-        private List<Trap> traps;
+        private Trap[] traps;
         #endregion
 
         #region Instance Properties
@@ -30,14 +30,15 @@ namespace SuperFantasticSteampunk
             layout = new List<List<PartyMember>>(party.Count);
             foreach (PartyMember partyMember in party)
                 layout.Add(newListWithPartyMember(partyMember));
-            traps = new List<Trap>();
+            traps = new Trap[layout.Count];
+            resetTraps();
         }
         #endregion
 
         #region Instance Methods
         public void FinishBattle()
         {
-            traps.Clear();
+            resetTraps();
         }
 
         public void ArrangeFromString(string str)
@@ -100,9 +101,21 @@ namespace SuperFantasticSteampunk
             }
         }
 
+        public void PlaceTrapInFrontOfPartyMember(PartyMember partyMember, Trap trap)
+        {
+            int index = layout.IndexOf(GetListWithPartyMember(partyMember));
+            if (index < 0 || index >= traps.Length)
+                return;
+            if (traps[index] != null)
+                traps[index].Kill();
+            traps[index] = trap;
+        }
+
         public void RemoveTrap(Trap trap)
         {
-            traps.Remove(trap);
+            int index = traps.IndexOf(trap);
+            if (index >= 0 && index < traps.Length)
+                traps[index] = null;
         }
 
         public List<PartyMember> PartyMembersArea(PartyMember partyMember)
@@ -156,7 +169,7 @@ namespace SuperFantasticSteampunk
         {
             List<PartyMember> list = GetListWithPartyMember(partyMember);
             int index = layout.IndexOf(list);
-            if (index < 0 || index >= traps.Count)
+            if (index < 0 || index >= traps.Length)
                 return null;
             return traps[index];
         }
@@ -229,6 +242,16 @@ namespace SuperFantasticSteampunk
                         ++index;
                 }
                 list.Insert(index, partyMember);
+            }
+        }
+
+        private void resetTraps()
+        {
+            for (int i = 0; i < traps.Length; ++i)
+            {
+                if (traps[i] != null)
+                    traps[i].Kill();
+                traps[i] = null;
             }
         }
         #endregion

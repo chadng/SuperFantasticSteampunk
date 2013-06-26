@@ -91,47 +91,52 @@ namespace SuperFantasticSteampunk
 
         private void executeAction(ScriptAction action)
         {
-            try
+            switch (mode)
             {
-                object[] args = action.Item3;
-                switch (action.Item2)
-                {
-                case "queueAnimation": _queueAnimation(args); break;
-                case "playAnimation": _playAnimation(args); break;
-                case "doDamage": _doDamage(args); break;
-                case "addHealth": _addHealth(args); break;
-                case "addMaxHealthStatModifier": _addMaxHealthStatModifier(args); break;
-                case "addMeleeAttackStatModifier": _addMeleeAttackStatModifier(args); break;
-                case "addRangedAttackStatModifier": _addRangedAttackStatModifier(args); break;
-                case "addDefenceStatModifier": _addDefenceStatModifier(args); break;
-                case "addSpeedStatModifier": _addSpeedStatModifier(args); break;
-                case "addStatusEffect": _addStatusEffect(args); break;
-                case "setVelocity": _setVelocity(args); break;
-                case "setVelocityX": _setVelocityX(args); break;
-                case "setVelocityY": _setVelocityY(args); break;
-                case "setAcceleration": _setAcceleration(args); break;
-                case "setAccelerationX": _setAccelerationX(args); break;
-                case "setAccelerationY": _setAccelerationY(args); break;
-                case "setRotation": _setRotation(args); break;
-                case "setAngularVelocity": _setAngularVelocity(args); break;
-                case "moveTo": _moveTo(args); break;
-                case "moveToIdlePosition": _moveToIdlePosition(args); break;
-                case "setIdleAnimation": _setIdleAnimation(args); break;
-                case "random": _random(args); break;
-                case "log": _log(args); break;
-                case "safe": _safe(args); break;
-                case "nop": break;
-                default: break;
-                }
+            case ScriptRunnerMode.CatchFunction:
+                try { executeActionInternal(action); }
+                catch { }
+                break;
+            case ScriptRunnerMode.CatchScript:
+                try { executeAction(action); }
+                catch { scriptActionIndex = script.Actions.Count; }
+                break;
+            default: executeActionInternal(action); break;
             }
-            catch (Exception e)
+        }
+
+        private void executeActionInternal(ScriptAction action)
+        {
+            object[] args = action.Item3;
+            switch (action.Item2)
             {
-                switch (mode)
-                {
-                case ScriptRunnerMode.CatchFunction: break;
-                case ScriptRunnerMode.CatchScript: scriptActionIndex = script.Actions.Count; break;
-                default: throw e;
-                }
+            case "queueAnimation": _queueAnimation(args); break;
+            case "playAnimation": _playAnimation(args); break;
+            case "doDamage": _doDamage(args); break;
+            case "addHealth": _addHealth(args); break;
+            case "addMaxHealthStatModifier": _addMaxHealthStatModifier(args); break;
+            case "addMeleeAttackStatModifier": _addMeleeAttackStatModifier(args); break;
+            case "addRangedAttackStatModifier": _addRangedAttackStatModifier(args); break;
+            case "addDefenceStatModifier": _addDefenceStatModifier(args); break;
+            case "addSpeedStatModifier": _addSpeedStatModifier(args); break;
+            case "addStatusEffect": _addStatusEffect(args); break;
+            case "setVelocity": _setVelocity(args); break;
+            case "setVelocityX": _setVelocityX(args); break;
+            case "setVelocityY": _setVelocityY(args); break;
+            case "setAcceleration": _setAcceleration(args); break;
+            case "setAccelerationX": _setAccelerationX(args); break;
+            case "setAccelerationY": _setAccelerationY(args); break;
+            case "setRotation": _setRotation(args); break;
+            case "setAngularVelocity": _setAngularVelocity(args); break;
+            case "moveTo": _moveTo(args); break;
+            case "moveToIdlePosition": _moveToIdlePosition(args); break;
+            case "setIdleAnimation": _setIdleAnimation(args); break;
+            case "createTrap": _createTrap(args); break;
+            case "random": _random(args); break;
+            case "log": _log(args); break;
+            case "safe": _safe(args); break;
+            case "nop": break;
+            default: break;
             }
         }
 
@@ -423,7 +428,8 @@ namespace SuperFantasticSteampunk
                     updateExtension.Active = false;
                     self.blocked = false;
                     TriggerTrap(actor, target);
-                    addNestedScriptRunner(callback, 0.0f);
+                    if (actor.Alive)
+                        addNestedScriptRunner(callback, 0.0f);
                 }
             }));
         }
@@ -481,6 +487,22 @@ namespace SuperFantasticSteampunk
 
             PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
             partyMember.SetBattleEntityIdleAnimationNameOverride(animationName);
+        }
+
+        private void _createTrap(object[] args)
+        { // createTrap(string actorPartyMemberSelector, string targetPartyMemberSelector, string spriteName)
+            string actorPartyMemberSelector = (string)args[0];
+            string targetPartyMemberSelector = (string)args[1];
+            string spriteName = (string)args[2];
+
+            PartyMember actorPartyMember = getPartyMemberFromSelector(actorPartyMemberSelector);
+            PartyMember frontPartyMember = getPartyMemberFromSelector(targetPartyMemberSelector + ">list>front");
+            float nudgeMultiplier = battle.GetPartyForPartyMember(actorPartyMember) == battle.PlayerParty ? 1.0f : -1.0f;
+            Vector2 position = frontPartyMember.BattleEntity.Position + new Vector2(frontPartyMember.BattleEntity.GetBoundingBox().Width * nudgeMultiplier, 0.0f);
+
+            Trap trap = new Trap(ResourceManager.GetNewSprite(spriteName), position, actorPartyMember.EquippedWeapon.Attributes, actorPartyMember.EquippedWeapon.Data, actorPartyMember, battle);
+            battle.GetPartyBattleLayoutForPartyMember(frontPartyMember).PlaceTrapInFrontOfPartyMember(frontPartyMember, trap);
+            Scene.AddEntity(trap);
         }
 
         private void _random(object[] args)
