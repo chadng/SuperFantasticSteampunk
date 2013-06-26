@@ -41,7 +41,7 @@ namespace SuperFantasticSteampunk
             if (damage > 0)
                 partyMember.DoDamage(damage, true, false);
             if (partyMember.Alive)
-                partyMember.ApplyStatusEffectsFromAttributes(setter, attributes);
+                partyMember.ApplyStatusEffectsFromAttributes(setter, attributes, battle);
 
             if (attributes.Enhancement == Enhancement.Explosive)
             {
@@ -49,8 +49,11 @@ namespace SuperFantasticSteampunk
                 List<PartyMember> partyMemberList = partyBattleLayout.GetListBehindTrap(this);
                 if (partyMemberList != null && partyMemberList.Count > 0)
                 {
-                    damage = partyMemberList[0].CalculateDamageTaken(this);
-                    partyMemberList[0].DoDamage(damage, false);
+                    PartyMember frontPartyMember = partyMemberList[0];
+                    damage = frontPartyMember.CalculateDamageTaken(this);
+                    frontPartyMember.DoDamage(damage, false);
+                    if (frontPartyMember.Alive)
+                        frontPartyMember.ApplyStatusEffectsFromAttributes(setter, attributes, battle);
                 }
             }
             else

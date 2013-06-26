@@ -226,7 +226,7 @@ namespace SuperFantasticSteampunk
                 }
 
                 if (actor.EquippedWeapon != null && target.Alive)
-                    target.ApplyStatusEffectsFromAttributes(actor, actor.EquippedWeapon.Attributes);
+                    target.ApplyStatusEffectsFromAttributes(actor, actor.EquippedWeapon.Attributes, battle);
 
                 if (target.EquippedShield != null)
                 {
@@ -234,7 +234,7 @@ namespace SuperFantasticSteampunk
                     {
                         if (target.EquippedShield.Attributes.Enhancement == Enhancement.Spiky)
                             actor.DoDamage(Math.Max(damage / 10, 1), true, false);
-                        actor.ApplyStatusEffectsFromAttributes(target, target.EquippedShield.Attributes);
+                        actor.ApplyStatusEffectsFromAttributes(target, target.EquippedShield.Attributes, battle);
                     }
 
                     if (target.EquippedShield.Data.Script != null)

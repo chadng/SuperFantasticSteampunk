@@ -165,20 +165,22 @@ namespace SuperFantasticSteampunk
                 statusEffects.Add(statusEffect);
         }
 
-        public void ApplyStatusEffectsFromAttributes(PartyMember inflictor, Attributes attributes)
+        public void ApplyStatusEffectsFromAttributes(PartyMember inflictor, Attributes attributes, Battle battle)
         {
+            bool sameParty = battle.GetPartyForPartyMember(inflictor) == battle.GetPartyForPartyMember(this);
+
             StatusEffect statusEffect;
             switch (attributes.Status)
             {
             case Status.Poisonous: statusEffect = new StatusEffects.Poison(); break;
             case Status.Shocking: statusEffect = new StatusEffects.Paralysis(); break;
-            case Status.Scary: statusEffect = new StatusEffects.Fear(inflictor); break;
+            case Status.Scary: statusEffect = sameParty ? null : new StatusEffects.Fear(inflictor); break;
             default: statusEffect = null; break;
             }
             if (statusEffect != null)
                 AddStatusEffect(statusEffect);
 
-            if (attributes.Affiliation == Affiliation.Doom)
+            if (attributes.Affiliation == Affiliation.Doom && !sameParty)
                 AddStatusEffect(new StatusEffects.Doom(inflictor));
         }
 
