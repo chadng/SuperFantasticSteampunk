@@ -5,9 +5,24 @@ namespace SuperFantasticSteampunk
 {
     class EquippableItem : ItemWithAttributes
     {
+        #region Instance Fields
+        private Slot skeletonSlot;
+        private Color originalSkeletonSlotColor;
+        #endregion
+
         #region Instance Properties
         public RegionAttachment SkeletonRegionAttachment { get; set; }
         public Bone SkeletonBone { get; set; }
+        public Slot SkeletonSlot
+        {
+            get { return skeletonSlot; }
+            set
+            {
+                skeletonSlot = value;
+                if (skeletonSlot != null)
+                    originalSkeletonSlotColor = new Color(skeletonSlot.R, skeletonSlot.G, skeletonSlot.B, skeletonSlot.A);
+            }
+        }
         #endregion
 
         #region Constructors
@@ -16,15 +31,28 @@ namespace SuperFantasticSteampunk
         {
             SkeletonRegionAttachment = null;
             SkeletonBone = null;
+            SkeletonSlot = null;
         }
         #endregion
 
         #region Instance Methods
         public override void Update(Delta delta)
         {
-            if (SkeletonRegionAttachment == null || SkeletonBone == null)
+            if (SkeletonRegionAttachment == null || SkeletonBone == null || SkeletonSlot == null)
                 return;
             base.Update(delta);
+        }
+
+        public void Finish()
+        {
+            if (skeletonSlot != null)
+            {
+                Vector4 colorVector = originalSkeletonSlotColor.ToVector4();
+                skeletonSlot.R = colorVector.X;
+                skeletonSlot.G = colorVector.Y;
+                skeletonSlot.B = colorVector.Z;
+                skeletonSlot.A = colorVector.W;
+            }
         }
 
         protected override void emitStatusParticle(particleEmissionCallback callback)
@@ -34,6 +62,15 @@ namespace SuperFantasticSteampunk
             float x = (preX * SkeletonBone.M00) + (preY * SkeletonBone.M01) + SkeletonBone.WorldX;
             float y = (preX * SkeletonBone.M10) + (preY * SkeletonBone.M11) + SkeletonBone.WorldY;
             callback(x, y);
+        }
+
+        protected override void updateAffiliationTint(Color color, float alpha)
+        {
+            Vector4 colorVector = Color.Lerp(originalSkeletonSlotColor, color, alpha).ToVector4();
+            SkeletonSlot.R = colorVector.X;
+            SkeletonSlot.G = colorVector.Y;
+            SkeletonSlot.B = colorVector.Z;
+            SkeletonSlot.A = colorVector.W;
         }
         #endregion
     }

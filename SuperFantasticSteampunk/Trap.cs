@@ -79,6 +79,11 @@ namespace SuperFantasticSteampunk
             float y = boundingBox.Y + Game1.Random.Next(boundingBox.Height);
             callback(x, y);
         }
+
+        protected override void updateAffiliationTint(Color color, float alpha)
+        {
+            entity.Tint = Color.Lerp(Color.White, color, alpha);
+        }
         #endregion
     }
 }

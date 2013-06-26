@@ -230,6 +230,10 @@
       <Link>Content\Textures\particles\cloud_1.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\particles_output\doom.png">
+      <Link>Content\Textures\particles\doom.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\particles_output\fear.png">
       <Link>Content\Textures\particles\fear.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

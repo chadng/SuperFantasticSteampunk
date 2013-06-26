@@ -31,7 +31,7 @@
         {
             Inflictor = inflictor;
             turns = 0;
-            TextureData = ResourceManager.GetTextureData("particles/fear");
+            TextureData = ResourceManager.GetTextureData("particles/doom");
         }
         #endregion
 

@@ -214,6 +214,7 @@ namespace SuperFantasticSteampunk
 
         public void EquipWeapon(string name)
         {
+            finishEquipment();
             EquippedShield = null;
             if (name == null)
                 EquippedWeapon = null;
@@ -239,6 +240,7 @@ namespace SuperFantasticSteampunk
 
         public void EquipShield(string name)
         {
+            finishEquipment();
             EquippedWeapon = null;
             if (name == null)
                 EquippedShield = null;
@@ -399,6 +401,7 @@ namespace SuperFantasticSteampunk
                 BattleEntity.SetSkeletonAttachment("weapon", EquippedWeapon.Data.Name, EquippedWeapon.TextureData);
                 EquippedWeapon.SkeletonRegionAttachment = BattleEntity.Skeleton.GetAttachment("weapon", EquippedWeapon.Data.Name) as RegionAttachment;
                 EquippedWeapon.SkeletonBone = BattleEntity.Skeleton.FindBone("weapon");
+                EquippedWeapon.SkeletonSlot = BattleEntity.Skeleton.FindSlot("weapon");
             }
             else
                 BattleEntity.SetSkeletonAttachment("weapon", "none", forceNoTextureData: true);
@@ -408,6 +411,7 @@ namespace SuperFantasticSteampunk
                 BattleEntity.SetSkeletonAttachment("shield", EquippedShield.Data.Name, EquippedShield.TextureData);
                 EquippedShield.SkeletonRegionAttachment = BattleEntity.Skeleton.GetAttachment("shield", EquippedShield.Data.Name) as RegionAttachment;
                 EquippedShield.SkeletonBone = BattleEntity.Skeleton.FindBone("shield");
+                EquippedShield.SkeletonSlot = BattleEntity.Skeleton.FindSlot("shield");
             }
             else
                 BattleEntity.SetSkeletonAttachment("shield", "none", forceNoTextureData: true);
@@ -429,6 +433,14 @@ namespace SuperFantasticSteampunk
                 Name = Data.Name;
             else
                 Name = ResourceManager.PartyMemberTitles.Sample() + " " + ResourceManager.PartyMemberForenames.Sample() + " " + ResourceManager.PartyMemberSurnames.Sample();
+        }
+
+        private void finishEquipment()
+        {
+            if (EquippedShield != null)
+                EquippedShield.Finish();
+            if (EquippedWeapon != null)
+                EquippedWeapon.Finish();
         }
         #endregion
     }

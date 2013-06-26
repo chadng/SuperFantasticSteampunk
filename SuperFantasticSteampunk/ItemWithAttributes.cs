@@ -10,23 +10,31 @@ namespace SuperFantasticSteampunk
 
         #region Constants
         private const float statusParticleTime = 0.15f;
+        private const float maxAffiliationTintAlpha = 0.8f;
+        private const float affiliationTintAlphaSpeed = 0.5f;
         #endregion
 
         #region Instance Fields
+        private readonly TextureData statusParticleTextureData;
         private float statusParticleTimer;
+        private readonly Color affiliationTint;
+        private float affiliationTintAlpha;
+        private bool incAffiliationTintAlpha;
         #endregion
 
         #region Instance Properties
         public Attributes Attributes { get; private set; }
-        protected TextureData statusParticleTextureData { get; private set; }
         #endregion
 
         #region Constructors
         public ItemWithAttributes(Attributes attributes)
         {
             Attributes = attributes;
-            statusParticleTimer = 0.0f;
             statusParticleTextureData = getTextureDataForStatus(Attributes.Status);
+            statusParticleTimer = 0.0f;
+            affiliationTint = getColorForAffiliation(Attributes.Affiliation);
+            affiliationTintAlpha = 0.0f;
+            incAffiliationTintAlpha = true;
         }
 
         public ItemWithAttributes(string fullName)
@@ -44,6 +52,8 @@ namespace SuperFantasticSteampunk
 
         protected abstract void emitStatusParticle(particleEmissionCallback callback);
 
+        protected abstract void updateAffiliationTint(Color color, float alpha);
+
         private void updateForStatusAttribute(Delta delta)
         {
             if (statusParticleTextureData == null)
@@ -58,7 +68,26 @@ namespace SuperFantasticSteampunk
 
         private void updateForAffiliationAttribute(Delta delta)
         {
+            if (incAffiliationTintAlpha)
+            {
+                affiliationTintAlpha += affiliationTintAlphaSpeed * delta.Time;
+                if (affiliationTintAlpha >= maxAffiliationTintAlpha)
+                {
+                    affiliationTintAlpha = maxAffiliationTintAlpha;
+                    incAffiliationTintAlpha = false;
+                }
+            }
+            else
+            {
+                affiliationTintAlpha -= affiliationTintAlphaSpeed * delta.Time;
+                if (affiliationTintAlpha <= 0.0f)
+                {
+                    affiliationTintAlpha = 0.0f;
+                    incAffiliationTintAlpha = true;
+                }
+            }
 
+            updateAffiliationTint(affiliationTint, affiliationTintAlpha);
         }
 
         private TextureData getTextureDataForStatus(Status status)
@@ -72,6 +101,17 @@ namespace SuperFantasticSteampunk
             default: searchString = null; break;
             }
             return ResourceManager.GetTextureData(searchString);
+        }
+
+        private Color getColorForAffiliation(Affiliation affiliation)
+        {
+            switch (affiliation)
+            {
+            case Affiliation.Light: return Color.Gold;
+            case Affiliation.Darkness: return Color.Black;
+            case Affiliation.Doom: return Color.DarkRed;
+            default: return Color.White;
+            }
         }
 
         private void emitStatusParticleCallback(float x, float y)
