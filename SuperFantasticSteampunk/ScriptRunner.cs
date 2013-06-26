@@ -229,7 +229,7 @@ namespace SuperFantasticSteampunk
                     {
                         if (target.EquippedShield.Attributes.Enhancement == Enhancement.Spiky)
                             actor.DoDamage(Math.Max(damage / 10, 1), true, false);
-                        target.ApplyStatusEffectsFromAttributes(target, target.EquippedShield.Attributes);
+                        actor.ApplyStatusEffectsFromAttributes(target, target.EquippedShield.Attributes);
                     }
 
                     if (target.EquippedShield.Data.Script != null)

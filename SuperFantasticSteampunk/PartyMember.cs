@@ -15,6 +15,8 @@ namespace SuperFantasticSteampunk
         private string battleEntityIdleAnimationNameOverride;
         private bool hasIdleWeaponAnimation;
         private bool hasIdleShieldAnimation;
+        private bool hasHurtWeaponAnimation;
+        private bool hasHurtShieldAnimation;
         #endregion
 
         #region Instance Properties
@@ -48,6 +50,10 @@ namespace SuperFantasticSteampunk
         public string BattleEntityIdleAnimationName
         {
             get { return battleEntityIdleAnimationNameOverride ?? (hasIdleWeaponAnimation && EquippedWeapon != null ? "idle_weapon" : (hasIdleShieldAnimation && EquippedShield != null ? "idle_shield" : "idle")); }
+        }
+        public string BattleEntityHurtAnimationName
+        {
+            get { return hasHurtWeaponAnimation && EquippedWeapon != null ? "hurt_weapon" : (hasHurtShieldAnimation && EquippedShield != null ? "hurt_shield" : "hurt"); }
         }
         #endregion
 
@@ -96,11 +102,7 @@ namespace SuperFantasticSteampunk
 
             BattleEntity = new Entity(ResourceManager.GetNewSkeleton(Data.BattleSkeletonName), new Vector2());
             BattleEntity.Skeleton.SetSkin(Data.BattleSkeletonSkinName);
-            Animation animation = BattleEntity.Skeleton.Data.FindAnimation("idle");
-            if (animation != null)
-                BattleEntity.AnimationState.SetAnimation(animation, true);
             BattleEntity.Scale = new Vector2(0.6f);
-            BattleEntity.AnimationState.Time = Game1.Random.Next(100) / 100.0f;
             BattleEntity.Altitude = Data.BattleAltitude;
             if (Data.BattleShadowFollowBoneName != null && Data.BattleShadowFollowBoneName.Length > 0)
                 BattleEntity.ShadowFollowBone = BattleEntity.Skeleton.FindBone(Data.BattleShadowFollowBoneName);
@@ -111,6 +113,10 @@ namespace SuperFantasticSteampunk
 
             hasIdleWeaponAnimation = BattleEntity.Skeleton.Data.FindAnimation("idle_weapon") != null;
             hasIdleShieldAnimation = BattleEntity.Skeleton.Data.FindAnimation("idle_shield") != null;
+            hasHurtWeaponAnimation = BattleEntity.Skeleton.Data.FindAnimation("hurt_weapon") != null;
+            hasHurtShieldAnimation = BattleEntity.Skeleton.Data.FindAnimation("hurt_shield") != null;
+            BattleEntity.AnimationState.SetAnimation(BattleEntityIdleAnimationName, true);
+            BattleEntity.AnimationState.Time = (float)Game1.Random.NextDouble();
         }
 
         public void FinishBattle()
@@ -278,7 +284,7 @@ namespace SuperFantasticSteampunk
             {
                 if (amount > 0 && playAnimation)
                 {
-                    BattleEntity.AnimationState.SetAnimation("hurt", false);
+                    BattleEntity.AnimationState.SetAnimation(BattleEntityHurtAnimationName, false);
                     BattleEntity.AnimationState.AddAnimation(BattleEntityIdleAnimationName, true);
                 }
                 Scene.AddEntity(new FloatingText(Math.Abs(amount).ToString(), heal ? Color.Blue : Color.Red, BattleEntity.GetCenter(), 5.0f, true));

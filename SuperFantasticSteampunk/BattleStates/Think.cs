@@ -94,7 +94,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Fields
         private ThinkAction currentThinkAction; // Assigned to just before SelectTarget state is pushed
         private Dictionary<CharacterClass, List<ThinkMenuOption>> weaponMenuOptions;
-        private Dictionary<CharacterClass, List<ThinkMenuOption>> shieldMenuOptions;
+        private List<ThinkMenuOption> shieldMenuOptions;
         private List<ThinkMenuOption> itemMenuOptions;
         private List<ThinkAction> actions;
         private InputButtonListener inputButtonListener;
@@ -132,13 +132,10 @@ namespace SuperFantasticSteampunk.BattleStates
             CurrentOuterMenuOptionIndex = 0;
 
             weaponMenuOptions = new Dictionary<CharacterClass, List<ThinkMenuOption>>();
-            shieldMenuOptions = new Dictionary<CharacterClass, List<ThinkMenuOption>>();
-            itemMenuOptions = new List<ThinkMenuOption>();
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
-            {
                 weaponMenuOptions.Add(characterClass, new List<ThinkMenuOption>());
-                shieldMenuOptions.Add(characterClass, new List<ThinkMenuOption>());
-            }
+            shieldMenuOptions = new List<ThinkMenuOption>();
+            itemMenuOptions = new List<ThinkMenuOption>();
 
             actions = new List<ThinkAction>(battle.PlayerParty.Count);
 
@@ -405,7 +402,7 @@ namespace SuperFantasticSteampunk.BattleStates
             switch (thinkActionType)
             {
             case ThinkActionType.Attack: MenuOptions = weaponMenuOptions[CurrentPartyMember.CharacterClass]; break;
-            case ThinkActionType.Defend: MenuOptions = shieldMenuOptions[CurrentPartyMember.CharacterClass]; break;
+            case ThinkActionType.Defend: MenuOptions = shieldMenuOptions; break;
             case ThinkActionType.UseItem: MenuOptions = itemMenuOptions; break;
             default: MenuOptions = null; break;
             }
@@ -442,30 +439,30 @@ namespace SuperFantasticSteampunk.BattleStates
         private void repopulateMenuOptions()
         {
             itemMenuOptions.Clear();
+            shieldMenuOptions.Clear();
+            shieldMenuOptions.Add(ThinkMenuOption.NoShield);
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
             {
                 if (characterClass == CharacterClass.Enemy)
                     continue;
 
                 weaponMenuOptions[characterClass].Clear();
-                shieldMenuOptions[characterClass].Clear();
-                shieldMenuOptions[characterClass].Add(ThinkMenuOption.NoShield);
 
                 foreach (InventoryItem item in Battle.PlayerParty.WeaponInventories[characterClass].GetSortedItems(CurrentPartyMember))
                 {
                     WeaponData weaponData = ResourceManager.GetWeaponData(item.Key);
                     weaponMenuOptions[characterClass].Add(new ThinkMenuOption(item.Key, weaponData.Description, item.Value, false));
                 }
-                foreach (InventoryItem item in Battle.PlayerParty.ShieldInventory.GetSortedItems(CurrentPartyMember))
-                {
-                    ShieldData shieldData = ResourceManager.GetShieldData(item.Key);
-                    shieldMenuOptions[characterClass].Add(new ThinkMenuOption(item.Key, shieldData.Description, item.Value, false));
-                }
             }
             foreach (InventoryItem item in Battle.PlayerParty.ItemInventory.GetSortedItems(CurrentPartyMember))
             {
                 ItemData itemData = ResourceManager.GetItemData(item.Key);
                 itemMenuOptions.Add(new ThinkMenuOption(item.Key, itemData.Description, item.Value, false));
+            }
+            foreach (InventoryItem item in Battle.PlayerParty.ShieldInventory.GetSortedItems(CurrentPartyMember))
+            {
+                ShieldData shieldData = ResourceManager.GetShieldData(item.Key);
+                shieldMenuOptions.Add(new ThinkMenuOption(item.Key, shieldData.Description, item.Value, false));
             }
             checkUsabilityOfWeaponMenuOptions();
         }

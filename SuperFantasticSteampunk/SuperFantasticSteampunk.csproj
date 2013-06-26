@@ -241,6 +241,10 @@
       <Link>Content\Textures\particles\poison_bubble.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\shield_output\shield.png">
+      <Link>Content\Textures\shield.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\monkey\spine\monkey.png">
       <Link>Content\Skeletons\monkey.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
