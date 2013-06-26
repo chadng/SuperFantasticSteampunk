@@ -14,6 +14,7 @@ namespace SuperFantasticSteampunk
         public Dictionary<CharacterClass, Inventory> WeaponInventories { get; private set; }
         public Inventory ShieldInventory { get; private set; }
         public Inventory ItemInventory { get; private set; }
+        public PartyBattleLayout BattleLayout { get; private set; }
         #endregion
 
         #region Constructors
@@ -67,6 +68,8 @@ namespace SuperFantasticSteampunk
 
         public void StartBattle(Battle battle)
         {
+            if (BattleLayout == null)
+                InitPartyBattleLayout();
             foreach (PartyMember partyMember in this)
             {
                 partyMember.StartBattle();
@@ -77,11 +80,19 @@ namespace SuperFantasticSteampunk
 
         public void FinishBattle(Battle battle)
         {
+            BattleLayout.FinishBattle();
             foreach (PartyMember partyMember in this)
             {
                 partyMember.BattleEntity.Kill();
                 partyMember.FinishBattle();
             }
+        }
+
+        public void InitPartyBattleLayout(string arrangement = null)
+        {
+            BattleLayout = new PartyBattleLayout(this);
+            if (arrangement != null)
+                BattleLayout.ArrangeFromString(arrangement);
         }
         #endregion
     }

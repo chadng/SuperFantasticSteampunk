@@ -35,6 +35,38 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
+        public void FinishBattle()
+        {
+            traps.Clear();
+        }
+
+        public void ArrangeFromString(string str)
+        {
+            foreach (List<PartyMember> list in layout)
+                list.Clear();
+
+            str = str.Replace(" ", "");
+            string[] lines = str.Split('\n');
+            List<PartyMember> partyMembersLeftToAdd = new List<PartyMember>(party);
+            for (int i = 0; i < layout.Count && i < lines.Length; ++i)
+            {
+                string[] indexes = lines[i].Split(',');
+                foreach (string indexStr in indexes)
+                {
+                    int index = int.Parse(indexStr);
+                    if (index < 0 || index >= party.Count)
+                        continue;
+                    if (partyMembersLeftToAdd.Contains(party[index]))
+                    {
+                        layout[i].Add(party[index]);
+                        partyMembersLeftToAdd.Remove(party[index]);
+                    }
+                }
+            }
+
+            layout[0].AddRange(partyMembersLeftToAdd);
+        }
+
         public void MovePartyMemberUp(PartyMember partyMember, BattleStates.Think thinkState)
         {
             if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))

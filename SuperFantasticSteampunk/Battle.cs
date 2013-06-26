@@ -33,8 +33,14 @@ namespace SuperFantasticSteampunk
         public Party PlayerParty { get; private set; }
         public Party EnemyParty { get; private set; }
 
-        public PartyBattleLayout PlayerPartyLayout { get; private set; }
-        public PartyBattleLayout EnemyPartyLayout { get; private set; }
+        public PartyBattleLayout PlayerPartyLayout
+        {
+            get { return PlayerParty.BattleLayout; }
+        }
+        public PartyBattleLayout EnemyPartyLayout
+        {
+            get { return EnemyParty.BattleLayout; }
+        }
 
         public Encounter OverworldEncounter { get; private set; }
         public int PlayerPartyItemsUsed { get; private set; }
@@ -52,9 +58,6 @@ namespace SuperFantasticSteampunk
 
             PlayerParty = playerParty.Tap(party => party.StartBattle(this));
             EnemyParty = enemyParty.Tap(party => party.StartBattle(this));
-
-            PlayerPartyLayout = new PartyBattleLayout(PlayerParty);
-            EnemyPartyLayout = new PartyBattleLayout(EnemyParty);
 
             states = new Stack<BattleState>();
             states.Push(new BattleStates.Intro(this));
