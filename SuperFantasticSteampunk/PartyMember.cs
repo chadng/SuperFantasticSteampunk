@@ -212,6 +212,7 @@ namespace SuperFantasticSteampunk
             else
                 EquippedWeapon = ResourceManager.GetNewWeapon(name);
             updateBattleEntitySkeleton();
+            setBattleEntityIdleAnimation();
         }
 
         public void EquipDefaultWeapon(Party party)
@@ -225,6 +226,7 @@ namespace SuperFantasticSteampunk
                         break;
                 }
             }
+            setBattleEntityIdleAnimation();
         }
 
         public void EquipShield(string name)
@@ -235,6 +237,7 @@ namespace SuperFantasticSteampunk
             else
                 EquippedShield = ResourceManager.GetNewShield(name);
             updateBattleEntitySkeleton();
+            setBattleEntityIdleAnimation();
         }
 
         public void DoDamage(int amount, bool ignoreShield, bool playAnimation = true)
@@ -403,6 +406,16 @@ namespace SuperFantasticSteampunk
             }
             else
                 BattleEntity.SetSkeletonAttachment("shield", "none", forceNoTextureData: true);
+        }
+
+        private void setBattleEntityIdleAnimation()
+        {
+            if (BattleEntity != null)
+            {
+                string animationName = BattleEntityIdleAnimationName;
+                if (animationName != BattleEntity.AnimationState.Animation.Name)
+                    BattleEntity.AnimationState.SetAnimation(animationName, true);
+            }
         }
 
         private void generateName()
