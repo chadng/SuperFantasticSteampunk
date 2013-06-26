@@ -502,7 +502,6 @@ namespace SuperFantasticSteampunk
 
             Trap trap = new Trap(ResourceManager.GetNewSprite(spriteName), position, actorPartyMember.EquippedWeapon.Attributes, actorPartyMember.EquippedWeapon.Data, actorPartyMember, battle);
             battle.GetPartyBattleLayoutForPartyMember(frontPartyMember).PlaceTrapInFrontOfPartyMember(frontPartyMember, trap);
-            Scene.AddEntity(trap);
         }
 
         private void _random(object[] args)

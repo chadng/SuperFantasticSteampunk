@@ -4,12 +4,12 @@ using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk
 {
-    class Trap : Entity
+    class Trap : ItemWithAttributes
     {
         #region Instance Fields
-        private Attributes attributes;
         private PartyMember setter;
         private Battle battle;
+        private Entity entity;
         #endregion
 
         #region Instance Fields
@@ -18,7 +18,7 @@ namespace SuperFantasticSteampunk
 
         #region Constructors
         public Trap(Sprite sprite, Vector2 position, Attributes attributes, WeaponData weaponData, PartyMember setter, Battle battle)
-            : base(sprite, position)
+            : base(attributes)
         {
             if (attributes == null)
                 throw new Exception("Attributes cannot be null");
@@ -27,10 +27,14 @@ namespace SuperFantasticSteampunk
             if (battle == null)
                 throw new Exception("Battle cannot be null");
 
-            this.attributes = attributes;
             this.setter = setter;
             this.battle = battle;
             Data = weaponData;
+            entity = new Entity(sprite, position);
+            entity.UpdateExtensions.Add(new UpdateExtension((updateExtension, delta) => {
+                Update(delta);
+            }));
+            Scene.AddEntity(entity);
         }
         #endregion
 
@@ -41,11 +45,11 @@ namespace SuperFantasticSteampunk
             if (damage > 0)
                 partyMember.DoDamage(damage, true, false);
             if (partyMember.Alive)
-                partyMember.ApplyStatusEffectsFromAttributes(setter, attributes, battle);
+                partyMember.ApplyStatusEffectsFromAttributes(setter, Attributes, battle);
 
-            if (attributes.Enhancement == Enhancement.Explosive)
+            if (Attributes.Enhancement == Enhancement.Explosive)
             {
-                ParticleEffect.AddExplosion(GetCenter(), battle);
+                ParticleEffect.AddExplosion(entity.GetCenter(), battle);
                 List<PartyMember> partyMemberList = partyBattleLayout.GetListBehindTrap(this);
                 if (partyMemberList != null && partyMemberList.Count > 0)
                 {
@@ -53,14 +57,27 @@ namespace SuperFantasticSteampunk
                     damage = frontPartyMember.CalculateDamageTaken(this);
                     frontPartyMember.DoDamage(damage, false);
                     if (frontPartyMember.Alive)
-                        frontPartyMember.ApplyStatusEffectsFromAttributes(setter, attributes, battle);
+                        frontPartyMember.ApplyStatusEffectsFromAttributes(setter, Attributes, battle);
                 }
             }
             else
-                ParticleEffect.AddSmokePuff(GetCenter(), battle);
+                ParticleEffect.AddSmokePuff(entity.GetCenter(), battle);
 
             partyBattleLayout.RemoveTrap(this);
             Kill();
+        }
+
+        public void Kill()
+        {
+            entity.Kill();
+        }
+
+        protected override void emitStatusParticle(particleEmissionCallback callback)
+        {
+            Rectangle boundingBox = entity.GetBoundingBox();
+            float x = boundingBox.X + Game1.Random.Next(boundingBox.Width);
+            float y = boundingBox.Y + Game1.Random.Next(boundingBox.Height);
+            callback(x, y);
         }
         #endregion
     }
