@@ -114,7 +114,7 @@ namespace SuperFantasticSteampunk
                 case "setAccelerationY": _setAccelerationY(args); break;
                 case "setRotation": _setRotation(args); break;
                 case "setAngularVelocity": _setAngularVelocity(args); break;
-                case "accelerateTo": _accelerateTo(args); break;
+                case "moveTo": _moveTo(args); break;
                 case "moveToIdlePosition": _moveToIdlePosition(args); break;
                 case "setIdleAnimation": _setIdleAnimation(args); break;
                 case "random": _random(args); break;
@@ -395,18 +395,25 @@ namespace SuperFantasticSteampunk
             getPartyMemberFromSelector(partyMemberSelector).BattleEntity.AngularVelocity = amount;
         }
 
-        private void _accelerateTo(object[] args)
-        { // accelerateTo(string actorPartyMemberSelector, string targetPartyMemberSelector, float acceleration, Script callback)
+        private void _moveTo(object[] args)
+        { // moveTo(string actorPartyMemberSelector, string targetPartyMemberSelector, float speed, bool accelerate, Script callback)
             string actorPartyMemberSelector = (string)args[0];
             string targetPartyMemberSelector = (string)args[1];
-            float acceleration = (float)args[2];
-            Script callback = (Script)args[3];
+            float speed = (float)args[2];
+            bool accelerate = (bool)args[3];
+            Script callback = (Script)args[4];
 
-            Entity actorEntity = getPartyMemberFromSelector(actorPartyMemberSelector).BattleEntity;
-            Entity targetEntity = getPartyMemberFromSelector(targetPartyMemberSelector).BattleEntity;
-            Vector2 accelerationVector = targetEntity.Position - actorEntity.Position;
-            accelerationVector.Normalize();
-            actorEntity.Acceleration = accelerationVector * acceleration;
+            PartyMember actor = getPartyMemberFromSelector(actorPartyMemberSelector);
+            PartyMember target = getPartyMemberFromSelector(targetPartyMemberSelector);
+            Entity actorEntity = actor.BattleEntity;
+            Entity targetEntity = target.BattleEntity;
+            Vector2 velocityVector = targetEntity.Position - actorEntity.Position;
+            velocityVector.Normalize();
+            velocityVector *= speed;
+            if (accelerate)
+                actorEntity.Acceleration = velocityVector;
+            else
+                actorEntity.Velocity = velocityVector;
 
             this.blocked = true;
             ScriptRunner self = this;
@@ -415,6 +422,7 @@ namespace SuperFantasticSteampunk
                 {
                     updateExtension.Active = false;
                     self.blocked = false;
+                    TriggerTrap(actor, target);
                     addNestedScriptRunner(callback, 0.0f);
                 }
             }));
@@ -429,11 +437,11 @@ namespace SuperFantasticSteampunk
 
             PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
             Entity entity = partyMember.BattleEntity;
-            Vector2 velocity = partyMember.BattleEntityIdlePosition - entity.Position;
-            bool movingRight = velocity.X > 0.0f;
-            float distance = velocity.Length();
-            velocity.Normalize();
-            entity.Velocity = velocity * speed;
+            Vector2 directionVector = partyMember.BattleEntityIdlePosition - entity.Position;
+            bool movingRight = directionVector.X > 0.0f;
+            float distance = directionVector.Length();
+            directionVector.Normalize();
+            entity.Velocity = directionVector * speed;
             float time = distance / speed;
             Vector2 originalVelocity = entity.Velocity;
 
@@ -586,6 +594,14 @@ namespace SuperFantasticSteampunk
                 break;
             }
             return result;
+        }
+
+        private void TriggerTrap(PartyMember actor, PartyMember target)
+        {
+            PartyBattleLayout battleLayout = battle.GetPartyBattleLayoutForPartyMember(target);
+            Trap trap = battleLayout.GetTrapInFrontOfPartyMember(target);
+            if (trap != null)
+                trap.Trigger(actor, battleLayout);
         }
         #endregion
     }

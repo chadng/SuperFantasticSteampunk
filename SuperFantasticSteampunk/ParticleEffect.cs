@@ -74,6 +74,12 @@ namespace SuperFantasticSteampunk
             battle.Camera.Shake(new Vector2(4.0f), 0.1f);
             battle.SetCameraUpdateDelay(1.0f);
         }
+
+        public static void AddSmokePuff(Vector2 position, Battle battle)
+        {
+            Scene.AddEntity(new ParticleEffect(position, Color.White, 20, ResourceManager.GetTextureData("particles/cloud_1"), 500.0f, 500.0f, 0.6f, 0.6f, true));
+            battle.Camera.Shake(new Vector2(3.0f, 0.0f), 0.1f);
+        }
         #endregion
 
         #region Instance Fields

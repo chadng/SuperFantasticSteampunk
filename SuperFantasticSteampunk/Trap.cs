@@ -53,6 +53,8 @@ namespace SuperFantasticSteampunk
                     partyMemberList[0].DoDamage(damage, false);
                 }
             }
+            else
+                ParticleEffect.AddSmokePuff(GetCenter(), battle);
 
             partyBattleLayout.RemoveTrap(this);
             Kill();
