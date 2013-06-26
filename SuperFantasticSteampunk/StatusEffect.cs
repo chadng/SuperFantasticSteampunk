@@ -10,6 +10,7 @@ namespace SuperFantasticSteampunk
         #region Instance Properties
         public abstract StatusEffectType Type { get; }
         public abstract bool Active { get; }
+        public abstract TextureData TextureData { get; protected set; }
         #endregion
 
         #region Instance Methods

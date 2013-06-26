@@ -29,12 +29,15 @@ namespace SuperFantasticSteampunk.StatusEffects
         {
             get { return true; }
         }
+
+        public override TextureData TextureData { get; protected set; }
         #endregion
 
         #region Constructors
         public Paralysis()
         {
             resetFieldsForUpdate();
+            TextureData = ResourceManager.GetTextureData("particles/paralysis");
         }
         #endregion
 

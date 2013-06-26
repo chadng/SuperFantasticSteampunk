@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace SuperFantasticSteampunk
 {
@@ -19,6 +20,11 @@ namespace SuperFantasticSteampunk
         public int Height
         {
             get { return Texture.Height; }
+        }
+
+        public Vector2 Origin
+        {
+            get { return new Vector2(OriginX, OriginY); }
         }
         #endregion
     }

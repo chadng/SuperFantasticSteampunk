@@ -22,6 +22,8 @@
         {
             get { return Inflictor != null; }
         }
+
+        public override TextureData TextureData { get; protected set; }
         #endregion
 
         #region Constructors
@@ -29,6 +31,7 @@
         {
             Inflictor = inflictor;
             turns = 0;
+            TextureData = ResourceManager.GetTextureData("particles/fear");
         }
         #endregion
 

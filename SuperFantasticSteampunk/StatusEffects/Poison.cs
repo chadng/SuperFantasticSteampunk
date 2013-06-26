@@ -15,7 +15,6 @@ namespace SuperFantasticSteampunk.StatusEffects
         private float tintAlpha;
         private bool incTintAlpha;
         private float bubbleParticleTimer;
-        private TextureData bubbleParticleTextureData;
         #endregion
 
         #region Instance Properties
@@ -28,13 +27,15 @@ namespace SuperFantasticSteampunk.StatusEffects
         {
             get { return true; }
         }
+
+        public override TextureData TextureData { get; protected set; }
         #endregion
 
         #region Constructors
         public Poison()
         {
             resetFieldsForUpdate();
-            bubbleParticleTextureData = ResourceManager.GetTextureData("particles/poison_bubble");
+            TextureData = ResourceManager.GetTextureData("particles/poison_bubble");
         }
         #endregion
 
@@ -109,7 +110,7 @@ namespace SuperFantasticSteampunk.StatusEffects
                 Rectangle boundingBox = partyMember.BattleEntity.GetBoundingBox();
                 float x = boundingBox.X + (boundingBox.Width / 2) + Game1.Random.Next(boundingBox.Width / 2) - (boundingBox.Width / 4);
                 float y = boundingBox.Y + (boundingBox.Height / 2) + (Game1.Random.Next(boundingBox.Height / 4) - (boundingBox.Height / 8));
-                Scene.AddEntity(new FloatingParticle(new Vector2(x, y), new Vector2(0.0f, -200.0f), new Vector2(0.3f), 1.4f, bubbleParticleTextureData));
+                Scene.AddEntity(new FloatingParticle(new Vector2(x, y), new Vector2(0.0f, -200.0f), new Vector2(0.3f), 1.4f, TextureData));
             }
         }
         #endregion

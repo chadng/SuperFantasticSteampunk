@@ -484,9 +484,7 @@ namespace SuperFantasticSteampunk
             renderer.Draw(textureData, position, Color.White, 0.0f, minScale, false);
             
             if (partyMemberIsSelected(partyMember))
-            {
                 renderer.Draw(arrowTextureData, position + new Vector2((textureData.Width / 2) - (arrowTextureData.Width / 2), -arrowTextureData.Height), Color.White, 0.0f, minScale, false);
-            }
 
             renderer.DrawText(partyMember.Name, position + new Vector2(0.0f, (textureData.Height + 5.0f) * minScale.Y), Color.White, 0.0f, Vector2.Zero, minScale);
 
@@ -496,6 +494,15 @@ namespace SuperFantasticSteampunk
             drawBar(position, barSize, percentageHealth, healthBarColor, renderer);
             string barText = "HP: " + partyMember.Health.ToString() + "/" + partyMember.MaxHealth;
             renderer.DrawText(barText, position + (new Vector2(10.0f, 7.0f) * screenScaleFactor), Color.White, 0.0f, Vector2.Zero, minScale);
+
+            position.Y += barSize.Y * 1.5f;
+            partyMember.ForEachStatusEffect((statusEffect) => {
+                float widthWithPadding = barSize.Y * 1.1f;
+                Vector2 scale = new Vector2((1.0f / statusEffect.TextureData.Height) * barSize.Y);
+                Vector2 nudge = new Vector2((widthWithPadding - (statusEffect.TextureData.Width * scale.X)) / 2.0f, 0.0f);
+                renderer.Draw(statusEffect.TextureData, position + (statusEffect.TextureData.Origin * scale) + nudge, Color.White, 0.0f, scale, false);
+                position.X += barSize.Y * 1.1f;
+            });
         }
 
         private void drawBar(Vector2 position, Vector2 size, float percentage, Color color, Renderer renderer)
