@@ -120,6 +120,11 @@ namespace SuperFantasticSteampunk
             return xIntersection && yIntersection;
         }
 
+        public static Vector2 Round(this Vector2 self)
+        {
+            return new Vector2((float)Math.Round(self.X), (float)Math.Round(self.Y));
+        }
+
         public static void Merge<T1, T2>(this IDictionary<T1, T2> self, IDictionary<T1, T2> other, Func<T2, T2, T2> keyExistsHandler = null)
         {
             foreach (KeyValuePair<T1, T2> pair in other)

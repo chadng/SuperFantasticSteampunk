@@ -474,10 +474,10 @@ namespace SuperFantasticSteampunk
 
             TextureData textureData = characterClassHeadTextureData[partyMember.CharacterClass];
 
+            Vector2 underlayScale = new Vector2((headPadding.X * 2.0f) + barPadding.X + barSize.X + (textureData.Width * screenScaleFactor.X), ((headPadding.Y * 1.4f) + (textureData.Height * minScale.Y)));
             if (partyMemberIsThinking(partyMember))
             {
                 Vector2 underlayPosition = position - (new Vector2(10.0f) * screenScaleFactor);
-                Vector2 underlayScale = new Vector2((headPadding.X * 2.0f) + barPadding.X + barSize.X + (textureData.Width * screenScaleFactor.X), ((headPadding.Y * 1.4f) + (textureData.Height * minScale.Y)));
                 renderer.Draw(whitePixelTextureData, underlayPosition, new Color(1.0f, 1.0f, 1.0f, 0.2f), 0.0f, underlayScale, false);
             }
 
@@ -486,14 +486,18 @@ namespace SuperFantasticSteampunk
             if (partyMemberIsSelected(partyMember))
                 renderer.Draw(arrowTextureData, position + new Vector2((textureData.Width / 2) - (arrowTextureData.Width / 2), -arrowTextureData.Height), Color.White, 0.0f, minScale, false);
 
-            renderer.DrawText(partyMember.Name, position + new Vector2(0.0f, (textureData.Height + 5.0f) * minScale.Y), Color.White, 0.0f, Vector2.Zero, minScale);
-
             position.X += (textureData.Width * screenScaleFactor.X) + headPadding.X;
+
+            Vector2 partyMemberNameSize = renderer.Font.MeasureString(partyMember.Name, Font.DefaultSize * minScale.Y);
+            renderer.DrawText(partyMember.Name, position + new Vector2(barSize.X / 2.0f, 20.0f * minScale.Y), Color.White, 0.0f, partyMemberNameSize / 2.0f, minScale);
+
+            position.Y += partyMemberNameSize.Y + (20.0f * minScale.Y);
             float percentageHealth = partyMember.Health / (float)partyMember.MaxHealth;
             Color healthBarColor = percentageHealth > 0.5f ? Color.Lerp(Color.Yellow, Color.Green, (percentageHealth - 0.5f) / 0.5f) : Color.Lerp(Color.Red, Color.Yellow, percentageHealth / 0.5f);
             drawBar(position, barSize, percentageHealth, healthBarColor, renderer);
             string barText = "HP: " + partyMember.Health.ToString() + "/" + partyMember.MaxHealth;
-            renderer.DrawText(barText, position + (new Vector2(10.0f, 7.0f) * screenScaleFactor), Color.White, 0.0f, Vector2.Zero, minScale);
+            Vector2 barTextSize = renderer.Font.MeasureString(barText, Font.DefaultSize * minScale.Y);
+            renderer.DrawText(barText, position + (barSize / 2.0f), Color.White, 0.0f, barTextSize / 2.0f, minScale);
 
             position.Y += barSize.Y * 1.5f;
             partyMember.ForEachStatusEffect((statusEffect) => {
