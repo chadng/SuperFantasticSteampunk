@@ -77,6 +77,9 @@ namespace SuperFantasticSteampunk
 
         private string removeOuterBraces(string str)
         {
+            if (str == null || str.Length == 0)
+                return str;
+
             if (str[0] == '{')
             {
                 str = str.Substring(1);

@@ -12,6 +12,9 @@ namespace SuperFantasticSteampunk
         #region Instance Fields
         private List<StatModifier> statModifiers;
         private List<StatusEffect> statusEffects;
+        private string battleEntityIdleAnimationNameOverride;
+        private bool hasIdleWeaponAnimation;
+        private bool hasIdleShieldAnimation;
         #endregion
 
         #region Instance Properties
@@ -42,7 +45,10 @@ namespace SuperFantasticSteampunk
         }
 
         public Vector2 BattleEntityIdlePosition { get; set; }
-        public string BattleEntityIdleAnimationName { get; set; }
+        public string BattleEntityIdleAnimationName
+        {
+            get { return battleEntityIdleAnimationNameOverride ?? (hasIdleWeaponAnimation && EquippedWeapon != null ? "idle_weapon" : (hasIdleShieldAnimation && EquippedShield != null ? "idle_shield" : "idle")); }
+        }
         #endregion
 
         #region Constructors
@@ -55,7 +61,7 @@ namespace SuperFantasticSteampunk
             statusEffects = new List<StatusEffect>();
             BattleEntity = null;
             BattleEntityIdlePosition = Vector2.Zero;
-            BattleEntityIdleAnimationName = "idle";
+            battleEntityIdleAnimationNameOverride = null;
             generateName();
             resetStats();
         }
@@ -102,6 +108,9 @@ namespace SuperFantasticSteampunk
             updateBattleEntitySkeleton();
 
             HurtThisTurn = false;
+
+            hasIdleWeaponAnimation = BattleEntity.Skeleton.Data.FindAnimation("idle_weapon") != null;
+            hasIdleShieldAnimation = BattleEntity.Skeleton.Data.FindAnimation("idle_shield") != null;
         }
 
         public void FinishBattle()
@@ -281,6 +290,16 @@ namespace SuperFantasticSteampunk
         public int CalculateDamageTaken(Trap trap)
         {
             return calculateDamageTaken(trap.Data.Power);
+        }
+
+        public void SetBattleEntityIdleAnimationNameOverride(string animationName)
+        {
+            if (animationName == null || animationName.Length == 0)
+                battleEntityIdleAnimationNameOverride = null;
+            else if (BattleEntity != null && BattleEntity.Skeleton.Data.FindAnimation(animationName) == null)
+                battleEntityIdleAnimationNameOverride = null;
+            else
+                battleEntityIdleAnimationNameOverride = animationName;
         }
 
         public void Update(Delta delta)

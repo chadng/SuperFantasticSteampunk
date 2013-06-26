@@ -472,9 +472,7 @@ namespace SuperFantasticSteampunk
             string animationName = (string)args[1];
 
             PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
-            if (partyMember.BattleEntity.Skeleton.Data.FindAnimation(animationName) == null)
-                throw new Exception("Animation '" + animationName + "' could not be found");
-            partyMember.BattleEntityIdleAnimationName = animationName;
+            partyMember.SetBattleEntityIdleAnimationNameOverride(animationName);
         }
 
         private void _random(object[] args)
