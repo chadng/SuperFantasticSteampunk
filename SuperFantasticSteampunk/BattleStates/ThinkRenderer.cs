@@ -304,7 +304,7 @@ namespace SuperFantasticSteampunk.BattleStates
         private void drawContainer(float x, float y, float width, float height, Renderer renderer)
         {
             Vector2 scale = Game1.ScreenScaleFactor;
-            renderer.Draw(whitePixelTextureData, new Vector2(x, y) * scale, new Color(124, 63, 18), 0.0f, new Vector2(width, height) * scale, false);
+            renderer.Draw(whitePixelTextureData, new Vector2(x, y) * scale, Battle.UiColor, 0.0f, new Vector2(width, height) * scale, false);
 
             Vector2 halfScale = scale * 0.5f;
             TextureData textureData = borderTextureData[NW];

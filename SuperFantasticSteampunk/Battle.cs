@@ -10,6 +10,7 @@ namespace SuperFantasticSteampunk
     class Battle : Scene
     {
         #region Constants
+        public static readonly Color UiColor = new Color(124, 63, 18);
         private const int uiHeight = 170;
         #endregion
 
@@ -18,6 +19,11 @@ namespace SuperFantasticSteampunk
         private bool stateChanged;
         private TextureData whitePixelTextureData;
         private TextureData arrowTextureData;
+        private TextureData borderTextureDataN;
+        private TextureData borderTextureDataE;
+        private TextureData borderTextureDataW;
+        private TextureData borderTextureDataNE;
+        private TextureData borderTextureDataNW;
         private Dictionary<CharacterClass, TextureData> characterClassHeadTextureData;
         private List<TextureData> backgroundTextureData;
         private float lowestBackgroundTextureWidth;
@@ -81,6 +87,11 @@ namespace SuperFantasticSteampunk
 
             whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
             arrowTextureData = ResourceManager.GetTextureData("arrow_down");
+            borderTextureDataN = ResourceManager.GetTextureData("battle_ui/borders/n");
+            borderTextureDataE = ResourceManager.GetTextureData("battle_ui/borders/e");
+            borderTextureDataW = ResourceManager.GetTextureData("battle_ui/borders/w");
+            borderTextureDataNE = ResourceManager.GetTextureData("battle_ui/borders/ne");
+            borderTextureDataNW = ResourceManager.GetTextureData("battle_ui/borders/nw");
             characterClassHeadTextureData = new Dictionary<CharacterClass, TextureData> {
                 { CharacterClass.Warrior, ResourceManager.GetTextureData("battle_ui/warrior_head") },
                 { CharacterClass.Marksman, ResourceManager.GetTextureData("battle_ui/marksman_head") },
@@ -426,16 +437,34 @@ namespace SuperFantasticSteampunk
             Vector2 barPadding = new Vector2(20.0f) * screenScaleFactor;
             Vector2 barSize = new Vector2(290, 30) * screenScaleFactor;
 
-            Vector2 uiPositition = new Vector2(0.0f, Game1.ScreenSize.Y - (uiHeight * screenScaleFactor.Y));
+            Vector2 uiPosition = new Vector2(0.0f, Game1.ScreenSize.Y - (uiHeight * screenScaleFactor.Y));
             Vector2 uiSize = new Vector2(Game1.ScreenSize.X, uiHeight * screenScaleFactor.Y);
-            renderer.Draw(whitePixelTextureData, uiPositition, Color.Gray, 0.0f, uiSize, false);
+            renderer.Draw(whitePixelTextureData, uiPosition, UiColor, 0.0f, uiSize, false);
+            drawGuiBorder(uiPosition, uiSize, renderer);
             
-            Vector2 position = new Vector2(headPadding.X, uiPositition.Y + headPadding.Y);
+            Vector2 position = new Vector2(headPadding.X, uiPosition.Y + headPadding.Y);
             for (int i = 0; i < PlayerParty.Count; ++i)
             {
                 drawPartyMemberUi(PlayerParty[i], position, headPadding, barPadding, barSize, renderer);
                 position.X += (headPadding.X * 2) + barPadding.X + barSize.X + (characterClassHeadTextureData[PlayerParty[i].CharacterClass].Width * screenScaleFactor.X);
             }
+        }
+
+        private void drawGuiBorder(Vector2 uiPosition, Vector2 uiSize, Renderer renderer)
+        {
+            Vector2 screenScaleFactor = Game1.ScreenScaleFactor;
+            float borderWidth = uiSize.X - (borderTextureDataE.Width * 2 * screenScaleFactor.X);
+            Vector2 borderScaleX = new Vector2((1.0f / borderTextureDataN.Width) * borderWidth, screenScaleFactor.Y);
+            Vector2 borderScaleY = new Vector2(screenScaleFactor.X, (1.0f / borderTextureDataW.Height) * uiSize.Y);
+            Vector2 position = uiPosition - new Vector2(0.0f, borderTextureDataN.Height * screenScaleFactor.Y);
+            renderer.Draw(borderTextureDataNW, position, Color.White, 0.0f, screenScaleFactor, false);
+            renderer.Draw(borderTextureDataW, uiPosition, Color.White, 0.0f, borderScaleY, false);
+            position.X += borderTextureDataNW.Width * screenScaleFactor.X;
+            renderer.Draw(borderTextureDataN, position, Color.White, 0.0f, borderScaleX, false);
+            position.X += borderWidth;
+            renderer.Draw(borderTextureDataNE, position, Color.White, 0.0f, screenScaleFactor, false);
+            position.Y = uiPosition.Y;
+            renderer.Draw(borderTextureDataE, position, Color.White, 0.0f, borderScaleY, false);
         }
 
         private void drawPartyMemberUi(PartyMember partyMember, Vector2 position, Vector2 headPadding, Vector2 barPadding, Vector2 barSize, Renderer renderer)
@@ -449,7 +478,7 @@ namespace SuperFantasticSteampunk
             {
                 Vector2 underlayPosition = position - (new Vector2(10.0f) * screenScaleFactor);
                 Vector2 underlayScale = new Vector2((headPadding.X * 2.0f) + barPadding.X + barSize.X + (textureData.Width * screenScaleFactor.X), ((headPadding.Y * 1.4f) + (textureData.Height * minScale.Y)));
-                renderer.Draw(whitePixelTextureData, underlayPosition, new Color(0.6f, 0.6f, 0.6f), 0.0f, underlayScale, false);
+                renderer.Draw(whitePixelTextureData, underlayPosition, new Color(1.0f, 1.0f, 1.0f, 0.2f), 0.0f, underlayScale, false);
             }
 
             renderer.Draw(textureData, position, Color.White, 0.0f, minScale, false);
