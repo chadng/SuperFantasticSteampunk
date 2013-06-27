@@ -3,7 +3,7 @@ using Spine;
 
 namespace SuperFantasticSteampunk
 {
-    class EquippableItem : ItemWithAttributes
+    abstract class EquippableItem : ItemWithAttributes
     {
         #region Instance Fields
         private Slot skeletonSlot;

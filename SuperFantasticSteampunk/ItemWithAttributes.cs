@@ -23,6 +23,7 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Properties
+        public abstract string Name { get; }
         public Attributes Attributes { get; private set; }
         #endregion
 
@@ -44,6 +45,11 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
+        public string GetFullName()
+        {
+            return Attributes.ToString(Name);
+        }
+
         public virtual void Update(Delta delta)
         {
             updateForStatusAttribute(delta);

@@ -12,8 +12,13 @@ namespace SuperFantasticSteampunk
         private Entity entity;
         #endregion
 
-        #region Instance Fields
+        #region Instance Properties
         public WeaponData Data { get; private set; }
+
+        public override string Name
+        {
+            get { return Data.Name; }
+        }
         #endregion
 
         #region Constructors

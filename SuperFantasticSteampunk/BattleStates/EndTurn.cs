@@ -85,7 +85,7 @@ namespace SuperFantasticSteampunk.BattleStates
                     if (partyMember.HurtThisTurn)
                         Battle.IncrementItemsUsed(party);
                     else
-                        party.ShieldInventory.AddItem(partyMember.EquippedShield.Data.Name);
+                        party.ShieldInventory.AddItem(partyMember.EquippedShield.GetFullName());
                 }
                 partyMember.EndTurn();
                 partyMember.BattleEntity.ResetManipulation("Scale");

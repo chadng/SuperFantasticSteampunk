@@ -9,6 +9,11 @@ namespace SuperFantasticSteampunk
         #region Instance Properties
         public WeaponData Data { get; private set; }
         public TextureData TextureData { get; private set; }
+
+        public override string Name
+        {
+            get { return Data.Name; }
+        }
         #endregion
 
         #region Constructors
