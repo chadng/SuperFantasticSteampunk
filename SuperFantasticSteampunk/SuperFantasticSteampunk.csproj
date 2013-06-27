@@ -485,14 +485,6 @@
       <Link>Content\Fonts\verdana\verdana30.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana4.xnb">
-      <Link>Content\Fonts\verdana\verdana4.xnb</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana6.xnb">
-      <Link>Content\Fonts\verdana\verdana6.xnb</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana8.xnb">
       <Link>Content\Fonts\verdana\verdana8.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

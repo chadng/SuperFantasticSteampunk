@@ -287,8 +287,9 @@ namespace SuperFantasticSteampunk.BattleStates
                 {
                     renderer.DrawText(">", (position - new Vector2(subMenuPadding, 0.0f)) * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
                     Vector2 containerSize = renderer.Font.MeasureString(menuOption.Description, Font.DefaultSize * fontScale.Y) / scale;
-                    drawContainer((position.X + subMenuWidth), position.Y, containerSize.X, containerSize.Y, renderer);
-                    renderer.DrawText(menuOption.Description, (position + new Vector2(subMenuWidth, 0.0f)) * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
+                    Vector2 containerPosition = position + new Vector2(subMenuWidth + (borderTextureData[E].Width * 0.5f), 0.0f);
+                    drawContainer(containerPosition.X, containerPosition.Y, containerSize.X, containerSize.Y, renderer);
+                    renderer.DrawText(menuOption.Description, containerPosition * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
                 }
 
                 renderer.DrawText(menuOption.Name, position * scale, Color.White, 0.0f, Vector2.Zero, fontScale);

@@ -26,6 +26,11 @@ namespace SuperFantasticSteampunk
         {
             get { return new Vector2(OriginX, OriginY); }
         }
+
+        public Vector2 Size
+        {
+            get { return new Vector2(Width, Height); }
+        }
         #endregion
     }
 }

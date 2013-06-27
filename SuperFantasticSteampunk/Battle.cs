@@ -432,7 +432,7 @@ namespace SuperFantasticSteampunk
 
         private void drawPersistentGui(Renderer renderer)
         {
-            Vector2 screenScaleFactor = Game1.ScreenScaleFactor;
+            Vector2 screenScaleFactor = new Vector2(MathHelper.Min(Game1.ScreenScaleFactor.X, Game1.ScreenScaleFactor.Y));
             Vector2 headPadding = new Vector2(30.0f) * screenScaleFactor;
             Vector2 barPadding = new Vector2(20.0f) * screenScaleFactor;
             Vector2 barSize = new Vector2(290, 30) * screenScaleFactor;
@@ -471,16 +471,16 @@ namespace SuperFantasticSteampunk
         {
             Vector2 screenScaleFactor = Game1.ScreenScaleFactor;
             Vector2 minScale = new Vector2(MathHelper.Min(screenScaleFactor.X, screenScaleFactor.Y));
+            Vector2 shadowOffset = new Vector2(-2f, 2f) * minScale;
+            Color shadowColor = Color.Black * 0.4f;
 
             TextureData textureData = characterClassHeadTextureData[partyMember.CharacterClass];
+            bool partyMemberThinking = partyMemberIsThinking(partyMember);
 
-            Vector2 underlayScale = new Vector2((headPadding.X * 2.0f) + barPadding.X + barSize.X + (textureData.Width * screenScaleFactor.X), ((headPadding.Y * 1.4f) + (textureData.Height * minScale.Y)));
-            if (partyMemberIsThinking(partyMember))
+            if (partyMemberThinking)
             {
-                Vector2 underlayPosition = position - (new Vector2(10.0f) * screenScaleFactor);
-                renderer.Draw(whitePixelTextureData, underlayPosition, new Color(1.0f, 1.0f, 1.0f, 0.2f), 0.0f, underlayScale, false);
+                renderer.Draw(textureData, position + (shadowOffset * 2.0f), shadowColor, 0.0f, minScale, false);
             }
-
             renderer.Draw(textureData, position, Color.White, 0.0f, minScale, false);
             
             if (partyMemberIsSelected(partyMember))
@@ -489,12 +489,17 @@ namespace SuperFantasticSteampunk
             position.X += (textureData.Width * screenScaleFactor.X) + headPadding.X;
 
             Vector2 partyMemberNameSize = renderer.Font.MeasureString(partyMember.Name, Font.DefaultSize * minScale.Y);
-            renderer.DrawText(partyMember.Name, position + new Vector2(barSize.X / 2.0f, 20.0f * minScale.Y), Color.White, 0.0f, partyMemberNameSize / 2.0f, minScale);
+            Vector2 partyMemberNamePosition = position + new Vector2(barSize.X / 2.0f, 20.0f * minScale.Y);
+            if (partyMemberThinking)
+                renderer.DrawText(partyMember.Name, partyMemberNamePosition + shadowOffset, shadowColor, 0.0f, partyMemberNameSize / 2.0f, minScale);
+            renderer.DrawText(partyMember.Name, partyMemberNamePosition, Color.White, 0.0f, partyMemberNameSize / 2.0f, minScale);
 
             position.Y += partyMemberNameSize.Y + (20.0f * minScale.Y);
             float percentageHealth = partyMember.Health / (float)partyMember.MaxHealth;
             Color healthBarColor = percentageHealth > 0.5f ? Color.Lerp(Color.Yellow, Color.Green, (percentageHealth - 0.5f) / 0.5f) : Color.Lerp(Color.Red, Color.Yellow, percentageHealth / 0.5f);
-            drawBar(position, barSize, percentageHealth, healthBarColor, renderer);
+            if (partyMemberThinking)
+                drawBar(position + shadowOffset, barSize, 1.0f, shadowColor, false, renderer);
+            drawBar(position, barSize, percentageHealth, healthBarColor, true, renderer);
             string barText = "HP: " + partyMember.Health.ToString() + "/" + partyMember.MaxHealth;
             Vector2 barTextSize = renderer.Font.MeasureString(barText, Font.DefaultSize * minScale.Y);
             renderer.DrawText(barText, position + (barSize / 2.0f), Color.White, 0.0f, barTextSize / 2.0f, minScale);
@@ -509,9 +514,10 @@ namespace SuperFantasticSteampunk
             });
         }
 
-        private void drawBar(Vector2 position, Vector2 size, float percentage, Color color, Renderer renderer)
+        private void drawBar(Vector2 position, Vector2 size, float percentage, Color color, bool drawBacking, Renderer renderer)
         {
-            renderer.Draw(whitePixelTextureData, position, Color.Black, 0.0f, size, false);
+            if (drawBacking)
+                renderer.Draw(whitePixelTextureData, position, Color.Black, 0.0f, size, false);
             renderer.Draw(whitePixelTextureData, position, color, 0.0f, new Vector2(size.X * percentage, size.Y), false);
         }
 

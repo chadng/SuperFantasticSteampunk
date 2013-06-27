@@ -83,6 +83,8 @@ namespace SuperFantasticSteampunk
             graphics.PreferredBackBufferWidth = (int)ScreenSize.X;
             graphics.PreferredBackBufferHeight = (int)ScreenSize.Y;
             IsFixedTimeStep = false;
+            if (graphics.IsFullScreen)
+                IsMouseVisible = false;
             skipNextUpdate = false;
         }
         #endregion
