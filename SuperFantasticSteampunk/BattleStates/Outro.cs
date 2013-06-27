@@ -24,14 +24,14 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             Battle.OverworldEncounter.State = encounterState;
             Logger.Log(battle.PlayerPartyItemsUsed.ToString() + " items were used");
+            BattleStateRenderer = new IntroOutroRenderer(this);
+            Time = FadeTimeInSeconds * (1.0f - WinRenderer.MaxOverlayAlpha);
         }
         #endregion
 
         #region Instance Methods
         public override void Start()
         {
-            Time = FadeTimeInSeconds;
-            BattleStateRenderer = new IntroOutroRenderer(this);
         }
 
         public override void Finish()

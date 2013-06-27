@@ -30,6 +30,7 @@ namespace SuperFantasticSteampunk
         public static List<string> PartyMemberTitles { get; private set; }
         public static List<string> PartyMemberForenames { get; private set; }
         public static List<string> PartyMemberSurnames { get; private set; }
+        public static List<string> BattleWinMessages { get; private set; }
         #endregion
 
         #region Static Methods
@@ -60,6 +61,7 @@ namespace SuperFantasticSteampunk
             PartyMemberTitles = new List<string>(File.ReadAllLines(contentManager.RootDirectory + "/Titles.txt"));
             PartyMemberForenames = new List<string>(File.ReadAllLines(contentManager.RootDirectory + "/Forenames.txt"));
             PartyMemberSurnames = new List<string>(File.ReadAllLines(contentManager.RootDirectory + "/Surnames.txt"));
+            BattleWinMessages = new List<string>(File.ReadAllLines(contentManager.RootDirectory + "/BattleWinMessages.txt"));
         }
 
         public static void UnloadContent()

@@ -59,7 +59,8 @@ namespace SuperFantasticSteampunk
             updateColor(ref color);
             updateScale(ref scale);
             Vector2 origin = new Vector2(sprite.Data.OriginX, sprite.Data.OriginY);
-            spriteBatch.Draw(sprite.Texture, position, sprite.GetSourceRectangle(), color, rotation, origin, scale, SpriteEffects.None, 0.0f);
+            SpriteEffects spriteEffects = getSpriteEffectsFromScale(ref scale);
+            spriteBatch.Draw(sprite.Texture, position, sprite.GetSourceRectangle(), color, rotation, origin, scale, spriteEffects, 0.0f);
         }
 
         public void Draw(TextureData textureData, Vector2 position, Color color, float rotation, Vector2 scale, bool cameraTransform = true)
@@ -73,7 +74,8 @@ namespace SuperFantasticSteampunk
             updateColor(ref color);
             Rectangle sourceRect = new Rectangle(0, 0, textureData.Texture.Width, textureData.Texture.Height);
             Vector2 origin = new Vector2(textureData.OriginX, textureData.OriginY);
-            spriteBatch.Draw(textureData.Texture, position, sourceRect, color, rotation, origin, scale, SpriteEffects.None, 0.0f);
+            SpriteEffects spriteEffects = getSpriteEffectsFromScale(ref scale);
+            spriteBatch.Draw(textureData.Texture, position, sourceRect, color, rotation, origin, scale, spriteEffects, 0.0f);
         }
 
         public void Draw(TextureData textureData, Vector2 position, Color color)
@@ -126,8 +128,9 @@ namespace SuperFantasticSteampunk
                 updateScale(ref scale);
             }
             float fontSize;
-            SpriteFont spriteFont = Font.GetBestSizeSpriteFont(Font.DefaultSize * scale.Y, out fontSize);
-            spriteBatch.DrawString(spriteFont, text, position.Round(), color, rotation, origin.Round(), Vector2.One, SpriteEffects.None, 0.0f);
+            SpriteFont spriteFont = Font.GetBestSizeSpriteFont(Font.DefaultSize * Math.Abs(scale.Y), out fontSize);
+            SpriteEffects spriteEffects = getSpriteEffectsFromScale(ref scale);
+            spriteBatch.DrawString(spriteFont, text, position.Round(), color, rotation, origin.Round(), Vector2.One, spriteEffects, 0.0f);
         }
 
         public void End()
@@ -196,6 +199,25 @@ namespace SuperFantasticSteampunk
             skeleton.G = vectorColor.Y;
             skeleton.B = vectorColor.Z;
             skeleton.A = vectorColor.W;
+        }
+
+        private SpriteEffects getSpriteEffectsFromScale(ref Vector2 scale)
+        {
+            SpriteEffects spriteEffects = SpriteEffects.None;
+            if (scale.X < 0.0f)
+            {
+                spriteEffects = SpriteEffects.FlipHorizontally;
+                scale.X = Math.Abs(scale.X);
+            }
+            if (scale.Y < 0.0f)
+            {
+                if (spriteEffects == SpriteEffects.None)
+                    spriteEffects = SpriteEffects.FlipVertically;
+                else
+                    spriteEffects |= SpriteEffects.FlipVertically;
+                scale.Y = Math.Abs(scale.Y);
+            }
+            return spriteEffects;
         }
         #endregion
     }

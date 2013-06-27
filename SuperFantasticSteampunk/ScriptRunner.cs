@@ -590,6 +590,12 @@ namespace SuperFantasticSteampunk
             switch (enhancement)
             {
             case Enhancement.Piercing:
+                List<PartyMember> list = layout.GetListWithPartyMember(target);
+                result = new List<PartyMember>(2);
+                result.Add(list[0]);
+                if (list.Count > 1)
+                    result.Add(list[1]);
+                break;
             case Enhancement.Relentless:
                 result = new List<PartyMember>(layout.GetListWithPartyMember(target)); // new list isn't created in PartyBattleLayout#PartyMembersList
                 break;

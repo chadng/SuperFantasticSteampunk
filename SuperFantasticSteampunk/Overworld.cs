@@ -181,8 +181,7 @@ namespace SuperFantasticSteampunk
                 enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
                 enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
                 enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-                enemyParty.InitPartyBattleLayout("0,1\n2,3\n4,5\n6,7");
+                enemyParty.InitPartyBattleLayout("0,1\n2,3\n4,5\n6");
                 AddEnemyParty(enemyParty, new Vector2(100.0f * i));
             }
         }

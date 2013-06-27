@@ -15,16 +15,16 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Fields
+        public readonly Dictionary<CharacterClass, TextureData> CharacterClassHeadTextureData;
+        private readonly TextureData whitePixelTextureData;
+        private readonly TextureData arrowTextureData;
+        private readonly TextureData borderTextureDataN;
+        private readonly TextureData borderTextureDataE;
+        private readonly TextureData borderTextureDataW;
+        private readonly TextureData borderTextureDataNE;
+        private readonly TextureData borderTextureDataNW;
         private Stack<BattleState> states;
         private bool stateChanged;
-        private TextureData whitePixelTextureData;
-        private TextureData arrowTextureData;
-        private TextureData borderTextureDataN;
-        private TextureData borderTextureDataE;
-        private TextureData borderTextureDataW;
-        private TextureData borderTextureDataNE;
-        private TextureData borderTextureDataNW;
-        private Dictionary<CharacterClass, TextureData> characterClassHeadTextureData;
         private List<TextureData> backgroundTextureData;
         private float lowestBackgroundTextureWidth;
         private float cameraUpdateDelay;
@@ -92,7 +92,7 @@ namespace SuperFantasticSteampunk
             borderTextureDataW = ResourceManager.GetTextureData("battle_ui/borders/w");
             borderTextureDataNE = ResourceManager.GetTextureData("battle_ui/borders/ne");
             borderTextureDataNW = ResourceManager.GetTextureData("battle_ui/borders/nw");
-            characterClassHeadTextureData = new Dictionary<CharacterClass, TextureData> {
+            CharacterClassHeadTextureData = new Dictionary<CharacterClass, TextureData> {
                 { CharacterClass.Warrior, ResourceManager.GetTextureData("battle_ui/warrior_head") },
                 { CharacterClass.Marksman, ResourceManager.GetTextureData("battle_ui/marksman_head") },
                 { CharacterClass.Medic, ResourceManager.GetTextureData("battle_ui/medic_head") },
@@ -167,6 +167,26 @@ namespace SuperFantasticSteampunk
         {
             if (time > cameraUpdateDelay)
                 cameraUpdateDelay = time;
+        }
+
+        public void CalculateStartAndFinishIndexesForMenuList(int optionsCount, int maxVisibleOptions, int currentIndex, out int startIndex, out int finishIndex)
+        {
+            startIndex = 0;
+            finishIndex = optionsCount - 1;
+            if (optionsCount > maxVisibleOptions)
+            {
+                int remainder;
+                int optionsAbove = Math.DivRem(maxVisibleOptions - 1, 2, out remainder);
+                int optionsBelow = optionsAbove + remainder;
+                startIndex = currentIndex - optionsAbove;
+                finishIndex = currentIndex + optionsBelow;
+                if (startIndex < 0)
+                    finishIndex -= startIndex;
+                else if (finishIndex >= optionsCount)
+                    startIndex = optionsCount - maxVisibleOptions;
+                startIndex = Math.Max(startIndex, 0);
+                finishIndex = Math.Min(finishIndex, optionsCount - 1);
+            }
         }
 
         protected override void update(Delta delta)
@@ -446,7 +466,7 @@ namespace SuperFantasticSteampunk
             for (int i = 0; i < PlayerParty.Count; ++i)
             {
                 drawPartyMemberUi(PlayerParty[i], position, headPadding, barPadding, barSize, renderer);
-                position.X += (headPadding.X * 2) + barPadding.X + barSize.X + (characterClassHeadTextureData[PlayerParty[i].CharacterClass].Width * screenScaleFactor.X);
+                position.X += (headPadding.X * 2) + barPadding.X + barSize.X + (CharacterClassHeadTextureData[PlayerParty[i].CharacterClass].Width * screenScaleFactor.X);
             }
         }
 
@@ -474,7 +494,7 @@ namespace SuperFantasticSteampunk
             Vector2 shadowOffset = new Vector2(-2f, 2f) * minScale;
             Color shadowColor = Color.Black * 0.4f;
 
-            TextureData textureData = characterClassHeadTextureData[partyMember.CharacterClass];
+            TextureData textureData = CharacterClassHeadTextureData[partyMember.CharacterClass];
             bool partyMemberThinking = partyMemberIsThinking(partyMember);
 
             if (partyMemberThinking)

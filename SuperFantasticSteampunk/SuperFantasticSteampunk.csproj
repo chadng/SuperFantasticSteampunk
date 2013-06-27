@@ -76,6 +76,7 @@
     <Compile Include="BattleStates\ThinkRenderer.cs" />
     <Compile Include="BattleStates\UseItem.cs" />
     <Compile Include="BattleStates\Win.cs" />
+    <Compile Include="BattleStates\WinRenderer.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Clock.cs" />
     <Compile Include="EquippableItem.cs" />
@@ -269,6 +270,10 @@
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.png">
       <Link>Content\Skeletons\weasel.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\BattleWinMessages.txt">
+      <Link>Content\BattleWinMessages.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Forenames.txt">

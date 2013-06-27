@@ -262,22 +262,9 @@ namespace SuperFantasticSteampunk.BattleStates
             Vector2 fontScale = new Vector2(subMenuFontSize / Font.DefaultSize) * Game1.ScreenScaleFactor.X;
             Vector2 position = new Vector2(subMenuX + subMenuPadding, subMenuY);
 
-            int startIndex = 0;
-            int finishIndex = battleState.MenuOptions.Count - 1;
-            if (battleState.MenuOptions.Count > maxVisibleSubMenuOptions)
-            {
-                int remainder;
-                int optionsAbove = Math.DivRem(maxVisibleSubMenuOptions - 1, 2, out remainder);
-                int optionsBelow = optionsAbove + remainder;
-                startIndex = battleState.CurrentOptionNameIndex - optionsAbove;
-                finishIndex = battleState.CurrentOptionNameIndex + optionsBelow;
-                if (startIndex < 0)
-                    finishIndex -= startIndex;
-                else if (finishIndex >= battleState.MenuOptions.Count)
-                    startIndex = battleState.MenuOptions.Count - maxVisibleSubMenuOptions;
-                startIndex = Math.Max(startIndex, 0);
-                finishIndex = Math.Min(finishIndex, battleState.MenuOptions.Count - 1);
-            }
+            int startIndex;
+            int finishIndex;
+            battleState.Battle.CalculateStartAndFinishIndexesForMenuList(battleState.MenuOptions.Count, maxVisibleSubMenuOptions, battleState.CurrentOptionNameIndex, out startIndex, out finishIndex);
 
             for (int i = startIndex; i <= finishIndex; ++i)
             {

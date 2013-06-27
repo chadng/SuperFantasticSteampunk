@@ -12,9 +12,21 @@ namespace SuperFantasticSteampunk.BattleStates
         private const int itemsUsedDivisorForItemsWonRandomizer = 5;
         #endregion
 
+        #region Instance Fields
+        private InputButtonListener inputButtonListener;
+        #endregion
+
         #region Instance Properties
-        public List<string> ItemsWon { get; private set; }
-        
+        public string WinMessage { get; private set; }
+        public List<Tuple<string, CharacterClass>> ItemsWon { get; private set; }
+        public int CurrentItemIndex { get; private set; }
+
+        public new WinRenderer BattleStateRenderer
+        {
+            get { return base.BattleStateRenderer as WinRenderer; }
+            protected set { base.BattleStateRenderer = value; }
+        }
+
         public override bool KeepPartyMembersStatic
         {
             get { return true; }
@@ -25,7 +37,13 @@ namespace SuperFantasticSteampunk.BattleStates
         public Win(Battle battle)
             : base(battle)
         {
-            ItemsWon = new List<string>();
+            WinMessage = ResourceManager.BattleWinMessages.Sample();
+            ItemsWon = new List<Tuple<string, CharacterClass>>();
+
+            inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
+                { InputButton.Up, new ButtonEventHandlers(down: previousItem) },
+                { InputButton.Down, new ButtonEventHandlers(down: nextItem) }
+            });
         }
         #endregion
 
@@ -34,6 +52,8 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             ItemsWon.Clear();
             addNewItemsToPlayerPartyInventory();
+            CurrentItemIndex = 0;
+            BattleStateRenderer = new WinRenderer(this);
         }
 
         public override void Finish()
@@ -44,8 +64,24 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(Delta delta)
         {
-            //TODO: Update win screen
-            Finish();
+            if (BattleStateRenderer.FadeInFinished)
+            {
+            inputButtonListener.Update(delta);
+                if (Input.AnyActionButton())
+                    Finish();
+            }
+        }
+
+        private void previousItem()
+        {
+            if (--CurrentItemIndex < 0)
+                CurrentItemIndex = 0;
+        }
+
+        private void nextItem()
+        {
+            if (++CurrentItemIndex >= ItemsWon.Count)
+                CurrentItemIndex = ItemsWon.Count - 1;
         }
 
         private void addNewItemsToPlayerPartyInventory()
@@ -94,7 +130,7 @@ namespace SuperFantasticSteampunk.BattleStates
                     WeaponData weaponData = weapons[rarity].Sample();
                     string weaponName = new Attributes(weaponData).ToString(weaponData.Name);
                     Battle.PlayerParty.WeaponInventories[weaponData.CharacterClass].AddItem(weaponName);
-                    ItemsWon.Add(weaponName);
+                    ItemsWon.Add(new Tuple<string, CharacterClass>(weaponName, weaponData.CharacterClass));
                     Logger.Log("Player party won weapon " + weaponName);
                     break;
 
@@ -107,7 +143,7 @@ namespace SuperFantasticSteampunk.BattleStates
                     ShieldData shieldData = shields[rarity].Sample();
                     string shieldName = new Attributes(shieldData).ToString(shieldData.Name);
                     Battle.PlayerParty.ShieldInventory.AddItem(shieldName);
-                    ItemsWon.Add(shieldName);
+                    ItemsWon.Add(new Tuple<string, CharacterClass>(shieldName, CharacterClass.Enemy));
                     Logger.Log("Player party won shield " + shieldName);
                     break;
 
@@ -119,7 +155,7 @@ namespace SuperFantasticSteampunk.BattleStates
                     }
                     ItemData itemData = items[rarity].Sample();
                     Battle.PlayerParty.ItemInventory.AddItem(itemData.Name);
-                    ItemsWon.Add(itemData.Name);
+                    ItemsWon.Add(new Tuple<string, CharacterClass>(itemData.Name, CharacterClass.Enemy));
                     Logger.Log("Player party won item " + itemData.Name);
                     break;
                 }
