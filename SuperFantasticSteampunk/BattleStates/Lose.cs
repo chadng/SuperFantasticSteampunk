@@ -26,8 +26,7 @@ namespace SuperFantasticSteampunk.BattleStates
         public override void Finish()
         {
             base.Finish();
-            Battle.OverworldEncounter.State = EncounterState.Lost;
-            ChangeState(new Outro(Battle));
+            ChangeState(new Outro(EncounterState.Lost, Battle));
         }
 
         public override void Update(Delta delta)

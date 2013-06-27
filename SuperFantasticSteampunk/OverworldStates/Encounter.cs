@@ -42,10 +42,12 @@ namespace SuperFantasticSteampunk.OverworldStates
             case EncounterState.Won:
                 Overworld.EnemyParties.Remove(enemyParty);
                 primaryEnemyPartyMemberEntity.Kill();
+                PopState();
                 break;
 
             case EncounterState.Lost:
-                //TODO: Lose game
+                Scene.FinishCurrent();
+                new GameOver();
                 break;
 
             case EncounterState.Ran:
@@ -56,9 +58,9 @@ namespace SuperFantasticSteampunk.OverworldStates
                     Overworld.AddEnemyParty(enemyParty, primaryEnemyPartyMemberEntity.Position);
                 }
                 Overworld.MakePlayerInvincible();
+                PopState();
                 break;
             }
-            PopState();
         }
 
         public override void Update(Delta delta)

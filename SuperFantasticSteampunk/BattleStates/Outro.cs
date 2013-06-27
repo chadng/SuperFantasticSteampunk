@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using SuperFantasticSteampunk.OverworldStates;
 
 namespace SuperFantasticSteampunk.BattleStates
 {
@@ -18,9 +19,10 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Constructors
-        public Outro(Battle battle)
+        public Outro(EncounterState encounterState, Battle battle)
             : base(battle)
         {
+            Battle.OverworldEncounter.State = encounterState;
             Logger.Log(battle.PlayerPartyItemsUsed.ToString() + " items were used");
         }
         #endregion

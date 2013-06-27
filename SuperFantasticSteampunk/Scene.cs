@@ -48,6 +48,11 @@ namespace SuperFantasticSteampunk
                 {
                     Current.finishCleanup();
                     sceneStack.Pop();
+                    if (nextScene != null)
+                    {
+                        pushNextScene();
+                        Current.update(delta);
+                    }
                 }
                 else
                 {

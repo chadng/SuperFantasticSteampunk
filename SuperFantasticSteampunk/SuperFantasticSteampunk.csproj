@@ -82,6 +82,7 @@
     <Compile Include="FloatingParticle.cs" />
     <Compile Include="FloatingText.cs" />
     <Compile Include="Font.cs" />
+    <Compile Include="GameOver.cs" />
     <Compile Include="InputButtonListener.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Item.cs" />
