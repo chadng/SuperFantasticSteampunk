@@ -33,6 +33,8 @@ namespace SuperFantasticSteampunk
                 if (gameOverAlphaTimer > gameOverAlphaTime)
                     gameOverAlphaTimer = gameOverAlphaTime;
             }
+            else if (Input.AnyActionButton())
+                Game1.RestartGame();
         }
 
         protected override void draw(Renderer renderer)

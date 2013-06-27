@@ -70,6 +70,11 @@ namespace SuperFantasticSteampunk
             return buttonCheckBindings[button]();
         }
 
+        public static bool AnyActionButton()
+        {
+            return A() || B() || X() || Y();
+        }
+
         public static bool Up()
         {
             return keyboardUp() || gamePadUp();

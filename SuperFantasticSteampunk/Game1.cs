@@ -56,6 +56,12 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Static Methods
+        public static void RestartGame()
+        {
+            Logger.Log("Game restarted");
+            instance.restart();
+        }
+
         public static void ExitGame()
         {
             Logger.Log("Game exited");
@@ -114,16 +120,7 @@ namespace SuperFantasticSteampunk
             ResourceManager.Initialize(Content, GraphicsDevice);
             renderer = new Renderer(GraphicsDevice, ResourceManager.GetShader("BasicTexture"));
             renderer.Font = ResourceManager.GetFont("verdana");
-
-            Party playerParty = new Party();
-            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("marksman")));
-            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("warrior")));
-            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("medic")));
-            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("thief")));
-
-            new Overworld(playerParty, ResourceManager.GetNewArea("forest"));
-
-            Clock.Init(12);
+            restart();
         }
 
         protected override void UnloadContent()
@@ -153,6 +150,25 @@ namespace SuperFantasticSteampunk
             renderer.End();
 
             base.Draw(gameTime);
+        }
+
+        private void restart()
+        {
+            while (Scene.Current != null)
+            {
+                Scene.FinishCurrent();
+                Scene.UpdateCurrent(new Delta(0.001f));
+            }
+
+            Party playerParty = new Party();
+            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("marksman")));
+            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("warrior")));
+            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("medic")));
+            playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("thief")));
+
+            new Overworld(playerParty, ResourceManager.GetNewArea("forest"));
+
+            Clock.Init(12);
         }
         #endregion
     }
