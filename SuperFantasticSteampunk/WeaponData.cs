@@ -16,8 +16,18 @@ namespace SuperFantasticSteampunk
         public int Power { get; private set; }
         public Rarity Rarity { get; private set; }
         public string TextureName { get; private set; }
+        public bool ForceAttributes { get; private set; }
         public string BlacklistedAttributes { get; private set; }
         public Script Script { get; private set; }
+        #endregion
+
+        #region Instance Methods
+        public List<string> BlacklistedAttributesToList()
+        {
+            if (BlacklistedAttributes == null || BlacklistedAttributes.Length == 0)
+                return new List<string>();
+            return new List<string>(BlacklistedAttributes.Replace(" ", "").ToLower().Split(';'));
+        }
         #endregion
     }
 }

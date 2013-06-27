@@ -13,6 +13,8 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Instance Properties
+        public List<string> ItemsWon { get; private set; }
+        
         public override bool KeepPartyMembersStatic
         {
             get { return true; }
@@ -23,12 +25,14 @@ namespace SuperFantasticSteampunk.BattleStates
         public Win(Battle battle)
             : base(battle)
         {
+            ItemsWon = new List<string>();
         }
         #endregion
 
         #region Instance Methods
         public override void Start()
         {
+            ItemsWon.Clear();
             addNewItemsToPlayerPartyInventory();
         }
 
@@ -88,8 +92,10 @@ namespace SuperFantasticSteampunk.BattleStates
                         continue;
                     }
                     WeaponData weaponData = weapons[rarity].Sample();
-                    Battle.PlayerParty.WeaponInventories[weaponData.CharacterClass].AddItem(weaponData.Name);
-                    Logger.Log("Player party won weapon " + weaponData.Name);
+                    string weaponName = new Attributes(weaponData).ToString(weaponData.Name);
+                    Battle.PlayerParty.WeaponInventories[weaponData.CharacterClass].AddItem(weaponName);
+                    ItemsWon.Add(weaponName);
+                    Logger.Log("Player party won weapon " + weaponName);
                     break;
 
                 case ThinkActionType.Defend:
@@ -99,8 +105,10 @@ namespace SuperFantasticSteampunk.BattleStates
                         continue;
                     }
                     ShieldData shieldData = shields[rarity].Sample();
-                    Battle.PlayerParty.ShieldInventory.AddItem(shieldData.Name);
-                    Logger.Log("Player party won shield " + shieldData.Name);
+                    string shieldName = new Attributes(shieldData).ToString(shieldData.Name);
+                    Battle.PlayerParty.ShieldInventory.AddItem(shieldName);
+                    ItemsWon.Add(shieldName);
+                    Logger.Log("Player party won shield " + shieldName);
                     break;
 
                 case ThinkActionType.UseItem:
@@ -111,6 +119,7 @@ namespace SuperFantasticSteampunk.BattleStates
                     }
                     ItemData itemData = items[rarity].Sample();
                     Battle.PlayerParty.ItemInventory.AddItem(itemData.Name);
+                    ItemsWon.Add(itemData.Name);
                     Logger.Log("Player party won item " + itemData.Name);
                     break;
                 }

@@ -4,29 +4,29 @@ using System.Text;
 
 namespace SuperFantasticSteampunk
 {
-    enum Handling { None, Light, Heavy, Uncomfortable }
-    enum Enhancement { None, Piercing, Explosive, Relentless, Inaccurate, Spiky }
-    enum Status { None, Poisonous, Shocking, Scary }
-    enum Affiliation { None, Light, Darkness, Doom }
+    enum Handling { NoHandling, Light, Heavy, Uncomfortable }
+    enum Enhancement { NoEnhancement, Piercing, Explosive, Relentless, Inaccurate, Spiky }
+    enum Status { NoStatus, Poisonous, Shocking, Scary }
+    enum Affiliation { NoAffiliation, Light, Darkness, Doom }
 
     class Attributes
     {
         #region Constants
         private static readonly Dictionary<Handling, int> weaponHandlingChances = new Dictionary<Handling, int> {
-            { Handling.None, 3 },
+            { Handling.NoHandling, 4 },
             { Handling.Light, 2 },
             { Handling.Heavy, 2 },
             { Handling.Uncomfortable, 1 }
         };
 
         private static readonly Dictionary<Handling, int> shieldHandlingChances = new Dictionary<Handling, int> {
-            { Handling.None, 3 },
+            { Handling.NoHandling, 3 },
             { Handling.Light, 2 },
             { Handling.Heavy, 1 }
         };
 
         private static readonly Dictionary<Enhancement, int> weaponEnhancementChances = new Dictionary<Enhancement, int> {
-            { Enhancement.None, 4 },
+            { Enhancement.NoEnhancement, 4 },
             { Enhancement.Piercing, 1 },
             { Enhancement.Explosive, 1 },
             { Enhancement.Relentless, 2 },
@@ -34,21 +34,21 @@ namespace SuperFantasticSteampunk
         };
 
         private static readonly Dictionary<Enhancement, int> shieldEnhancementChances = new Dictionary<Enhancement, int> {
-            { Enhancement.None, 4 },
+            { Enhancement.NoEnhancement, 4 },
             { Enhancement.Spiky, 1 }
         };
 
         private static readonly Dictionary<Status, int> statusChances = new Dictionary<Status, int> {
-            { Status.None, 4 },
-            { Status.Poisonous, 3 },
+            { Status.NoStatus, 4 },
+            { Status.Poisonous, 2 },
             { Status.Shocking, 2 },
             { Status.Scary, 1 }
         };
 
         private static readonly Dictionary<Affiliation, int> affiliationChances = new Dictionary<Affiliation, int> {
-            { Affiliation.None, 6 },
-            { Affiliation.Light, 3 },
-            { Affiliation.Darkness, 3 },
+            { Affiliation.NoAffiliation, 24 },
+            { Affiliation.Light, 6 },
+            { Affiliation.Darkness, 6 },
             { Affiliation.Doom, 1 }
         };
 
@@ -116,12 +116,14 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Constructors
-        public Attributes(bool isWeapon)
+        public Attributes(WeaponData weaponData)
         {
-            Handling = (isWeapon ? weaponHandlings : shieldHandlings).Sample();
-            Enhancement = (isWeapon ? weaponEnhancements : shieldEnhancements).Sample();
-            Status = statuses.Sample();
-            Affiliation = affiliations.Sample();
+            generateAttributes(true, weaponData.BlacklistedAttributesToList(), weaponData.ForceAttributes);
+        }
+
+        public Attributes(ShieldData shieldData)
+        {
+            generateAttributes(false, shieldData.BlacklistedAttributesToList(), shieldData.ForceAttributes);
         }
 
         public Attributes(string str)
@@ -134,23 +136,23 @@ namespace SuperFantasticSteampunk
         public string ToString(string itemName)
         {
             StringBuilder result = new StringBuilder();
-            if (Handling != Handling.None)
+            if (Handling != Handling.NoHandling)
             {
                 result.Append(Handling.ToString());
                 result.Append(' ');
             }
-            if (Enhancement != Enhancement.None)
+            if (Enhancement != Enhancement.NoEnhancement)
             {
                 result.Append(Enhancement.ToString());
                 result.Append(' ');
             }
-            if (Status != Status.None)
+            if (Status != Status.NoStatus)
             {
                 result.Append(Status.ToString());
                 result.Append(' ');
             }
             result.Append(itemName);
-            if (Affiliation != Affiliation.None)
+            if (Affiliation != Affiliation.NoAffiliation)
             {
                 result.Append(" of ");
                 result.Append(Affiliation.ToString());
@@ -158,6 +160,43 @@ namespace SuperFantasticSteampunk
 
             string resultString = result.ToString();
             return resultString.Substring(0, 1).ToUpper() + resultString.ToLower().Substring(1);
+        }
+
+        private void generateAttributes(bool isWeapon, List<string> blacklistedAttributes, bool forceNotEmpty)
+        {
+            do
+            {
+                Handling = (isWeapon ? weaponHandlings : shieldHandlings).Sample();
+                Enhancement = (isWeapon ? weaponEnhancements : shieldEnhancements).Sample();
+                Status = statuses.Sample();
+                Affiliation = affiliations.Sample();
+            } while (attributesInList(blacklistedAttributes) || (forceNotEmpty && empty()));
+        }
+
+        private bool attributesInList(List<string> list)
+        {
+            if (list.Contains(Handling.ToString().ToLower()))
+                return true;
+            if (list.Contains(Enhancement.ToString().ToLower()))
+                return true;
+            if (list.Contains(Status.ToString().ToLower()))
+                return true;
+            if (list.Contains(Affiliation.ToString().ToLower()))
+                return true;
+            return false;
+        }
+
+        private bool empty()
+        {
+            if (Handling != Handling.NoHandling)
+                return false;
+            if (Enhancement != Enhancement.NoEnhancement)
+                return false;
+            if (Status != Status.NoStatus)
+                return false;
+            if (Affiliation != Affiliation.NoAffiliation)
+                return false;
+            return true;
         }
 
         private void populateFromString(string str)
@@ -185,11 +224,11 @@ namespace SuperFantasticSteampunk
 
             for (int i = 0; i < itemNameIndex; ++i)
             {
-                if (Handling == Handling.None)
+                if (Handling == Handling.NoHandling)
                     Handling = tryConvertString(parts[i], stringToHandlingMap);
-                if (Enhancement == Enhancement.None)
+                if (Enhancement == Enhancement.NoEnhancement)
                     Enhancement = tryConvertString(parts[i], stringToEnhancementMap);
-                if (Status == Status.None)
+                if (Status == Status.NoStatus)
                     Status = tryConvertString(parts[i], stringToStatusMap);
             }
         }
@@ -204,10 +243,10 @@ namespace SuperFantasticSteampunk
 
         private void reset()
         {
-            Handling = Handling.None;
-            Enhancement = Enhancement.None;
-            Status = Status.None;
-            Affiliation = Affiliation.None;
+            Handling = Handling.NoHandling;
+            Enhancement = Enhancement.NoEnhancement;
+            Status = Status.NoStatus;
+            Affiliation = Affiliation.NoAffiliation;
         }
         #endregion
     }
