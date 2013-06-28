@@ -244,6 +244,10 @@
       <Link>Content\Textures\battle_ui\buttons\gamepad_lt.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\buttons_output\key.png">
+      <Link>Content\Textures\battle_ui\buttons\key.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\particles_output\cloud_1.png">
       <Link>Content\Textures\particles\cloud_1.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

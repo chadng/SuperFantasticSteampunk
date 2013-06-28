@@ -23,6 +23,7 @@ namespace SuperFantasticSteampunk
         private readonly TextureData borderTextureDataW;
         private readonly TextureData borderTextureDataNE;
         private readonly TextureData borderTextureDataNW;
+        private readonly TextureData keyboardButtonTextureData;
         private readonly Dictionary<InputButton, TextureData> gamepadButtonTextureData;
         private readonly TextureData blankGamepadTextureData;
         private Stack<BattleState> states;
@@ -100,6 +101,7 @@ namespace SuperFantasticSteampunk
                 { CharacterClass.Medic, ResourceManager.GetTextureData("battle_ui/medic_head") },
                 { CharacterClass.Thief, ResourceManager.GetTextureData("battle_ui/thief_head") }
             };
+            keyboardButtonTextureData = ResourceManager.GetTextureData("battle_ui/buttons/key");
             gamepadButtonTextureData = new Dictionary<InputButton, TextureData> {
                 { InputButton.A, ResourceManager.GetTextureData("battle_ui/buttons/gamepad_a") },
                 { InputButton.B, ResourceManager.GetTextureData("battle_ui/buttons/gamepad_b") },
@@ -202,23 +204,32 @@ namespace SuperFantasticSteampunk
             if (text != null && text.Length == 0)
                 text = null;
 
-            TextureData textureData = gamepadButtonTextureData[button];
+            TextureData textureData = Input.GamePadUsedLast ? gamepadButtonTextureData[button] : keyboardButtonTextureData;
             Vector2 minScale = Game1.MinScreenScaleFactor;
             Vector2 textSize = renderer.Font.MeasureString(text ?? "I", Font.DefaultSize * minScale.Y);
-            Vector2 buttonScale = new Vector2((1.0f / textureData.Height) * textSize.Y * 1.1f);
+            Vector2 buttonScale = new Vector2((textSize.Y * 1.1f) / textureData.Height);
+            float halfButtonWidth = textureData.Width * 0.5f * buttonScale.X;
 
             if (text != null)
             {
-                float halfButtonWidth = textureData.Width * 0.5f * buttonScale.X;
-                Vector2 backingSize = new Vector2((textSize.X * 1.1f) + halfButtonWidth, textureData.Height * buttonScale.Y);
+                float buttonHeight = textureData.Height * buttonScale.Y;
+                if (!Input.GamePadUsedLast)
+                    buttonHeight -= buttonScale.Y;
+                Vector2 backingSize = new Vector2((textSize.X * 1.1f) + halfButtonWidth, buttonHeight);
                 Vector2 backingPosition = position + new Vector2(halfButtonWidth, 0.0f);
-                renderer.Draw(blankGamepadTextureData, backingPosition + new Vector2(backingSize.X - halfButtonWidth, 0.0f), Color.Gray, 0.0f, buttonScale, false);
+                renderer.Draw(blankGamepadTextureData, backingPosition + new Vector2(backingSize.X - halfButtonWidth, 0.0f), Color.Gray, 0.0f, new Vector2(buttonHeight / blankGamepadTextureData.Height), false);
                 renderer.Draw(whitePixelTextureData, backingPosition, Color.Gray, 0.0f, backingSize, false);
                 Vector2 textPosition = backingPosition + new Vector2(halfButtonWidth, 0.0f) + ((backingSize - new Vector2(halfButtonWidth / 2.0f, 0.0f) - textSize) / 2.0f);
                 renderer.DrawText(text, textPosition, Color.White, 0.0f, Vector2.Zero, minScale);
             }
 
             renderer.Draw(textureData, position, Color.White, 0.0f, buttonScale, false);
+            if (!Input.GamePadUsedLast)
+            {
+                text = Input.KeyboardMapping[button].ToString();
+                textSize = renderer.Font.MeasureString(text, Font.DefaultSize);
+                renderer.DrawText(text, new Vector2(position.X + (((halfButtonWidth * 2.0f) - textSize.X) / 2.0f), position.Y), Color.White, 0.0f, Vector2.Zero, minScale);
+            }
             return textureData.Size * buttonScale;
         }
 

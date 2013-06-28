@@ -21,9 +21,13 @@ namespace SuperFantasticSteampunk
 
         #region Static Fields
         private static Dictionary<InputButton, buttonCheckMethod> buttonCheckBindings;
-        private static Dictionary<InputButton, Keys> keyboardMapping;
         private static KeyboardState keyboardState;
         private static GamePadState gamePadState;
+        #endregion
+
+        #region Static Properties
+        public static Dictionary<InputButton, Keys> KeyboardMapping { get; private set; }
+        public static bool GamePadUsedLast { get; private set; }
         #endregion
 
         #region Static Constructors
@@ -45,7 +49,7 @@ namespace SuperFantasticSteampunk
             buttonCheckBindings.Add(InputButton.LeftTrigger, LeftTrigger);
             buttonCheckBindings.Add(InputButton.Pause, Pause);
 
-            keyboardMapping = new Dictionary<InputButton, Keys>();
+            KeyboardMapping = new Dictionary<InputButton, Keys>();
         }
         #endregion
 
@@ -55,8 +59,9 @@ namespace SuperFantasticSteampunk
             foreach (string line in File.ReadAllLines(contentManager.RootDirectory + "/KeyboardMapping.txt"))
             {
                 string[] parts = line.Split(':');
-                keyboardMapping.Add((InputButton)ResourceManager.ParseItemData<InputButton>(parts[0]), (Keys)ResourceManager.ParseItemData<Keys>(parts[1]));
+                KeyboardMapping.Add((InputButton)ResourceManager.ParseItemData<InputButton>(parts[0]), (Keys)ResourceManager.ParseItemData<Keys>(parts[1]));
             }
+            GamePadUsedLast = false;
         }
 
         public static void UpdateInputState()
@@ -77,62 +82,182 @@ namespace SuperFantasticSteampunk
 
         public static bool Up()
         {
-            return keyboardUp() || gamePadUp();
+            if (keyboardUp())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadUp())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool Down()
         {
-            return keyboardDown() || gamePadDown();
+            if (keyboardDown())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadDown())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool Left()
         {
-            return keyboardLeft() || gamePadLeft();
+            if (keyboardLeft())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadLeft())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool Right()
         {
-            return keyboardRight() || gamePadRight();
+            if (keyboardRight())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadRight())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool AltUp()
         {
-            return keyboardAltUp() || gamePadAltUp();
+            if (keyboardAltUp())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadAltUp())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool AltDown()
         {
-            return keyboardAltDown() || gamePadAltDown();
+            if (keyboardAltDown())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadAltDown())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool AltLeft()
         {
-            return keyboardAltLeft() || gamePadAltLeft();
+            if (keyboardAltLeft())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadAltLeft())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool AltRight()
         {
-            return keyboardAltRight() || gamePadAltRight();
+            if (keyboardAltRight())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadAltRight())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool A()
         {
-            return keyboardA() || gamePadA();
+            if (keyboardA())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadA())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool B()
         {
-            return keyboardB() || gamePadB();
+            if (keyboardB())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadB())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool X()
         {
-            return keyboardX() || gamePadX();
+            if (keyboardX())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadX())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool Y()
         {
-            return keyboardY() || gamePadY();
+            if (keyboardY())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadY())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         public static bool LeftTrigger()
@@ -143,84 +268,100 @@ namespace SuperFantasticSteampunk
         public static float LeftTriggerAmount()
         {
             float result = keyboardLeftTriggerAmount();
-            if (result == 0.0f)
+            if (result != 0.0f)
+                GamePadUsedLast = false;
+            else
+            {
                 result = gamePadLeftTriggerAmount();
+                if (result != 0.0f)
+                    GamePadUsedLast = true;
+            }
             return result;
         }
 
         public static bool Pause()
         {
-            return keyboardPause() || gamePadPause();
+            if (keyboardPause())
+            {
+                GamePadUsedLast = false;
+                return true;
+            }
+            if (gamePadPause())
+            {
+                GamePadUsedLast = true;
+                return true;
+            }
+            return false;
         }
 
         private static bool keyboardUp()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.Up]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.Up]);
         }
 
         private static bool keyboardDown()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.Down]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.Down]);
         }
 
         private static bool keyboardLeft()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.Left]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.Left]);
         }
 
         private static bool keyboardRight()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.Right]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.Right]);
         }
 
         private static bool keyboardAltUp()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.AltUp]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.AltUp]);
         }
 
         private static bool keyboardAltDown()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.AltDown]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.AltDown]);
         }
 
         private static bool keyboardAltLeft()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.AltLeft]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.AltLeft]);
         }
 
         private static bool keyboardAltRight()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.AltRight]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.AltRight]);
         }
 
         private static bool keyboardA()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.A]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.A]);
         }
 
         private static bool keyboardB()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.B]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.B]);
         }
 
         private static bool keyboardX()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.X]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.X]);
         }
 
         private static bool keyboardY()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.Y]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.Y]);
         }
 
         private static float keyboardLeftTriggerAmount()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.LeftTrigger]) ? 1.0f : 0.0f;
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.LeftTrigger]) ? 1.0f : 0.0f;
         }
 
         private static bool keyboardPause()
         {
-            return keyboardState.IsKeyDown(keyboardMapping[InputButton.Pause]);
+            return keyboardState.IsKeyDown(KeyboardMapping[InputButton.Pause]);
         }
 
         private static bool gamePadUp()
