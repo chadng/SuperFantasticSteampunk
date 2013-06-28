@@ -50,7 +50,7 @@ namespace SuperFantasticSteampunk
             foreach (string item in items)
             {
                 string[] parts = item.Split(':');
-                result.Add(parts[0], int.Parse(parts[1]));
+                result.Add(parts[0].ToUpperFirstChar(), int.Parse(parts[1]));
             }
             return result;
         }

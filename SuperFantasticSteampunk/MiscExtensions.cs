@@ -170,6 +170,11 @@ namespace SuperFantasticSteampunk
             return -1;
         }
 
+        public static string ToUpperFirstChar(this string self)
+        {
+            return self.Substring(0, 1).ToUpper() + self.Substring(1);
+        }
+
         public static Rectangle GenerateBoundingBox(this SkeletonData self)
         {
             Skeleton skeleton = new Skeleton(self);

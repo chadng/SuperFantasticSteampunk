@@ -154,9 +154,10 @@ namespace SuperFantasticSteampunk.BattleStates
                         continue;
                     }
                     ItemData itemData = items[rarity].Sample();
-                    Battle.PlayerParty.ItemInventory.AddItem(itemData.Name);
-                    ItemsWon.Add(new Tuple<string, CharacterClass>(itemData.Name, CharacterClass.Enemy));
-                    Logger.Log("Player party won item " + itemData.Name);
+                    string itemName = itemData.Name.ToUpperFirstChar();
+                    Battle.PlayerParty.ItemInventory.AddItem(itemName);
+                    ItemsWon.Add(new Tuple<string, CharacterClass>(itemName, CharacterClass.Enemy));
+                    Logger.Log("Player party won item " + itemName);
                     break;
                 }
             }

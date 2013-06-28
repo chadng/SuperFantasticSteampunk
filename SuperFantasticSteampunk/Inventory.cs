@@ -34,6 +34,7 @@ namespace SuperFantasticSteampunk
 
         public void AddItem(string itemName)
         {
+            itemName = itemName.ToUpperFirstChar();
             if (ContainsKey(itemName))
             {
                 if (this[itemName] > 0) // Negative is infinite so increment will mess it up

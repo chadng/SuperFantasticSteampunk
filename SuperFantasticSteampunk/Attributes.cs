@@ -85,10 +85,21 @@ namespace SuperFantasticSteampunk
         private static void populateAttributesList<T>(out List<T> list, Dictionary<T, int> dictionary)
         {
             list = new List<T>();
-            foreach (KeyValuePair<T, int> keyValuePair in dictionary)
+            Dictionary<T, int> tempDictionary = new Dictionary<T, int>(dictionary);
+            List<T> keys = new List<T>(tempDictionary.Keys);
+            while (tempDictionary.Count > 0)
             {
-                for (int i = 0; i < keyValuePair.Value; ++i)
-                    list.Add(keyValuePair.Key);
+                T key = keys.Sample();
+                if (tempDictionary[key] >= 1)
+                {
+                    list.Add(key);
+                    --tempDictionary[key];
+                }
+                if (tempDictionary[key] <= 0)
+                {
+                    tempDictionary.Remove(key);
+                    keys.Remove(key);
+                }
             }
         }
 
@@ -159,7 +170,7 @@ namespace SuperFantasticSteampunk
             }
 
             string resultString = result.ToString();
-            return resultString.Substring(0, 1).ToUpper() + resultString.ToLower().Substring(1);
+            return resultString.ToLower().ToUpperFirstChar();
         }
 
         private void generateAttributes(bool isWeapon, List<string> blacklistedAttributes, bool forceNotEmpty)

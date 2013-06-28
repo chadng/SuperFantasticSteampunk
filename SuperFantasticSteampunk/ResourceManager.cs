@@ -179,7 +179,7 @@ namespace SuperFantasticSteampunk
         {
             if (name == null)
                 return null;
-
+            name = name.ToLower();
             ItemData itemData;
             if (itemDataDictionary.TryGetValue(name, out itemData))
                 return itemData;
