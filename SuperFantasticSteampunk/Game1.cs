@@ -45,6 +45,11 @@ namespace SuperFantasticSteampunk
         {
             get { return ScreenSize / ReferenceScreenSize; }
         }
+
+        public static Vector2 MinScreenScaleFactor
+        {
+            get { return new Vector2(Math.Min(ScreenScaleFactor.X, ScreenScaleFactor.Y)); }
+        }
         #endregion
 
         #region Static Constructors

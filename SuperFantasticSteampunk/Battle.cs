@@ -10,7 +10,7 @@ namespace SuperFantasticSteampunk
     class Battle : Scene
     {
         #region Constants
-        public static readonly Color UiColor = new Color(124, 63, 18);
+        public static readonly Color UiColor = new Color(98, 55, 56);
         private const int uiHeight = 170;
         #endregion
 
@@ -23,6 +23,8 @@ namespace SuperFantasticSteampunk
         private readonly TextureData borderTextureDataW;
         private readonly TextureData borderTextureDataNE;
         private readonly TextureData borderTextureDataNW;
+        private readonly Dictionary<InputButton, TextureData> gamepadButtonTextureData;
+        private readonly TextureData blankGamepadTextureData;
         private Stack<BattleState> states;
         private bool stateChanged;
         private List<TextureData> backgroundTextureData;
@@ -98,6 +100,12 @@ namespace SuperFantasticSteampunk
                 { CharacterClass.Medic, ResourceManager.GetTextureData("battle_ui/medic_head") },
                 { CharacterClass.Thief, ResourceManager.GetTextureData("battle_ui/thief_head") }
             };
+            gamepadButtonTextureData = new Dictionary<InputButton, TextureData> {
+                { InputButton.A, ResourceManager.GetTextureData("battle_ui/buttons/gamepad_a") },
+                { InputButton.B, ResourceManager.GetTextureData("battle_ui/buttons/gamepad_b") },
+                { InputButton.LeftTrigger, ResourceManager.GetTextureData("battle_ui/buttons/gamepad_lt") }
+            };
+            blankGamepadTextureData = ResourceManager.GetTextureData("battle_ui/buttons/gamepad_blank");
 
             PlayerPartyItemsUsed = 0;
             LastUsedThinkActionTypes = new ConditionalWeakTable<PartyMember, Wrapper<BattleStates.ThinkActionType>>();
@@ -156,13 +164,6 @@ namespace SuperFantasticSteampunk
                 ++PlayerPartyItemsUsed;
         }
 
-        public void DrawArrowOverPartyMember(PartyMember partyMember, Color color, Renderer renderer)
-        {
-            Rectangle boundingBox = partyMember.BattleEntity.GetBoundingBox();
-            Vector2 position = new Vector2(boundingBox.X + (boundingBox.Width / 2) - (arrowTextureData.Width / 2), boundingBox.Y - arrowTextureData.Height);
-            renderer.Draw(arrowTextureData, position, color);
-        }
-
         public void SetCameraUpdateDelay(float time)
         {
             if (time > cameraUpdateDelay)
@@ -187,6 +188,38 @@ namespace SuperFantasticSteampunk
                 startIndex = Math.Max(startIndex, 0);
                 finishIndex = Math.Min(finishIndex, optionsCount - 1);
             }
+        }
+
+        public void DrawArrowOverPartyMember(PartyMember partyMember, Color color, Renderer renderer)
+        {
+            Rectangle boundingBox = partyMember.BattleEntity.GetBoundingBox();
+            Vector2 position = new Vector2(boundingBox.X + (boundingBox.Width / 2) - (arrowTextureData.Width / 2), boundingBox.Y - arrowTextureData.Height);
+            renderer.Draw(arrowTextureData, position, color);
+        }
+
+        public Vector2 DrawButtonWithText(InputButton button, string text, Vector2 position, Renderer renderer)
+        {
+            if (text != null && text.Length == 0)
+                text = null;
+
+            TextureData textureData = gamepadButtonTextureData[button];
+            Vector2 minScale = Game1.MinScreenScaleFactor;
+            Vector2 textSize = renderer.Font.MeasureString(text ?? "I", Font.DefaultSize * minScale.Y);
+            Vector2 buttonScale = new Vector2((1.0f / textureData.Height) * textSize.Y * 1.1f);
+
+            if (text != null)
+            {
+                float halfButtonWidth = textureData.Width * 0.5f * buttonScale.X;
+                Vector2 backingSize = new Vector2((textSize.X * 1.1f) + halfButtonWidth, textureData.Height * buttonScale.Y);
+                Vector2 backingPosition = position + new Vector2(halfButtonWidth, 0.0f);
+                renderer.Draw(blankGamepadTextureData, backingPosition + new Vector2(backingSize.X - halfButtonWidth, 0.0f), Color.Gray, 0.0f, buttonScale, false);
+                renderer.Draw(whitePixelTextureData, backingPosition, Color.Gray, 0.0f, backingSize, false);
+                Vector2 textPosition = backingPosition + new Vector2(halfButtonWidth, 0.0f) + ((backingSize - new Vector2(halfButtonWidth / 2.0f, 0.0f) - textSize) / 2.0f);
+                renderer.DrawText(text, textPosition, Color.White, 0.0f, Vector2.Zero, minScale);
+            }
+
+            renderer.Draw(textureData, position, Color.White, 0.0f, buttonScale, false);
+            return textureData.Size * buttonScale;
         }
 
         protected override void update(Delta delta)

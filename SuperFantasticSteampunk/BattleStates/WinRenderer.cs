@@ -8,6 +8,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Constants
         public const float MaxOverlayAlpha = 0.8f;
         private const float overlayAlphaTime = 1.0f;
+        private const float arrowMoveTime = 0.5f;
         #endregion
 
         #region Instance Fields
@@ -15,6 +16,7 @@ namespace SuperFantasticSteampunk.BattleStates
         private readonly Vector2 minScale;
         private readonly int visibleItemCount;
         private float overlayAlphaTimer;
+        private float arrowMoveTimer;
         #endregion
 
         #region Instance Properties
@@ -39,7 +41,7 @@ namespace SuperFantasticSteampunk.BattleStates
             : base(battleState)
         {
             whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
-            minScale = new Vector2(Math.Min(Game1.ScreenScaleFactor.X, Game1.ScreenScaleFactor.Y));
+            minScale = Game1.MinScreenScaleFactor;
             visibleItemCount = (int)Math.Floor(10 * minScale.Y);
         }
         #endregion
@@ -53,6 +55,10 @@ namespace SuperFantasticSteampunk.BattleStates
                 if (overlayAlphaTimer > overlayAlphaTime)
                     overlayAlphaTimer = overlayAlphaTime;
             }
+
+            arrowMoveTimer += delta.Time;
+            if (arrowMoveTimer >= arrowMoveTime * 2.0f)
+                arrowMoveTimer = 0.0f;
         }
 
         public override void BeforeDraw(Renderer renderer)
@@ -126,10 +132,15 @@ namespace SuperFantasticSteampunk.BattleStates
                 position.Y += yPositionIncrement;
             }
 
+            float yOffset = 10.0f * minScale.Y;
+            if (arrowMoveTimer <= arrowMoveTime)
+                yOffset *= arrowMoveTimer / arrowMoveTime;
+            else
+                yOffset *= 1.0f - ((arrowMoveTimer - arrowMoveTime) / arrowMoveTime);
             if (startIndex > 0)
-                renderer.DrawText("^", upArrowPosition, textColor, 0.0f, arrowSize / 2.0f, arrowFontScale);
+                renderer.DrawText("^", new Vector2(upArrowPosition.X, upArrowPosition.Y - yOffset), textColor, 0.0f, arrowSize / 2.0f, arrowFontScale);
             if (finishIndex < battleState.ItemsWon.Count - 1)
-                renderer.DrawText("^", position, textColor, 0.0f, arrowSize / 2.0f, new Vector2(arrowFontScale.X, -arrowFontScale.Y));
+                renderer.DrawText("^", new Vector2(position.X, position.Y + yOffset), textColor, 0.0f, arrowSize / 2.0f, new Vector2(arrowFontScale.X, -arrowFontScale.Y));
         }
         #endregion
     }

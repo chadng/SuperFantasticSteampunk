@@ -84,10 +84,10 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Constants
         public static readonly string[] OuterMenuOptions = {
             "Move",
-            "Attack",
             "Defend",
             "Item",
-            "Run"
+            "Run",
+            "Attack"
         };
         #endregion
 
@@ -107,6 +107,7 @@ namespace SuperFantasticSteampunk.BattleStates
         public PartyMember CurrentPartyMember { get; private set; }
         public List<ThinkMenuOption> MenuOptions { get; private set; }
         public int CurrentOuterMenuOptionIndex { get; private set; }
+        public bool Paused { get; private set; }
 
         public override bool KeepPartyMembersStatic
         {
@@ -166,6 +167,7 @@ namespace SuperFantasticSteampunk.BattleStates
             getNextPartyMember();
             repopulateMenuOptions();
             BattleStateRenderer = new ThinkRenderer(this);
+            Paused = false;
         }
 
         public override void Finish()
@@ -175,9 +177,16 @@ namespace SuperFantasticSteampunk.BattleStates
             ChangeState(new Act(Battle, actions));
         }
 
+        public override void Pause()
+        {
+            Paused = true;
+            base.Pause();
+        }
+
         public override void Resume(BattleState previousBattleState)
         {
             base.Resume(previousBattleState);
+            Paused = false;
 
             if (previousBattleState is SelectTarget)
                 finishThinkForCurrentPartyMember();

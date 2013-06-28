@@ -9,12 +9,13 @@ namespace SuperFantasticSteampunk.BattleStates
     class ThinkRendererOuterMenuOption
     {
         #region Instance Fields
-        private TextureData iconTextureData;
-        private Color color;
+        private readonly TextureData iconTextureData;
+        private readonly Color color;
         #endregion
 
         #region Instance Properties
         public Vector2 Position { get; set; }
+        public Vector2 ScaledPosition { get; private set; }
         public int MenuOptionIndex { get; private set; }
         #endregion
 
@@ -30,10 +31,10 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public void Draw(TextureData iconContainerTextureData, TextureData iconContainerGlowTextureData, Vector2 containerScale, Vector2 iconScale, Vector2 scaleScale, Renderer renderer)
         {
-            Vector2 position = positionFromScale(iconContainerTextureData, containerScale, scaleScale);
+            ScaledPosition = positionFromScale(iconContainerTextureData, containerScale, scaleScale);
             containerScale *= scaleScale;
             iconScale *= scaleScale;
-            Vector2 iconPosition = position + (new Vector2(iconContainerTextureData.Width - iconTextureData.Width, iconContainerTextureData.Height - iconTextureData.Height) * scaleScale * 0.5f * Game1.ScreenScaleFactor.X);
+            Vector2 iconPosition = ScaledPosition + (new Vector2(iconContainerTextureData.Width - iconTextureData.Width, iconContainerTextureData.Height - iconTextureData.Height) * scaleScale * 0.5f * Game1.ScreenScaleFactor.X);
             Color containerColor = color;
             Color iconColor = Color.White;
             if (iconContainerGlowTextureData == null)
@@ -42,8 +43,8 @@ namespace SuperFantasticSteampunk.BattleStates
                 iconColor = new Color(Color.White.ToVector3() * 0.7f);
             }
             else
-                renderer.Draw(iconContainerGlowTextureData, position - (new Vector2(iconContainerGlowTextureData.Width - iconContainerTextureData.Width) * 0.5f * containerScale.X), Color.WhiteSmoke, 0.0f, containerScale, false);
-            renderer.Draw(iconContainerTextureData, position, containerColor, 0.0f, containerScale, false);
+                renderer.Draw(iconContainerGlowTextureData, ScaledPosition - (new Vector2(iconContainerGlowTextureData.Width - iconContainerTextureData.Width) * 0.5f * containerScale.X), Color.WhiteSmoke, 0.0f, containerScale, false);
+            renderer.Draw(iconContainerTextureData, ScaledPosition, containerColor, 0.0f, containerScale, false);
             renderer.Draw(iconTextureData, iconPosition, iconColor, 0.0f, iconScale, false);
         }
 
@@ -62,6 +63,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Constants
         private const float outerMenuOptionAngleTransitionTime = 0.2f;
         private const float outerMenuOptionYScaleTransitionTime = 0.12f;
+        private const float arrowMoveTime = 0.5f;
 
         private const float subMenuX = 800.0f;
         private const float subMenuY = 200.0f;
@@ -99,6 +101,7 @@ namespace SuperFantasticSteampunk.BattleStates
         private bool incOuterMenuOptionYScale;
         private List<ThinkRendererOuterMenuOption> menuOptions;
         private List<ThinkRendererOuterMenuOption> sortedMenuOptions;
+        private float arrowMoveTimer;
 
         private readonly float anglePerOption;
         private readonly int halfOptionsLength;
@@ -166,6 +169,7 @@ namespace SuperFantasticSteampunk.BattleStates
             outerMenuOptionTransitionAngle = 0.0f;
             outerMenuOptionTransitionYScale = 1.0f;
             incOuterMenuOptionYScale = true;
+            arrowMoveTimer = 0.0f;
         }
 
         public override void Update(Delta delta)
@@ -190,7 +194,18 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 outerMenuOptionTransitionYScale -= delta.Time / outerMenuOptionYScaleTransitionTime;
                 if (outerMenuOptionTransitionYScale < 0.0f)
+                {
                     outerMenuOptionTransitionYScale = 0.0f;
+                }
+            }
+
+            if (battleState.CurrentThinkActionType == ThinkActionType.None)
+                arrowMoveTimer = 0.0f;
+            else
+            {
+                arrowMoveTimer += delta.Time;
+                if (arrowMoveTimer >= arrowMoveTime * 2.0f)
+                    arrowMoveTimer = 0.0f;
             }
         }
 
@@ -233,12 +248,33 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 TextureData glowTextureData = null;
                 Vector2 thisScaleScale = scaleScale;
-                if (menuOption.MenuOptionIndex == battleState.CurrentOuterMenuOptionIndex)
+                InputButton buttonType = InputButton.A;
+                string buttonText = null;
+                bool isSelected = menuOption.MenuOptionIndex == battleState.CurrentOuterMenuOptionIndex;
+                if (isSelected)
                 {
                     glowTextureData = iconContainerGlowTextureData;
                     thisScaleScale = Vector2.One;
+                    if (battleState.CurrentThinkActionType != ThinkActionType.None || battleState.Paused)
+                    {
+                        buttonType = InputButton.B;
+                        buttonText = battleState.Paused ? "Cancel" : "Back";
+                    }
+                    else
+                        buttonText = Think.OuterMenuOptions[menuOption.MenuOptionIndex];
                 }
-                menuOption.Draw(iconContainerTextureData, glowTextureData, containerScale, iconScale, thisScaleScale, renderer);
+                if (thisScaleScale.X != 0.0f && thisScaleScale.Y != 0.0f)
+                    menuOption.Draw(iconContainerTextureData, glowTextureData, containerScale, iconScale, thisScaleScale, renderer);
+                if (isSelected && outerMenuOptionTransitionAngle == 0.0f)
+                {
+                    Vector2 buttonPosition = menuOption.ScaledPosition + (iconContainerTextureData.Size * 0.8f * containerScale);
+                    if (battleState.Paused)
+                    {
+                        Vector2 buttonSize = battleState.Battle.DrawButtonWithText(InputButton.A, "Confirm", buttonPosition, renderer);
+                        buttonPosition.Y += buttonSize.Y * 1.1f;
+                    }
+                    battleState.Battle.DrawButtonWithText(buttonType, buttonText, buttonPosition, renderer);
+                }
             }
         }
 
@@ -261,6 +297,8 @@ namespace SuperFantasticSteampunk.BattleStates
             Vector2 scale = Game1.ScreenScaleFactor;
             Vector2 fontScale = new Vector2(subMenuFontSize / Font.DefaultSize) * Game1.ScreenScaleFactor.X;
             Vector2 position = new Vector2(subMenuX + subMenuPadding, subMenuY);
+            float measureFontSize = Font.DefaultSize * fontScale.Y;
+            Vector2 upArrowPosition = (position * scale) + new Vector2(subMenuWidth * Game1.ScreenScaleFactor.X * 0.5f, 0.0f);
 
             int startIndex;
             int finishIndex;
@@ -272,8 +310,13 @@ namespace SuperFantasticSteampunk.BattleStates
 
                 if (i == battleState.CurrentOptionNameIndex)
                 {
-                    renderer.DrawText(">", (position - new Vector2(subMenuPadding, 0.0f)) * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
-                    Vector2 containerSize = renderer.Font.MeasureString(menuOption.Description, Font.DefaultSize * fontScale.Y) / scale;
+                    Vector2 arrowPosition = (position - new Vector2(subMenuPadding, 0.0f)) * scale;
+                    renderer.DrawText(">", arrowPosition, Color.White, 0.0f, Vector2.Zero, fontScale);
+                    Vector2 arrowSize = renderer.Font.MeasureString(">", measureFontSize);
+                    Vector2 buttonSize = new Vector2(renderer.Font.MeasureString("I", measureFontSize).Y);
+                    Vector2 buttonPosition = arrowPosition - new Vector2(buttonSize.X + (arrowSize.X * 0.2f), (buttonSize.Y - (arrowSize.Y * 0.8f)) / 2.0f);
+                    battleState.Battle.DrawButtonWithText(InputButton.A, null, buttonPosition, renderer);
+                    Vector2 containerSize = renderer.Font.MeasureString(menuOption.Description, measureFontSize) / scale;
                     Vector2 containerPosition = position + new Vector2(subMenuWidth + (borderTextureData[E].Width * 0.5f), 0.0f);
                     drawContainer(containerPosition.X, containerPosition.Y, containerSize.X, containerSize.Y, renderer);
                     renderer.DrawText(menuOption.Description, containerPosition * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
@@ -287,6 +330,20 @@ namespace SuperFantasticSteampunk.BattleStates
 
                 position.Y += fontHeight * fontHeightScale;
             }
+
+            float arrowFontSize = measureFontSize * 1.5f;
+            Vector2 arrowFontScale = fontScale * 1.5f;
+            Vector2 scrollArrowSize = renderer.Font.MeasureString("^", arrowFontSize);
+            scrollArrowSize = new Vector2(scrollArrowSize.Y, scrollArrowSize.X);
+            float yOffset = 10.0f * scale.Y;
+            if (arrowMoveTimer <= arrowMoveTime)
+                yOffset *= arrowMoveTimer / arrowMoveTime;
+            else
+                yOffset *= 1.0f - ((arrowMoveTimer - arrowMoveTime) / arrowMoveTime);
+            if (startIndex > 0)
+                renderer.DrawText("^", new Vector2(upArrowPosition.X, upArrowPosition.Y - (scrollArrowSize.Y / 2.0f) - yOffset), Color.White, 0.0f, scrollArrowSize / 2.0f, arrowFontScale);
+            if (finishIndex < battleState.MenuOptions.Count - 1)
+                renderer.DrawText("^", new Vector2(upArrowPosition.X, (position.Y * scale.Y) + (scrollArrowSize.Y / 2.0f) + yOffset), Color.White, 0.0f, scrollArrowSize / 2.0f, new Vector2(arrowFontScale.X, -arrowFontScale.Y));
         }
 
         private void drawContainer(float x, float y, float width, float height, Renderer renderer)

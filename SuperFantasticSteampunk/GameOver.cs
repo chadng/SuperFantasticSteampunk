@@ -41,7 +41,7 @@ namespace SuperFantasticSteampunk
         {
             base.draw(renderer);
             renderer.Draw(whitePixelTextureData, Vector2.Zero, Color.Black, 0.0f, Game1.ScreenSize, false);
-            Vector2 minScale = new Vector2(Math.Min(Game1.ScreenScaleFactor.X, Game1.ScreenScaleFactor.Y));
+            Vector2 minScale = Game1.MinScreenScaleFactor;
             float fontScale = Font.DefaultSize * 2 * minScale.Y;
             Vector2 textSize = renderer.Font.MeasureString(gameOverText, fontScale);
             float alpha = gameOverAlphaTimer / gameOverAlphaTime;
