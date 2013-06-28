@@ -14,6 +14,8 @@ namespace SuperFantasticSteampunk.BattleStates
 
         #region Instance Fields
         private InputButtonListener inputButtonListener;
+        private int minCurrentItemIndex;
+        private int maxCurrentItemIndex;
         #endregion
 
         #region Instance Properties
@@ -52,8 +54,9 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             ItemsWon.Clear();
             addNewItemsToPlayerPartyInventory();
-            CurrentItemIndex = 0;
             BattleStateRenderer = new WinRenderer(this);
+            getMinAndMaxCurrentItemIndex();
+            CurrentItemIndex = minCurrentItemIndex;
         }
 
         public override void Finish()
@@ -74,14 +77,14 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void previousItem()
         {
-            if (--CurrentItemIndex < 0)
-                CurrentItemIndex = 0;
+            if (--CurrentItemIndex < minCurrentItemIndex)
+                CurrentItemIndex = minCurrentItemIndex;
         }
 
         private void nextItem()
         {
-            if (++CurrentItemIndex >= ItemsWon.Count)
-                CurrentItemIndex = ItemsWon.Count - 1;
+            if (++CurrentItemIndex > maxCurrentItemIndex)
+                CurrentItemIndex = maxCurrentItemIndex;
         }
 
         private void addNewItemsToPlayerPartyInventory()
@@ -115,7 +118,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 ThinkActionType.UseItem
             };
 
-            int count = Battle.PlayerPartyItemsUsed + Game1.Random.Next(Math.Max(minimumForItemsWonRandomizer, Battle.PlayerPartyItemsUsed / itemsUsedDivisorForItemsWonRandomizer));
+            int count = Battle.PlayerPartyItemsUsed +10+ Game1.Random.Next(Math.Max(minimumForItemsWonRandomizer, Battle.PlayerPartyItemsUsed / itemsUsedDivisorForItemsWonRandomizer));
             for (int i = 0; i < count; ++i)
             {
                 Rarity rarity = rarityList.Sample();
@@ -159,6 +162,37 @@ namespace SuperFantasticSteampunk.BattleStates
                     ItemsWon.Add(new Tuple<string, CharacterClass>(itemName, CharacterClass.Enemy));
                     Logger.Log("Player party won item " + itemName);
                     break;
+                }
+            }
+        }
+
+        private void getMinAndMaxCurrentItemIndex()
+        {
+            int visibleItemCount = BattleStateRenderer.VisibleItemCount;
+            if (ItemsWon.Count <= visibleItemCount)
+                minCurrentItemIndex = maxCurrentItemIndex = 0;
+            else
+            {
+                // dumbest thing but requires no brainpower
+                int startIndex, startIndexBefore = 0;
+                int finishIndex, finishIndexBefore = ItemsWon.Count - 1;
+                for (int i = 0; i < ItemsWon.Count; ++i)
+                {
+                    Battle.CalculateStartAndFinishIndexesForMenuList(ItemsWon.Count, visibleItemCount, i, out startIndex, out finishIndex);
+                    if (startIndexBefore >= 0)
+                    {
+                        if (startIndex > startIndexBefore)
+                        {
+                            minCurrentItemIndex = Math.Max(i - 1, 0);
+                            startIndexBefore = -1;
+                        }
+                    }
+                    else if (finishIndexBefore == finishIndex)
+                    {
+                        maxCurrentItemIndex = i - 1;
+                        break;
+                    }
+                    finishIndexBefore = finishIndex;
                 }
             }
         }

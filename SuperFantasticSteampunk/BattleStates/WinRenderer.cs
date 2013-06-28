@@ -12,10 +12,17 @@ namespace SuperFantasticSteampunk.BattleStates
 
         #region Instance Fields
         private readonly TextureData whitePixelTextureData;
+        private readonly Vector2 minScale;
+        private readonly int visibleItemCount;
         private float overlayAlphaTimer;
         #endregion
 
         #region Instance Properties
+        public int VisibleItemCount
+        {
+            get { return visibleItemCount; }
+        }
+
         protected new Win battleState
         {
             get { return base.battleState as Win; }
@@ -32,6 +39,8 @@ namespace SuperFantasticSteampunk.BattleStates
             : base(battleState)
         {
             whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
+            minScale = new Vector2(Math.Min(Game1.ScreenScaleFactor.X, Game1.ScreenScaleFactor.Y));
+            visibleItemCount = (int)Math.Floor(10 * minScale.Y);
         }
         #endregion
 
@@ -66,7 +75,6 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private Vector2 drawWinMessage(float alpha, Renderer renderer)
         {
-            Vector2 minScale = new Vector2(Math.Min(Game1.ScreenScaleFactor.X, Game1.ScreenScaleFactor.Y));
             Vector2 fontScale = new Vector2(Font.DefaultSize * 3.0f * minScale.Y);
             Vector2 textSize = renderer.Font.MeasureString(battleState.WinMessage, fontScale.X);
             Vector2 position = new Vector2(Game1.ScreenSize.X / 2.0f, textSize.Y * 2);
@@ -83,13 +91,11 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void drawWonItemsText(Vector2 position, float alpha, Renderer renderer)
         {
-            Vector2 minScale = new Vector2(Math.Min(Game1.ScreenScaleFactor.X, Game1.ScreenScaleFactor.Y));
             Color textColor = new Color(1.0f, 1.0f, 1.0f, alpha);
             float characterClassHeadPadding = 10.0f * minScale.X;
 
             int startIndex;
             int finishIndex;
-            int visibleItemCount = (int)Math.Floor(10 * minScale.Y);
             battleState.Battle.CalculateStartAndFinishIndexesForMenuList(battleState.ItemsWon.Count, visibleItemCount, battleState.CurrentItemIndex, out startIndex, out finishIndex);
             
             float fontSize = 14.0f * minScale.Y;
