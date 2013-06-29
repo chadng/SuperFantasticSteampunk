@@ -73,15 +73,6 @@ namespace SuperFantasticSteampunk.BattleStates
         private const float subMenuPadding = 20.0f;
         private const float fontHeightScale = 1.1f;
 
-        private const int N = 0;
-        private const int NE = 1;
-        private const int E = 2;
-        private const int SE = 3;
-        private const int S = 4;
-        private const int SW = 5;
-        private const int W = 6;
-        private const int NW = 7;
-
         private static readonly SortedDictionary<string, Color> menuOptionColors = new SortedDictionary<string, Color> {
             { "move", Color.Blue },
             { "attack", Color.Red },
@@ -89,8 +80,6 @@ namespace SuperFantasticSteampunk.BattleStates
             { "item", Color.Yellow },
             { "run", Color.Pink }
         };
-
-        private static readonly string[] directions = new string[] { "n", "ne", "e", "se", "s", "sw", "w", "nw" };
         #endregion
 
         #region Instance Fields
@@ -106,7 +95,6 @@ namespace SuperFantasticSteampunk.BattleStates
         private readonly float anglePerOption;
         private readonly int halfOptionsLength;
         private readonly TextureData whitePixelTextureData;
-        private readonly TextureData[] borderTextureData;
         #endregion
 
         #region Instance Properties
@@ -118,6 +106,11 @@ namespace SuperFantasticSteampunk.BattleStates
         protected new Think battleState
         {
             get { return base.battleState as Think; }
+        }
+
+        private TextureData[] borderTextureData
+        {
+            get { return battleState.Battle.BorderTextureData; }
         }
         #endregion
 
@@ -142,9 +135,6 @@ namespace SuperFantasticSteampunk.BattleStates
             halfOptionsLength = Think.OuterMenuOptions.Length / 2;
 
             whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
-            borderTextureData = new TextureData[directions.Length];
-            for (int i = 0; i < directions.Length; ++i)
-                borderTextureData[i] = ResourceManager.GetTextureData("battle_ui/borders/" + directions[i]);
         }
         #endregion
 
@@ -317,7 +307,7 @@ namespace SuperFantasticSteampunk.BattleStates
                     Vector2 buttonPosition = arrowPosition - new Vector2(buttonSize.X + (arrowSize.X * 0.2f), (buttonSize.Y - (arrowSize.Y * 0.8f)) / 2.0f);
                     battleState.Battle.DrawButtonWithText(InputButton.A, null, buttonPosition, renderer);
                     Vector2 containerSize = renderer.Font.MeasureString(menuOption.Description, measureFontSize) / scale;
-                    Vector2 containerPosition = position + new Vector2(subMenuWidth + (borderTextureData[E].Width * 0.5f), 0.0f);
+                    Vector2 containerPosition = position + new Vector2(subMenuWidth + (borderTextureData[Battle.E].Width * 0.5f), 0.0f);
                     drawContainer(containerPosition.X, containerPosition.Y, containerSize.X, containerSize.Y, renderer);
                     renderer.DrawText(menuOption.Description, containerPosition * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
                 }
@@ -352,25 +342,25 @@ namespace SuperFantasticSteampunk.BattleStates
             renderer.Draw(whitePixelTextureData, new Vector2(x, y) * scale, Battle.UiColor, 0.0f, new Vector2(width, height) * scale, false);
 
             Vector2 halfScale = scale * 0.5f;
-            TextureData textureData = borderTextureData[NW];
+            TextureData textureData = borderTextureData[Battle.NW];
             renderer.Draw(textureData, new Vector2(x - (textureData.Width * 0.5f), y - (textureData.Height * 0.5f)) * scale, Color.White, 0.0f, halfScale, false);
-            textureData = borderTextureData[NE];
+            textureData = borderTextureData[Battle.NE];
             renderer.Draw(textureData, new Vector2(x + width, y - (textureData.Height * 0.5f)) * scale, Color.White, 0.0f, halfScale, false);
-            textureData = borderTextureData[SE];
+            textureData = borderTextureData[Battle.SE];
             renderer.Draw(textureData, new Vector2(x + width, y + height) * scale, Color.White, 0.0f, halfScale, false);
-            textureData = borderTextureData[SW];
+            textureData = borderTextureData[Battle.SW];
             renderer.Draw(textureData, new Vector2(x - (textureData.Width * 0.5f), y + height) * scale, Color.White, 0.0f, halfScale, false);
 
-            textureData = borderTextureData[N];
+            textureData = borderTextureData[Battle.N];
             Vector2 xScale = new Vector2((1.0f / textureData.Width) * width, 0.5f) * scale;
             renderer.Draw(textureData, new Vector2(x, y - (textureData.Height * 0.5f)) * scale, Color.White, 0.0f, xScale, false);
-            textureData = borderTextureData[S];
+            textureData = borderTextureData[Battle.S];
             renderer.Draw(textureData, new Vector2(x, y + height) * scale, Color.White, 0.0f, xScale, false);
 
-            textureData = borderTextureData[W];
+            textureData = borderTextureData[Battle.W];
             Vector2 yScale = new Vector2(0.5f, (1.0f / textureData.Height) * height) * scale;
             renderer.Draw(textureData, new Vector2(x - (textureData.Width * 0.5f), y) * scale, Color.White, 0.0f, yScale, false);
-            textureData = borderTextureData[E];
+            textureData = borderTextureData[Battle.E];
             renderer.Draw(textureData, new Vector2(x + width, y) * scale, Color.White, 0.0f, yScale, false);
         }
         #endregion

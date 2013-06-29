@@ -11,21 +11,25 @@ namespace SuperFantasticSteampunk
     {
         #region Constants
         public static readonly Color UiColor = new Color(98, 55, 56);
+        public static readonly string[] Directions = new string[] { "n", "ne", "e", "se", "s", "sw", "w", "nw" };
+        public const int N = 0;
+        public const int NE = 1;
+        public const int E = 2;
+        public const int SE = 3;
+        public const int S = 4;
+        public const int SW = 5;
+        public const int W = 6;
+        public const int NW = 7;
         private const int uiHeight = 170;
         #endregion
 
         #region Instance Fields
         public readonly Dictionary<CharacterClass, TextureData> CharacterClassHeadTextureData;
+        public readonly TextureData[] BorderTextureData;
         private readonly TextureData whitePixelTextureData;
         private readonly TextureData arrowTextureData;
-        private readonly TextureData borderTextureDataN;
-        private readonly TextureData borderTextureDataE;
-        private readonly TextureData borderTextureDataW;
-        private readonly TextureData borderTextureDataNE;
-        private readonly TextureData borderTextureDataNW;
         private readonly TextureData keyboardButtonTextureData;
         private readonly Dictionary<InputButton, TextureData> gamepadButtonTextureData;
-        private readonly TextureData blankGamepadTextureData;
         private Stack<BattleState> states;
         private bool stateChanged;
         private List<TextureData> backgroundTextureData;
@@ -90,11 +94,6 @@ namespace SuperFantasticSteampunk
 
             whitePixelTextureData = ResourceManager.GetTextureData("white_pixel");
             arrowTextureData = ResourceManager.GetTextureData("arrow_down");
-            borderTextureDataN = ResourceManager.GetTextureData("battle_ui/borders/n");
-            borderTextureDataE = ResourceManager.GetTextureData("battle_ui/borders/e");
-            borderTextureDataW = ResourceManager.GetTextureData("battle_ui/borders/w");
-            borderTextureDataNE = ResourceManager.GetTextureData("battle_ui/borders/ne");
-            borderTextureDataNW = ResourceManager.GetTextureData("battle_ui/borders/nw");
             CharacterClassHeadTextureData = new Dictionary<CharacterClass, TextureData> {
                 { CharacterClass.Warrior, ResourceManager.GetTextureData("battle_ui/warrior_head") },
                 { CharacterClass.Marksman, ResourceManager.GetTextureData("battle_ui/marksman_head") },
@@ -107,7 +106,10 @@ namespace SuperFantasticSteampunk
                 { InputButton.B, ResourceManager.GetTextureData("battle_ui/buttons/gamepad_b") },
                 { InputButton.LeftTrigger, ResourceManager.GetTextureData("battle_ui/buttons/gamepad_lt") }
             };
-            blankGamepadTextureData = ResourceManager.GetTextureData("battle_ui/buttons/gamepad_blank");
+
+            BorderTextureData = new TextureData[Directions.Length];
+            for (int i = 0; i < Directions.Length; ++i)
+                BorderTextureData[i] = ResourceManager.GetTextureData("battle_ui/borders/" + Directions[i]);
 
             PlayerPartyItemsUsed = 0;
             LastUsedThinkActionTypes = new ConditionalWeakTable<PartyMember, Wrapper<BattleStates.ThinkActionType>>();
@@ -215,11 +217,19 @@ namespace SuperFantasticSteampunk
                 float buttonHeight = textureData.Height * buttonScale.Y;
                 if (!Input.GamePadUsedLast)
                     buttonHeight -= buttonScale.Y;
-                Vector2 backingSize = new Vector2((textSize.X * 1.1f) + halfButtonWidth, buttonHeight);
+                Vector2 backingSize = new Vector2((textSize.X * 1.1f) + (halfButtonWidth * 2.0f), buttonHeight);
                 Vector2 backingPosition = position + new Vector2(halfButtonWidth, 0.0f);
-                renderer.Draw(blankGamepadTextureData, backingPosition + new Vector2(backingSize.X - halfButtonWidth, 0.0f), Color.Gray, 0.0f, new Vector2(buttonHeight / blankGamepadTextureData.Height), false);
-                renderer.Draw(whitePixelTextureData, backingPosition, Color.Gray, 0.0f, backingSize, false);
-                Vector2 textPosition = backingPosition + new Vector2(halfButtonWidth, 0.0f) + ((backingSize - new Vector2(halfButtonWidth / 2.0f, 0.0f) - textSize) / 2.0f);
+                renderer.Draw(whitePixelTextureData, backingPosition, UiColor, 0.0f, backingSize, false);
+                const float borderScale = 0.2f;
+                Vector2 borderScaleX = new Vector2(backingSize.X / BorderTextureData[N].Width, borderScale * minScale.Y);
+                renderer.Draw(BorderTextureData[N], backingPosition, Color.White, 0.0f, borderScaleX, false);
+                renderer.Draw(BorderTextureData[S], backingPosition + new Vector2(0.0f, backingSize.Y - (BorderTextureData[S].Height * borderScaleX.Y)), Color.White, 0.0f, borderScaleX, false);
+                Vector2 cornerScale = borderScale * minScale;
+                renderer.Draw(BorderTextureData[NE], backingPosition + new Vector2(backingSize.X, 0.0f), Color.White, 0.0f, cornerScale, false);
+                renderer.Draw(BorderTextureData[SE], backingPosition + new Vector2(backingSize.X, backingSize.Y - (BorderTextureData[SE].Height * cornerScale.Y)), Color.White, 0.0f, cornerScale, false);
+                Vector2 borderScaleY = new Vector2(borderScale * minScale.X, (backingSize.Y - (BorderTextureData[NE].Height * cornerScale.Y * 2.0f)) / BorderTextureData[E].Height);
+                renderer.Draw(BorderTextureData[E], backingPosition + new Vector2(backingSize.X, BorderTextureData[NE].Height * cornerScale.Y), Color.White, 0.0f, borderScaleY, false);
+                Vector2 textPosition = backingPosition + new Vector2(halfButtonWidth, 0.0f) + ((backingSize - new Vector2(halfButtonWidth, 0.0f) - textSize) / 2.0f) + new Vector2(0.0f, minScale.Y);
                 renderer.DrawText(text, textPosition, Color.White, 0.0f, Vector2.Zero, minScale);
             }
 
@@ -517,18 +527,18 @@ namespace SuperFantasticSteampunk
         private void drawGuiBorder(Vector2 uiPosition, Vector2 uiSize, Renderer renderer)
         {
             Vector2 screenScaleFactor = Game1.ScreenScaleFactor;
-            float borderWidth = uiSize.X - (borderTextureDataE.Width * 2 * screenScaleFactor.X);
-            Vector2 borderScaleX = new Vector2((1.0f / borderTextureDataN.Width) * borderWidth, screenScaleFactor.Y);
-            Vector2 borderScaleY = new Vector2(screenScaleFactor.X, (1.0f / borderTextureDataW.Height) * uiSize.Y);
-            Vector2 position = uiPosition - new Vector2(0.0f, borderTextureDataN.Height * screenScaleFactor.Y);
-            renderer.Draw(borderTextureDataNW, position, Color.White, 0.0f, screenScaleFactor, false);
-            renderer.Draw(borderTextureDataW, uiPosition, Color.White, 0.0f, borderScaleY, false);
-            position.X += borderTextureDataNW.Width * screenScaleFactor.X;
-            renderer.Draw(borderTextureDataN, position, Color.White, 0.0f, borderScaleX, false);
+            float borderWidth = uiSize.X - (BorderTextureData[E].Width * 2 * screenScaleFactor.X);
+            Vector2 borderScaleX = new Vector2((1.0f / BorderTextureData[N].Width) * borderWidth, screenScaleFactor.Y);
+            Vector2 borderScaleY = new Vector2(screenScaleFactor.X, (1.0f / BorderTextureData[W].Height) * uiSize.Y);
+            Vector2 position = uiPosition - new Vector2(0.0f, BorderTextureData[N].Height * screenScaleFactor.Y);
+            renderer.Draw(BorderTextureData[NW], position, Color.White, 0.0f, screenScaleFactor, false);
+            renderer.Draw(BorderTextureData[W], uiPosition, Color.White, 0.0f, borderScaleY, false);
+            position.X += BorderTextureData[NW].Width * screenScaleFactor.X;
+            renderer.Draw(BorderTextureData[N], position, Color.White, 0.0f, borderScaleX, false);
             position.X += borderWidth;
-            renderer.Draw(borderTextureDataNE, position, Color.White, 0.0f, screenScaleFactor, false);
+            renderer.Draw(BorderTextureData[NE], position, Color.White, 0.0f, screenScaleFactor, false);
             position.Y = uiPosition.Y;
-            renderer.Draw(borderTextureDataE, position, Color.White, 0.0f, borderScaleY, false);
+            renderer.Draw(BorderTextureData[E], position, Color.White, 0.0f, borderScaleY, false);
         }
 
         private void drawPartyMemberUi(PartyMember partyMember, Vector2 position, Vector2 headPadding, Vector2 barPadding, Vector2 barSize, Renderer renderer)
