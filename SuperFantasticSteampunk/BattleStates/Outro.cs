@@ -25,7 +25,7 @@ namespace SuperFantasticSteampunk.BattleStates
             Battle.OverworldEncounter.State = encounterState;
             Logger.Log(battle.PlayerPartyItemsUsed.ToString() + " items were used");
             BattleStateRenderer = new IntroOutroRenderer(this);
-            Time = FadeTimeInSeconds * (1.0f - WinRenderer.MaxOverlayAlpha);
+            Time = FadeTimeInSeconds * (encounterState == EncounterState.Won ? (1.0f - WinRenderer.MaxOverlayAlpha) : 1.0f);
         }
         #endregion
 

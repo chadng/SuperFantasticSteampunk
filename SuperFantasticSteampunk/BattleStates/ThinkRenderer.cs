@@ -205,9 +205,16 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void AfterDraw(Renderer renderer)
         {
-            drawOuterMenu(renderer);
-            if (battleState.CurrentThinkActionType != ThinkActionType.None)
+            if (battleState.CurrentThinkActionType == ThinkActionType.None)
+            {
+                drawTextOverPreviouslyActedPartyMember(renderer);
+                drawOuterMenu(renderer);
+            }
+            else
+            {
+                drawOuterMenu(renderer);
                 drawOptionNamesSubMenu(renderer);
+            }
         }
 
         private void drawOuterMenu(Renderer renderer)
@@ -266,6 +273,19 @@ namespace SuperFantasticSteampunk.BattleStates
                     battleState.Battle.DrawButtonWithText(buttonType, buttonText, buttonPosition, renderer);
                 }
             }
+        }
+
+        private void drawTextOverPreviouslyActedPartyMember(Renderer renderer)
+        {
+            if (battleState.PreviouslyActedPartyMember == null || battleState.CurrentPartyMember == null || battleState.Paused)
+                return;
+            Rectangle boundingBox = battleState.PreviouslyActedPartyMember.BattleEntity.GetBoundingBox();
+            Vector2 position = new Vector2(boundingBox.X + (boundingBox.Width / 2.0f), boundingBox.Bottom);
+            position = battleState.Battle.Camera.TranslateVector(position);
+            boundingBox = battleState.CurrentPartyMember.BattleEntity.GetBoundingBox();
+            Vector2 currentPartyMemberPosition = new Vector2(boundingBox.X + (boundingBox.Width / 2.0f), boundingBox.Bottom);
+            bool flip = currentPartyMemberPosition.X > position.X && currentPartyMemberPosition.Y > position.Y;
+            battleState.Battle.DrawButtonWithText(InputButton.B, "Back to " + battleState.PreviouslyActedPartyMember.Name, position, renderer, flip);
         }
 
         private void drawOptionNamesSubMenu(Renderer renderer)

@@ -201,7 +201,7 @@ namespace SuperFantasticSteampunk
             renderer.Draw(arrowTextureData, position, color);
         }
 
-        public Vector2 DrawButtonWithText(InputButton button, string text, Vector2 position, Renderer renderer)
+        public Vector2 DrawButtonWithText(InputButton button, string text, Vector2 position, Renderer renderer, bool flip = false)
         {
             if (text != null && text.Length == 0)
                 text = null;
@@ -211,6 +211,7 @@ namespace SuperFantasticSteampunk
             Vector2 textSize = renderer.Font.MeasureString(text ?? "I", Font.DefaultSize * minScale.Y);
             Vector2 buttonScale = new Vector2((textSize.Y * 1.1f) / textureData.Height);
             float halfButtonWidth = textureData.Width * 0.5f * buttonScale.X;
+            Vector2 flipScale = flip ? new Vector2(-1.0f, 1.0f) : Vector2.One;
 
             if (text != null)
             {
@@ -219,17 +220,20 @@ namespace SuperFantasticSteampunk
                     buttonHeight -= buttonScale.Y;
                 Vector2 backingSize = new Vector2((textSize.X * 1.1f) + (halfButtonWidth * 2.0f), buttonHeight);
                 Vector2 backingPosition = position + new Vector2(halfButtonWidth, 0.0f);
-                renderer.Draw(whitePixelTextureData, backingPosition, UiColor, 0.0f, backingSize, false);
+                if (flip)
+                    backingPosition.X -= backingSize.X;
+                renderer.Draw(whitePixelTextureData, backingPosition, UiColor, 0.0f, backingSize * flipScale, false);
                 const float borderScale = 0.2f;
                 Vector2 borderScaleX = new Vector2(backingSize.X / BorderTextureData[N].Width, borderScale * minScale.Y);
-                renderer.Draw(BorderTextureData[N], backingPosition, Color.White, 0.0f, borderScaleX, false);
-                renderer.Draw(BorderTextureData[S], backingPosition + new Vector2(0.0f, backingSize.Y - (BorderTextureData[S].Height * borderScaleX.Y)), Color.White, 0.0f, borderScaleX, false);
+                renderer.Draw(BorderTextureData[N], backingPosition, Color.White, 0.0f, borderScaleX * flipScale, false);
+                renderer.Draw(BorderTextureData[S], backingPosition + new Vector2(0.0f, backingSize.Y - (BorderTextureData[S].Height * borderScaleX.Y)), Color.White, 0.0f, borderScaleX * flipScale, false);
                 Vector2 cornerScale = borderScale * minScale;
-                renderer.Draw(BorderTextureData[NE], backingPosition + new Vector2(backingSize.X, 0.0f), Color.White, 0.0f, cornerScale, false);
-                renderer.Draw(BorderTextureData[SE], backingPosition + new Vector2(backingSize.X, backingSize.Y - (BorderTextureData[SE].Height * cornerScale.Y)), Color.White, 0.0f, cornerScale, false);
+                float cornerX = flip ? -BorderTextureData[NE].Width * cornerScale.X : backingSize.X;
+                renderer.Draw(BorderTextureData[flip ? NW : NE], backingPosition + new Vector2(cornerX, 0.0f), Color.White, 0.0f, cornerScale, false);
+                renderer.Draw(BorderTextureData[flip ? SW : SE], backingPosition + new Vector2(cornerX, backingSize.Y - (BorderTextureData[SE].Height * cornerScale.Y)), Color.White, 0.0f, cornerScale, false);
                 Vector2 borderScaleY = new Vector2(borderScale * minScale.X, (backingSize.Y - (BorderTextureData[NE].Height * cornerScale.Y * 2.0f)) / BorderTextureData[E].Height);
-                renderer.Draw(BorderTextureData[E], backingPosition + new Vector2(backingSize.X, BorderTextureData[NE].Height * cornerScale.Y), Color.White, 0.0f, borderScaleY, false);
-                Vector2 textPosition = backingPosition + new Vector2(halfButtonWidth, 0.0f) + ((backingSize - new Vector2(halfButtonWidth, 0.0f) - textSize) / 2.0f) + new Vector2(0.0f, minScale.Y);
+                renderer.Draw(BorderTextureData[flip ? W : E], backingPosition + new Vector2(cornerX, BorderTextureData[NE].Height * cornerScale.Y), Color.White, 0.0f, borderScaleY, false);
+                Vector2 textPosition = backingPosition + (flip ? Vector2.Zero : new Vector2(halfButtonWidth, 0.0f)) + ((backingSize - new Vector2(halfButtonWidth, 0.0f) - textSize) / 2.0f) + new Vector2(0.0f, minScale.Y);
                 renderer.DrawText(text, textPosition, Color.White, 0.0f, Vector2.Zero, minScale);
             }
 

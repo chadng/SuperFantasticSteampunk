@@ -109,6 +109,11 @@ namespace SuperFantasticSteampunk.BattleStates
         public int CurrentOuterMenuOptionIndex { get; private set; }
         public bool Paused { get; private set; }
 
+        public PartyMember PreviouslyActedPartyMember
+        {
+            get { return actions.Count > 0 ? actions[actions.Count - 1].Actor : null; }
+        }
+
         public override bool KeepPartyMembersStatic
         {
             get { return true; }
