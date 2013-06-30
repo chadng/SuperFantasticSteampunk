@@ -102,6 +102,21 @@ namespace SuperFantasticSteampunk.BattleStates
         };
         #endregion
 
+        #region Static Methods
+        public static ThinkAction ThinkForEnemyPartyMember(PartyMember partyMember, Battle battle)
+        {
+            ThinkAction thinkAction = new ThinkAction(ThinkActionType.Attack, "default", partyMember, ChooseTargetForEnemyPartyMember(battle));
+            if (thinkAction.Actor.EquippedWeapon == null)
+                thinkAction.Actor.EquipWeapon(thinkAction.OptionName);
+            return thinkAction;
+        }
+
+        public static PartyMember ChooseTargetForEnemyPartyMember(Battle battle)
+        {
+            return battle.PlayerParty.Sample();
+        }
+        #endregion
+
         #region Instance Fields
         private ThinkAction currentThinkAction; // Assigned to just before SelectTarget state is pushed
         private Dictionary<CharacterClass, List<ThinkMenuOption>> weaponMenuOptions;
@@ -557,13 +572,7 @@ namespace SuperFantasticSteampunk.BattleStates
         private void thinkAboutEnemyPartyActions()
         {
             foreach (PartyMember partyMember in Battle.EnemyParty)
-            {
-                //TODO: improve this
-                ThinkAction thinkAction = new ThinkAction(ThinkActionType.Attack, "default", partyMember, Battle.PlayerParty.Sample());
-                if (thinkAction.Actor.EquippedWeapon == null)
-                    thinkAction.Actor.EquipWeapon(thinkAction.OptionName);
-                Actions.Add(thinkAction);
-            }
+                Actions.Add(ThinkForEnemyPartyMember(partyMember, Battle));
         }
         #endregion
     }

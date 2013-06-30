@@ -8,6 +8,7 @@ namespace SuperFantasticSteampunk.BattleStates
     {
         #region Instance Fields
         private ThinkAction thinkAction;
+        private bool isEnemy;
         private PartyBattleLayout partyBattleLayout;
         private InputButtonListener inputButtonListener;
         #endregion
@@ -33,7 +34,8 @@ namespace SuperFantasticSteampunk.BattleStates
             if (thinkAction == null)
                 throw new Exception("ThinkAction cannot be null");
             this.thinkAction = thinkAction;
-            inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
+            isEnemy = Battle.GetPartyForPartyMember(thinkAction.Actor) == Battle.EnemyParty;
+            inputButtonListener = isEnemy ? null : new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
                 { InputButton.Up, new ButtonEventHandlers(down: chooseTargetUp) },
                 { InputButton.Down, new ButtonEventHandlers(down: chooseTargetDown) },
                 { InputButton.Left, new ButtonEventHandlers(down: chooseTargetLeft) },
@@ -47,24 +49,29 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public override void Start()
         {
-            partyBattleLayout = null;
-            if (thinkAction.Type == ThinkActionType.Attack)
+            if (isEnemy)
+                thinkAction.Target = Think.ChooseTargetForEnemyPartyMember(Battle);
+            else
             {
-                WeaponData weaponData = ResourceManager.GetWeaponData(thinkAction.OptionName);
-                if (weaponData != null && weaponData.WeaponUseAgainst == WeaponUseAgainst.Enemy)
+                partyBattleLayout = null;
+                if (thinkAction.Type == ThinkActionType.Attack)
                 {
-                    partyBattleLayout = Battle.EnemyPartyLayout;
-                    PotentialTarget = Battle.EnemyParty[0];
+                    WeaponData weaponData = ResourceManager.GetWeaponData(thinkAction.OptionName);
+                    if (weaponData != null && weaponData.WeaponUseAgainst == WeaponUseAgainst.Enemy)
+                    {
+                        partyBattleLayout = Battle.EnemyPartyLayout;
+                        PotentialTarget = Battle.EnemyParty[0];
+                    }
                 }
-            }
 
-            if (partyBattleLayout == null)
-            {
-                partyBattleLayout = Battle.PlayerPartyLayout;
-                PotentialTarget = Battle.PlayerParty[0];
-            }
+                if (partyBattleLayout == null)
+                {
+                    partyBattleLayout = Battle.PlayerPartyLayout;
+                    PotentialTarget = Battle.PlayerParty[0];
+                }
 
-            BattleStateRenderer = new SelectTargetRenderer(this);
+                BattleStateRenderer = new SelectTargetRenderer(this);
+            }
         }
 
         public override void Finish()
@@ -75,7 +82,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(Delta delta)
         {
-            if (PotentialTarget == null || thinkAction.Type == ThinkActionType.None || thinkAction.Type == ThinkActionType.Defend)
+            if (isEnemy || PotentialTarget == null || thinkAction.Type == ThinkActionType.None || thinkAction.Type == ThinkActionType.Defend)
             {
                 Finish();
                 return;

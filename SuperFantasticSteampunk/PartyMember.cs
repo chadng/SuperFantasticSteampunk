@@ -275,6 +275,8 @@ namespace SuperFantasticSteampunk
                 if (aliveBefore)
                 {
                     BattleEntity.Visible = false;
+                    EquippedShield = null;
+                    EquippedWeapon = null;
                     if (battle != null)
                         ParticleEffect.AddSmokePuff(BattleEntity.GetCenter(), battle);
                 }
