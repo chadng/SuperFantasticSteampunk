@@ -80,11 +80,18 @@ namespace SuperFantasticSteampunk.BattleStates
             { "item", Color.Yellow },
             { "run", Color.Pink }
         };
+
+        private const int MELEE = 0;
+        private const int RANGED = 1;
+        private const int DEFEND = 2;
+        private const int ITEM = 3;
+        private static readonly string[] actionIconNames = { "attack", "ranged", "defend", "item" };
         #endregion
 
         #region Instance Fields
         private TextureData iconContainerTextureData;
         private TextureData iconContainerGlowTextureData;
+        private TextureData[] actionIconTextureData;
         private float outerMenuOptionTransitionAngle;
         private float outerMenuOptionTransitionYScale;
         private bool incOuterMenuOptionYScale;
@@ -123,12 +130,15 @@ namespace SuperFantasticSteampunk.BattleStates
             for (int i = 0; i < Think.OuterMenuOptions.Length; ++i)
             {
                 string optionName = Think.OuterMenuOptions[i].ToLower();
-                ThinkRendererOuterMenuOption menuOption = new ThinkRendererOuterMenuOption(ResourceManager.GetTextureData("battle_ui/" + optionName + "_icon"), menuOptionColors[optionName], i);
+                ThinkRendererOuterMenuOption menuOption = new ThinkRendererOuterMenuOption(ResourceManager.GetTextureData("battle_ui/icons/" + optionName), menuOptionColors[optionName], i);
                 menuOptions.Add(menuOption);
                 sortedMenuOptions.Add(menuOption);
             }
-            iconContainerTextureData = ResourceManager.GetTextureData("battle_ui/icon_container");
-            iconContainerGlowTextureData = ResourceManager.GetTextureData("battle_ui/icon_container_glow");
+            iconContainerTextureData = ResourceManager.GetTextureData("battle_ui/icons/container");
+            iconContainerGlowTextureData = ResourceManager.GetTextureData("battle_ui/icons/container_glow");
+            actionIconTextureData = new TextureData[actionIconNames.Length];
+            for (int i = 0; i < actionIconNames.Length; ++i)
+                actionIconTextureData[i] = ResourceManager.GetTextureData("battle_ui/icons/" + actionIconNames[i]);
             ResetOuterMenuTransitions();
 
             anglePerOption = MathHelper.TwoPi / Think.OuterMenuOptions.Length;
@@ -205,6 +215,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void AfterDraw(Renderer renderer)
         {
+            drawPartyMemberActionIndicators(renderer);
             if (battleState.CurrentThinkActionType == ThinkActionType.None)
             {
                 drawTextOverPreviouslyActedPartyMember(renderer);
@@ -214,6 +225,30 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 drawOuterMenu(renderer);
                 drawOptionNamesSubMenu(renderer);
+            }
+        }
+
+        private void drawPartyMemberActionIndicators(Renderer renderer)
+        {
+            Vector2 scale = 0.5f * Game1.MinScreenScaleFactor;
+            foreach (ThinkAction action in battleState.Actions)
+            {
+                TextureData iconTextureData;
+                switch (action.Type)
+                {
+                case ThinkActionType.Attack: iconTextureData = actionIconTextureData[action.Melee ? MELEE : RANGED]; break;
+                case ThinkActionType.Defend: iconTextureData = actionIconTextureData[DEFEND]; break;
+                case ThinkActionType.UseItem: iconTextureData = actionIconTextureData[ITEM]; break;
+                default: iconTextureData = null; break;
+                }
+
+                if (iconTextureData == null)
+                    continue;
+
+                Rectangle boundingBox = action.Actor.BattleEntity.GetBoundingBox();
+                Vector2 position = new Vector2(boundingBox.X + (boundingBox.Width / 2.0f) - (iconTextureData.Width * scale.X * 0.5f), boundingBox.Y - (iconTextureData.Height * scale.Y));
+                position = battleState.Battle.Camera.TranslateVector(position);
+                renderer.Draw(iconTextureData, position, Color.White, 0.0f, scale, false);
             }
         }
 

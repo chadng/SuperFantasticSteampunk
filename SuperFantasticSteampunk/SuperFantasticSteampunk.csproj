@@ -168,32 +168,36 @@
       <Link>Content\Skeletons\fox_chibi.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\attack_icon.png">
-      <Link>Content\Textures\battle_ui\attack_icon.png</Link>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\1_output\attack.png">
+      <Link>Content\Textures\battle_ui\icons\attack.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\defend_icon.png">
-      <Link>Content\Textures\battle_ui\defend_icon.png</Link>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\1_output\container.png">
+      <Link>Content\Textures\battle_ui\icons\container.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\icon_container.png">
-      <Link>Content\Textures\battle_ui\icon_container.png</Link>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\1_output\container_glow.png">
+      <Link>Content\Textures\battle_ui\icons\container_glow.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\icon_container_glow.png">
-      <Link>Content\Textures\battle_ui\icon_container_glow.png</Link>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\1_output\defend.png">
+      <Link>Content\Textures\battle_ui\icons\defend.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\item_icon.png">
-      <Link>Content\Textures\battle_ui\item_icon.png</Link>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\1_output\item.png">
+      <Link>Content\Textures\battle_ui\icons\item.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\move_icon.png">
-      <Link>Content\Textures\battle_ui\move_icon.png</Link>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\1_output\move.png">
+      <Link>Content\Textures\battle_ui\icons\move.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\output\run_icon.png">
-      <Link>Content\Textures\battle_ui\run_icon.png</Link>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\1_output\ranged.png">
+      <Link>Content\Textures\battle_ui\icons\ranged.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\icons\1_output\run.png">
+      <Link>Content\Textures\battle_ui\icons\run.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\battle_ui_borders_output\e.png">

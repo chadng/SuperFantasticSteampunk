@@ -18,6 +18,7 @@ namespace SuperFantasticSteampunk.BattleStates
         public PartyMember Target { get; set; }
         public bool Active { get; set; }
         public bool InfiniteInInventory { get; set; }
+        public readonly bool Melee;
         #endregion
 
         #region Constructors
@@ -29,6 +30,16 @@ namespace SuperFantasticSteampunk.BattleStates
             Target = target;
             Active = true;
             InfiniteInInventory = false;
+            if (type == ThinkActionType.Attack)
+            {
+                WeaponData weaponData = ResourceManager.GetWeaponData(optionName);
+                if (weaponData == null)
+                    Melee = false;
+                else
+                    Melee = weaponData.WeaponType == WeaponType.Melee;
+            }
+            else
+                Melee = false;
         }
         #endregion
     }
@@ -96,7 +107,6 @@ namespace SuperFantasticSteampunk.BattleStates
         private Dictionary<CharacterClass, List<ThinkMenuOption>> weaponMenuOptions;
         private List<ThinkMenuOption> shieldMenuOptions;
         private List<ThinkMenuOption> itemMenuOptions;
-        private List<ThinkAction> actions;
         private InputButtonListener inputButtonListener;
         private bool inOuterMenu;
         #endregion
@@ -106,12 +116,13 @@ namespace SuperFantasticSteampunk.BattleStates
         public int CurrentOptionNameIndex { get; private set; }
         public PartyMember CurrentPartyMember { get; private set; }
         public List<ThinkMenuOption> MenuOptions { get; private set; }
+        public List<ThinkAction> Actions { get; private set; }
         public int CurrentOuterMenuOptionIndex { get; private set; }
         public bool Paused { get; private set; }
 
         public PartyMember PreviouslyActedPartyMember
         {
-            get { return actions.Count > 0 ? actions[actions.Count - 1].Actor : null; }
+            get { return Actions.Count > 0 ? Actions[Actions.Count - 1].Actor : null; }
         }
 
         public override bool KeepPartyMembersStatic
@@ -143,7 +154,7 @@ namespace SuperFantasticSteampunk.BattleStates
             shieldMenuOptions = new List<ThinkMenuOption>();
             itemMenuOptions = new List<ThinkMenuOption>();
 
-            actions = new List<ThinkAction>(battle.PlayerParty.Count);
+            Actions = new List<ThinkAction>(battle.PlayerParty.Count);
 
             inputButtonListener = new InputButtonListener(new Dictionary<InputButton, ButtonEventHandlers> {
                 { InputButton.Up, new ButtonEventHandlers(down: upHandler) },
@@ -159,7 +170,7 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Instance Methods
         public bool PartyMemberHasCompletedThinkAction(PartyMember partyMember)
         {
-            foreach (ThinkAction action in actions)
+            foreach (ThinkAction action in Actions)
             {
                 if (action.Actor == partyMember)
                     return true;
@@ -179,7 +190,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             base.Finish();
             thinkAboutEnemyPartyActions();
-            ChangeState(new Act(Battle, actions));
+            ChangeState(new Act(Battle, Actions));
         }
 
         public override void Pause()
@@ -201,7 +212,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(Delta delta)
         {
-            if (actions.Count == Battle.PlayerParty.Count)
+            if (Actions.Count == Battle.PlayerParty.Count)
             {
                 Finish();
                 return;
@@ -322,10 +333,10 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             if (inOuterMenu)
             {
-                if (actions.Count > 0)
+                if (Actions.Count > 0)
                 {
-                    ThinkAction lastAction = actions[actions.Count - 1];
-                    actions.RemoveAt(actions.Count - 1);
+                    ThinkAction lastAction = Actions[Actions.Count - 1];
+                    Actions.RemoveAt(Actions.Count - 1);
                     CurrentPartyMember = lastAction.Actor;
                     if (!ThinkMenuOption.IsDefaultOptionName(lastAction.OptionName))
                     {
@@ -334,7 +345,7 @@ namespace SuperFantasticSteampunk.BattleStates
                             inventory.AddItem(lastAction.OptionName);
                     }
                     repopulateMenuOptions();
-                    Logger.Log("Back to action selection for party member " + (actions.Count + 1).ToString());
+                    Logger.Log("Back to action selection for party member " + (Actions.Count + 1).ToString());
                 }
             }
             else
@@ -439,14 +450,14 @@ namespace SuperFantasticSteampunk.BattleStates
 
         private void getNextPartyMember()
         {
-            if (actions.Count < Battle.PlayerParty.Count)
+            if (Actions.Count < Battle.PlayerParty.Count)
             {
                 inOuterMenu = true;
                 CurrentOuterMenuOptionIndex = 0;
-                IEnumerable<PartyMember> finishedPartyMembers = actions.Select<ThinkAction, PartyMember>(thinkAction => thinkAction.Actor);
+                IEnumerable<PartyMember> finishedPartyMembers = Actions.Select<ThinkAction, PartyMember>(thinkAction => thinkAction.Actor);
                 CurrentPartyMember = Battle.PlayerParty.Find(partyMember => !finishedPartyMembers.Contains(partyMember));
                 setOuterMenuOptionIndexForCurrentPartyMember();
-                Logger.Log("Action selection for party member " + (actions.Count + 1).ToString());
+                Logger.Log("Action selection for party member " + (Actions.Count + 1).ToString());
             }
         }
 
@@ -508,13 +519,13 @@ namespace SuperFantasticSteampunk.BattleStates
                 Inventory inventory = getInventoryFromThinkActionType(currentThinkAction.Type, CurrentPartyMember.CharacterClass);
                 if (inventory != null)
                     inventory.UseItem(currentThinkAction.OptionName, CurrentPartyMember);
-                actions.Add(currentThinkAction);
+                Actions.Add(currentThinkAction);
                 Battle.LastUsedThinkActionTypes.AddOrReplace(CurrentPartyMember, new Wrapper<ThinkActionType>(currentThinkAction.Type));
                 getNextPartyMember();
                 repopulateMenuOptions();
                 currentThinkAction = null;
                 initThinkActionTypeMenu(ThinkActionType.None);
-                if (actions.Count == Battle.PlayerParty.Count)
+                if (Actions.Count == Battle.PlayerParty.Count)
                     BattleStateRenderer = null;
                 else
                     BattleStateRenderer.ResetOuterMenuTransitions();
@@ -551,7 +562,7 @@ namespace SuperFantasticSteampunk.BattleStates
                 ThinkAction thinkAction = new ThinkAction(ThinkActionType.Attack, "default", partyMember, Battle.PlayerParty.Sample());
                 if (thinkAction.Actor.EquippedWeapon == null)
                     thinkAction.Actor.EquipWeapon(thinkAction.OptionName);
-                actions.Add(thinkAction);
+                Actions.Add(thinkAction);
             }
         }
         #endregion
