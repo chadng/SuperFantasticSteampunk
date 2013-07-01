@@ -278,7 +278,7 @@ namespace SuperFantasticSteampunk
 
             if (battle != null)
             {
-                if (amount > 0 && playAnimation)
+                if ((amount > 0 || (amount == 0 && !ignoreShield)) && playAnimation)
                 {
                     BattleEntity.AnimationState.SetAnimation(GetBattleEntityHurtAnimationName(), false);
                     BattleEntity.AnimationState.AddAnimation(GetBattleEntityIdleAnimationName(), true);

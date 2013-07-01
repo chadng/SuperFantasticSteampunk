@@ -310,6 +310,10 @@
       <Link>Content\Textures\weapons\marksman\shotgun.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\output\sponge_gun.png">
+      <Link>Content\Textures\weapons\marksman\sponge_gun.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.png">
       <Link>Content\Skeletons\weasel.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
