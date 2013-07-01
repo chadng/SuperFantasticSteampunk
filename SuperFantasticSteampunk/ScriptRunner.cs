@@ -157,7 +157,7 @@ namespace SuperFantasticSteampunk
             float timeToCurrentAnimationEnd = animationState.Animation.Duration - (animationStateTime % animationState.Animation.Duration);
 
             animationState.AddAnimation(animation, false, animationStateTime + timeToCurrentAnimationEnd);
-            animationState.AddAnimation(partyMember.BattleEntityIdleAnimationName, true);
+            animationState.AddAnimation(partyMember.GetBattleEntityIdleAnimationName(), true);
 
             if (onStartCallback != null)
                 addNestedScriptRunner(onStartCallback, timeToCurrentAnimationEnd);
@@ -178,7 +178,7 @@ namespace SuperFantasticSteampunk
                 throw new Exception("Animation '" + animationName + "' could not be found");
 
             animationState.SetAnimation(animation, false);
-            animationState.AddAnimation(partyMember.BattleEntityIdleAnimationName, true);
+            animationState.AddAnimation(partyMember.GetBattleEntityIdleAnimationName(), true);
 
             if (onFinishCallback != null)
                 addNestedScriptRunner(onFinishCallback, animation.Duration);

@@ -158,7 +158,7 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 if (partyMember.Alive && partyMember.BattleEntity != null)
                 {
-                    if (partyMember.BattleEntity.AnimationState.Animation.Name != partyMember.BattleEntityIdleAnimationName)
+                    if (partyMember.BattleEntity.AnimationState.Animation.Name != partyMember.GetBattleEntityIdleAnimationName())
                         return false;
                 }
             }

@@ -48,14 +48,6 @@ namespace SuperFantasticSteampunk
         }
 
         public Vector2 BattleEntityIdlePosition { get; set; }
-        public string BattleEntityIdleAnimationName
-        {
-            get { return battleEntityIdleAnimationNameOverride ?? (hasIdleWeaponAnimation && EquippedWeapon != null ? "idle_weapon" : (hasIdleShieldAnimation && EquippedShield != null ? "idle_shield" : "idle")); }
-        }
-        public string BattleEntityHurtAnimationName
-        {
-            get { return hasHurtWeaponAnimation && EquippedWeapon != null ? "hurt_weapon" : (hasHurtShieldAnimation && EquippedShield != null ? "hurt_shield" : "hurt"); }
-        }
         #endregion
 
         #region Constructors
@@ -116,7 +108,7 @@ namespace SuperFantasticSteampunk
             hasIdleShieldAnimation = BattleEntity.Skeleton.Data.FindAnimation("idle_shield") != null;
             hasHurtWeaponAnimation = BattleEntity.Skeleton.Data.FindAnimation("hurt_weapon") != null;
             hasHurtShieldAnimation = BattleEntity.Skeleton.Data.FindAnimation("hurt_shield") != null;
-            BattleEntity.AnimationState.SetAnimation(BattleEntityIdleAnimationName, true);
+            BattleEntity.AnimationState.SetAnimation(GetBattleEntityIdleAnimationName(), true);
             BattleEntity.AnimationState.Time = (float)Game1.Random.NextDouble();
         }
 
@@ -288,8 +280,8 @@ namespace SuperFantasticSteampunk
             {
                 if (amount > 0 && playAnimation)
                 {
-                    BattleEntity.AnimationState.SetAnimation(BattleEntityHurtAnimationName, false);
-                    BattleEntity.AnimationState.AddAnimation(BattleEntityIdleAnimationName, true);
+                    BattleEntity.AnimationState.SetAnimation(GetBattleEntityHurtAnimationName(), false);
+                    BattleEntity.AnimationState.AddAnimation(GetBattleEntityIdleAnimationName(), true);
                 }
                 Scene.AddEntity(new FloatingText(Math.Abs(amount).ToString(), heal ? Color.Blue : Color.Red, BattleEntity.GetCenter(), 5.0f, true));
             }
@@ -313,6 +305,36 @@ namespace SuperFantasticSteampunk
                 battleEntityIdleAnimationNameOverride = null;
             else
                 battleEntityIdleAnimationNameOverride = animationName;
+        }
+        
+        public string GetBattleEntityIdleAnimationName()
+        {
+            if (battleEntityIdleAnimationNameOverride != null)
+                return battleEntityIdleAnimationNameOverride;
+            if (EquippedWeapon != null)
+            {
+                if (EquippedWeapon.Data.IdleAnimation != null)
+                    return EquippedWeapon.Data.IdleAnimation;
+                if (hasIdleWeaponAnimation)
+                    return "idle_weapon";
+            }
+            if (EquippedShield != null && hasIdleShieldAnimation)
+                return "idle_shield";
+            return "idle";
+        }
+
+        public string GetBattleEntityHurtAnimationName()
+        {
+            if (EquippedWeapon != null)
+            {
+                if (EquippedWeapon.Data.HurtAnimation != null)
+                    return EquippedWeapon.Data.HurtAnimation;
+                if (hasHurtWeaponAnimation)
+                    return "hurt_weapon";
+            }
+            if (EquippedShield != null && hasIdleShieldAnimation)
+                return "hurt_shield";
+            return "hurt";
         }
 
         public void Update(Delta delta)
@@ -424,7 +446,7 @@ namespace SuperFantasticSteampunk
         {
             if (BattleEntity != null)
             {
-                string animationName = BattleEntityIdleAnimationName;
+                string animationName = GetBattleEntityIdleAnimationName();
                 if (animationName != BattleEntity.AnimationState.Animation.Name)
                     BattleEntity.AnimationState.SetAnimation(animationName, true);
             }

@@ -347,6 +347,7 @@ namespace SuperFantasticSteampunk
             foreach (var data in weaponDataList)
             {
                 WeaponData weaponData = newObjectFromItemData<WeaponData>(data);
+                weaponData.Init();
                 weaponDataDictionary.Add(weaponData.Name, weaponData);
                 Logger.Log("Loaded weapon '" + weaponData.Name + "'");
             }

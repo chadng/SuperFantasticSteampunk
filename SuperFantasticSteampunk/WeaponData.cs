@@ -18,10 +18,20 @@ namespace SuperFantasticSteampunk
         public string TextureName { get; private set; }
         public bool ForceAttributes { get; private set; }
         public string BlacklistedAttributes { get; private set; }
+        public string IdleAnimation { get; private set; }
+        public string HurtAnimation { get; private set; }
         public Script Script { get; private set; }
         #endregion
 
         #region Instance Methods
+        public void Init()
+        {
+            if (IdleAnimation != null && IdleAnimation.Length == 0)
+                IdleAnimation = null;
+            if (HurtAnimation != null && HurtAnimation.Length == 0)
+                HurtAnimation = null;
+        }
+
         public List<string> BlacklistedAttributesToList()
         {
             if (BlacklistedAttributes == null || BlacklistedAttributes.Length == 0)
