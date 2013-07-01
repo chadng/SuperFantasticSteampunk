@@ -64,7 +64,7 @@ namespace SuperFantasticSteampunk.BattleStates
             default: break;
             }
 
-            if (statusEffectFinished)
+            if (statusEffectFinished && partyMember.BattleEntity.AnimationState.Animation.Name == partyMember.GetBattleEntityIdleAnimationName())
                 getNextStatusEffect();
         }
 

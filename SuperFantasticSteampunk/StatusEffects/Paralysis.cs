@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using SuperFantasticSteampunk.BattleStates;
+using SuperFantasticSteampunk.StatusEffects.Utils;
 
 namespace SuperFantasticSteampunk.StatusEffects
 {
@@ -14,9 +15,7 @@ namespace SuperFantasticSteampunk.StatusEffects
         #region Instance Fields
         private bool finished;
         private bool thinkActionActivationDecided;
-        private int shudderCounter;
-        private float shudderTimer;
-        private Vector2 actorStartPosition;
+        private ShudderManager shudderManager;
         #endregion
 
         #region Instance Properties
@@ -36,8 +35,9 @@ namespace SuperFantasticSteampunk.StatusEffects
         #region Constructors
         public Paralysis()
         {
-            resetFieldsForUpdate();
             TextureData = ResourceManager.GetTextureData("particles/paralysis");
+            shudderManager = new ShudderManager(shudderCount, shudderTime);
+            resetFieldsForUpdate(null);
         }
         #endregion
 
@@ -45,8 +45,7 @@ namespace SuperFantasticSteampunk.StatusEffects
         public override void BeforeActStart(ThinkAction thinkAction)
         {
             base.BeforeActStart(thinkAction);
-            resetFieldsForUpdate();
-            actorStartPosition = thinkAction.Actor.BattleEntity.Position;
+            start(thinkAction.Actor);
         }
 
         public override void BeforeActUpdate(ThinkAction thinkAction, Delta delta)
@@ -62,20 +61,9 @@ namespace SuperFantasticSteampunk.StatusEffects
             else if (thinkAction.Active)
                 finished = true;
             else
-            {
-                updateShudder(delta);
-                bool shocked = shudderCounter % 2 == 0;
-                thinkAction.Actor.BattleEntity.Position = actorStartPosition + (new Vector2(5.0f, 0.0f) * (shocked ? -1 : 1));
-                thinkAction.Actor.BattleEntity.Tint = shocked ? Color.Yellow : Color.White;
-                thinkAction.Actor.BattleEntity.PauseAnimation = true;
-            }
+                updateShockEffect(thinkAction.Actor, delta);
 
-            if (finished)
-            {
-                thinkAction.Actor.BattleEntity.Position = actorStartPosition;
-                thinkAction.Actor.BattleEntity.Tint = Color.White;
-                thinkAction.Actor.BattleEntity.PauseAnimation = false;
-            }
+            checkFinish(thinkAction.Actor);
         }
 
         public override bool BeforeActIsFinished()
@@ -83,23 +71,54 @@ namespace SuperFantasticSteampunk.StatusEffects
             return finished;
         }
 
-        private void resetFieldsForUpdate()
+        public override void EndTurnStart(PartyMember partyMember)
+        {
+            base.EndTurnStart(partyMember);
+            start(partyMember);
+        }
+
+        public override void EndTurnUpdate(PartyMember partyMember, Delta delta)
+        {
+            base.EndTurnUpdate(partyMember, delta);
+            updateShockEffect(partyMember, delta);
+            checkFinish(partyMember);
+        }
+
+        public override bool EndTurnIsFinished()
+        {
+            return finished;
+        }
+
+        private void start(PartyMember partyMember)
+        {
+            resetFieldsForUpdate(partyMember);
+        }
+
+        private void updateShockEffect(PartyMember partyMember, Delta delta)
+        {
+            shudderManager.Update(partyMember, delta);
+            if (shudderManager.Finished)
+                finished = true;
+            bool shocked = shudderManager.ShudderCounter % 2 == 0;
+            partyMember.BattleEntity.Position = shudderManager.PartyMemberStartPosition + (new Vector2(5.0f, 0.0f) * (shocked ? -1 : 1));
+            partyMember.BattleEntity.Tint = shocked ? Color.Yellow : Color.White;
+            partyMember.BattleEntity.PauseAnimation = true;
+        }
+
+        private void checkFinish(PartyMember partyMember)
+        {
+            if (finished)
+            {
+                partyMember.BattleEntity.Tint = Color.White;
+                partyMember.BattleEntity.PauseAnimation = false;
+            }
+        }
+
+        private void resetFieldsForUpdate(PartyMember partyMember)
         {
             finished = false;
             thinkActionActivationDecided = false;
-            shudderCounter = 0;
-            shudderTimer = 0.0f;
-        }
-
-        private void updateShudder(Delta delta)
-        {
-            shudderTimer += delta.Time;
-            if (shudderTimer >= shudderTime)
-            {
-                shudderTimer = 0.0f;
-                if (++shudderCounter > shudderCount)
-                    finished = true;
-            }
+            shudderManager.Reset(partyMember);
         }
         #endregion
     }

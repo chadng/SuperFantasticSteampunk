@@ -367,7 +367,7 @@ namespace SuperFantasticSteampunk.BattleStates
                     renderer.DrawText(menuOption.Description, containerPosition * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
                 }
 
-                renderer.DrawText(menuOption.Name, position * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
+                renderer.DrawText(menuOption.Name.Replace('-', ' '), position * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
 
                 string amountString = menuOption.Amount < 0 ? "~" : menuOption.Amount.ToString();
                 Vector2 amountSize = renderer.Font.MeasureString(amountString, subMenuFontSize);

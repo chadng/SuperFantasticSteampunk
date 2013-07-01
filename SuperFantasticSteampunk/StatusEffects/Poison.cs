@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using SuperFantasticSteampunk.StatusEffects.Utils;
 
 namespace SuperFantasticSteampunk.StatusEffects
 {
@@ -14,7 +15,7 @@ namespace SuperFantasticSteampunk.StatusEffects
         private bool damageDone;
         private float tintAlpha;
         private bool incTintAlpha;
-        private float bubbleParticleTimer;
+        private ParticleManager particleManager;
         #endregion
 
         #region Instance Properties
@@ -34,8 +35,9 @@ namespace SuperFantasticSteampunk.StatusEffects
         #region Constructors
         public Poison()
         {
-            resetFieldsForUpdate();
             TextureData = ResourceManager.GetTextureData("particles/poison_bubble");
+            particleManager = new ParticleManager(bubbleParticleTime, TextureData);
+            resetFieldsForUpdate();
         }
         #endregion
 
@@ -51,7 +53,7 @@ namespace SuperFantasticSteampunk.StatusEffects
             base.EndTurnUpdate(partyMember, delta);
 
             updateTintAlpha(delta);
-            updateBubbleParticles(partyMember, delta);
+            particleManager.Update(partyMember, delta);
 
             if (!incTintAlpha && !damageDone)
             {
@@ -76,7 +78,7 @@ namespace SuperFantasticSteampunk.StatusEffects
             damageDone = false;
             tintAlpha = 0.0f;
             incTintAlpha = true;
-            bubbleParticleTimer = 0.0f;
+            particleManager.Reset();
         }
 
         private void updateTintAlpha(Delta delta)
@@ -98,19 +100,6 @@ namespace SuperFantasticSteampunk.StatusEffects
                     tintAlpha = 0.0f;
                     finished = true;
                 }
-            }
-        }
-
-        private void updateBubbleParticles(PartyMember partyMember, Delta delta)
-        {
-            bubbleParticleTimer += delta.Time;
-            if (bubbleParticleTimer >= bubbleParticleTime)
-            {
-                bubbleParticleTimer = 0.0f;
-                Rectangle boundingBox = partyMember.BattleEntity.GetBoundingBox();
-                float x = boundingBox.X + (boundingBox.Width / 2) + Game1.Random.Next(boundingBox.Width / 2) - (boundingBox.Width / 4);
-                float y = boundingBox.Y + (boundingBox.Height / 2) + (Game1.Random.Next(boundingBox.Height / 4) - (boundingBox.Height / 8));
-                Scene.AddEntity(new FloatingParticle(new Vector2(x, y), new Vector2(0.0f, -200.0f), new Vector2(0.3f), 1.4f, TextureData));
             }
         }
         #endregion
