@@ -60,7 +60,7 @@ namespace SuperFantasticSteampunk
             updateScale(ref scale);
             Vector2 origin = new Vector2(sprite.Data.OriginX, sprite.Data.OriginY);
             SpriteEffects spriteEffects = getSpriteEffectsFromScale(ref scale);
-            spriteBatch.Draw(sprite.Texture, position, sprite.GetSourceRectangle(), color, rotation, origin, scale, spriteEffects, 0.0f);
+            spriteBatch.Draw(sprite.TextureData.Texture, position, sprite.GetSourceRectangle(), color, rotation, origin, scale * sprite.TextureData.Scale, spriteEffects, 0.0f);
         }
 
         public void Draw(TextureData textureData, Vector2 position, Color color, float rotation, Vector2 scale, bool cameraTransform = true)
@@ -73,9 +73,8 @@ namespace SuperFantasticSteampunk
             }
             updateColor(ref color);
             Rectangle sourceRect = new Rectangle(0, 0, textureData.Texture.Width, textureData.Texture.Height);
-            Vector2 origin = new Vector2(textureData.OriginX, textureData.OriginY);
             SpriteEffects spriteEffects = getSpriteEffectsFromScale(ref scale);
-            spriteBatch.Draw(textureData.Texture, position, sourceRect, color, rotation, origin, scale, spriteEffects, 0.0f);
+            spriteBatch.Draw(textureData.Texture, position, sourceRect, color, rotation, textureData.Origin, scale * textureData.Scale, spriteEffects, 0.0f);
         }
 
         public void Draw(TextureData textureData, Vector2 position, Color color)

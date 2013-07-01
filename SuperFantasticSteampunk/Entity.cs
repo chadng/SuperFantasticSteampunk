@@ -49,6 +49,7 @@ namespace SuperFantasticSteampunk
         public List<UpdateExtension> UpdateExtensions { get; private set; }
         public Effect Shader { get; set; }
         public bool PauseAnimation { get; set; }
+        public bool RenderShadow { get; set; }
         #endregion
 
         #region Constructors
@@ -63,6 +64,8 @@ namespace SuperFantasticSteampunk
             UpdateExtensions = new List<UpdateExtension>();
             Shader = null;
             PauseAnimation = false;
+            RenderShadow = false;
+            shadowTextureData = ResourceManager.GetTextureData("shadow");
         }
 
         public Entity(Skeleton skeleton, Vector2 position)
@@ -71,7 +74,7 @@ namespace SuperFantasticSteampunk
             Skeleton = skeleton;
             skeletonBoundingBox = ResourceManager.GetSkeletonBoundingBox(skeleton.Data.Name);
             AnimationState = new AnimationState(new AnimationStateData(skeleton.Data));
-            shadowTextureData = ResourceManager.GetTextureData("shadow");
+            RenderShadow = true;
         }
 
         public Entity(Sprite sprite, Vector2 position)
@@ -239,16 +242,21 @@ namespace SuperFantasticSteampunk
 
         public virtual void DrawShadow(Renderer renderer)
         {
-            if (Skeleton == null || !Visible)
+            if (!RenderShadow || !Visible)
                 return;
 
             Vector2 shadowPosition = Position;
             Vector2 shadowScale = new Vector2(1.5f);
-            if (ShadowFollowBone != null)
+            if (Skeleton != null)
             {
-                shadowPosition.X = ShadowFollowBone.WorldX;
-                shadowScale += new Vector2(ShadowFollowBone.WorldY - Skeleton.RootBone.WorldY) / 400.0f;
+                if (ShadowFollowBone != null)
+                {
+                    shadowPosition.X = ShadowFollowBone.WorldX;
+                    shadowScale += new Vector2(ShadowFollowBone.WorldY - Skeleton.RootBone.WorldY) / 400.0f;
+                }
             }
+            else if (Sprite != null)
+                shadowScale *= (Sprite.Data.Width * Sprite.TextureData.ScaleX) / (float)shadowTextureData.Width;
 
             renderer.SetShader(null);
             renderer.Draw(shadowTextureData, shadowPosition, Color.White * 0.5f, 0.0f, shadowScale * Scale);

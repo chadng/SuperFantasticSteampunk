@@ -497,8 +497,9 @@ namespace SuperFantasticSteampunk
 
             PartyMember actorPartyMember = getPartyMemberFromSelector(actorPartyMemberSelector);
             PartyMember frontPartyMember = getPartyMemberFromSelector(targetPartyMemberSelector + ">list>front");
-            float nudgeMultiplier = battle.GetPartyForPartyMember(actorPartyMember) == battle.PlayerParty ? 1.0f : -1.0f;
-            Vector2 position = frontPartyMember.BattleEntity.Position + new Vector2(frontPartyMember.BattleEntity.GetBoundingBox().Width * nudgeMultiplier, 0.0f);
+            float nudgeMultiplierX = battle.GetPartyForPartyMember(actorPartyMember) == battle.PlayerParty ? 1.0f : -1.0f;
+            Rectangle boundingBox = frontPartyMember.BattleEntity.GetBoundingBox();
+            Vector2 position = new Vector2(boundingBox.X + (boundingBox.Width / 2.0f) + (boundingBox.Width * nudgeMultiplierX), boundingBox.Bottom);
 
             Trap trap = new Trap(ResourceManager.GetNewSprite(spriteName), position, actorPartyMember.EquippedWeapon.Attributes, actorPartyMember.EquippedWeapon.Data, actorPartyMember, battle);
             battle.GetPartyBattleLayoutForPartyMember(frontPartyMember).PlaceTrapInFrontOfPartyMember(frontPartyMember, trap);

@@ -10,6 +10,8 @@ namespace SuperFantasticSteampunk
         public Texture2D Texture { get; private set; }
         public float OriginX { get; private set; }
         public float OriginY { get; private set; }
+        public float ScaleX { get; private set; }
+        public float ScaleY { get; private set; }
         public float Rotation { get; private set; }
 
         public int Width
@@ -22,14 +24,29 @@ namespace SuperFantasticSteampunk
             get { return Texture.Height; }
         }
 
+        public Vector2 Size
+        {
+            get { return new Vector2(Width, Height); }
+        }
+
         public Vector2 Origin
         {
             get { return new Vector2(OriginX, OriginY); }
         }
 
-        public Vector2 Size
+        public Vector2 Scale
         {
-            get { return new Vector2(Width, Height); }
+            get { return new Vector2(ScaleX, ScaleY); }
+        }
+        #endregion
+
+        #region Instance Methods
+        public void Init()
+        {
+            if (ScaleX == default(float))
+                ScaleX = 1.0f;
+            if (ScaleY == default(float))
+                ScaleY = 1.0f;
         }
         #endregion
     }

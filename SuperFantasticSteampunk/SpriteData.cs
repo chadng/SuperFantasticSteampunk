@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace SuperFantasticSteampunk
@@ -21,7 +22,27 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Instance Methods
-        public void PopulateAnimationsFromAnimationData()
+        public void Init()
+        {
+            TextureData textureData = ResourceManager.GetTextureData(TextureName);
+            if (textureData == null)
+                throw new Exception("Texture data '" + TextureName + "' does not exist for sprite '" + Name + "'");
+            if (Width <= 0)
+            {
+                Width = textureData.Width;
+                if (OriginX <= 0)
+                    OriginX = (int)textureData.OriginX;
+            }
+            if (Height <= 0)
+            {
+                Height = textureData.Height;
+                if (OriginY <= 0)
+                    OriginY = (int)textureData.OriginY;
+            }
+            populateAnimationsFromAnimationData();
+        }
+
+        private void populateAnimationsFromAnimationData()
         {
             Animations = new Dictionary<string, SpriteAnimation>();
 

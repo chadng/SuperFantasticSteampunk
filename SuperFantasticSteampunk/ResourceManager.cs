@@ -47,10 +47,10 @@ namespace SuperFantasticSteampunk
             populateItemDataDictionary(contentManager);
             partyMemberDataDictionary = new SortedDictionary<string, PartyMemberData>();
             populatePartyMemberDataDictionary(contentManager);
-            spriteDataDictionary = new SortedDictionary<string, SpriteData>();
-            populateSpriteDataDictionary(contentManager);
             textureDataDictionary = new SortedDictionary<string, TextureData>();
             populateTextureDataDictionary(contentManager);
+            spriteDataDictionary = new SortedDictionary<string, SpriteData>();
+            populateSpriteDataDictionary(contentManager);
             fontDictionary = new SortedDictionary<string, Font>();
             populateFontDictionary(contentManager);
             areaDataDictionary = new SortedDictionary<string, AreaData>();
@@ -391,7 +391,9 @@ namespace SuperFantasticSteampunk
             foreach (var data in spriteDataList)
             {
                 SpriteData spriteData = newObjectFromItemData<SpriteData>(data);
-                spriteData.PopulateAnimationsFromAnimationData();
+                if (spriteData.TextureName == null || spriteData.TextureName.Length == 0)
+                    typeof(SpriteData).GetProperty("TextureName").SetValue(spriteData, spriteData.Name, null);
+                spriteData.Init();
                 spriteDataDictionary.Add(spriteData.Name, spriteData);
                 Logger.Log("Loaded sprite '" + spriteData.Name + "'");
             }
@@ -411,6 +413,7 @@ namespace SuperFantasticSteampunk
                     typeof(TextureData).GetProperty("OriginX").SetValue(textureData, textureData.Width / 2, null);
                     typeof(TextureData).GetProperty("OriginY").SetValue(textureData, textureData.Height / 2, null);
                 }
+                textureData.Init();
                 textureDataDictionary.Add(textureName, textureData);
                 Logger.Log("Loaded texture data '" + textureName + "'");
             }
@@ -421,6 +424,7 @@ namespace SuperFantasticSteampunk
                 TextureData newTextureData = newObjectFromItemData<TextureData>(data);
                 TextureData oldTextureData = textureDataDictionary[newTextureData.Name];
                 typeof(TextureData).GetProperty("Texture").SetValue(newTextureData, oldTextureData.Texture, null);
+                newTextureData.Init();
                 textureDataDictionary[newTextureData.Name] = newTextureData;
                 Logger.Log("Updated texture data '" + newTextureData.Name + "'");
             }

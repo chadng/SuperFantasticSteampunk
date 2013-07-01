@@ -284,6 +284,18 @@
       <Link>Content\Skeletons\rhino.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\marksman_output\machete.png">
+      <Link>Content\Textures\weapons\marksman\machete.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\marksman_output\mine.png">
+      <Link>Content\Textures\weapons\marksman\mine.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\marksman_output\mine_floor.png">
+      <Link>Content\Textures\weapons\marksman\mine_floor.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\marksman_output\pistol.png">
       <Link>Content\Textures\weapons\marksman\pistol.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

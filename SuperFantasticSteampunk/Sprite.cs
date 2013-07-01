@@ -29,18 +29,13 @@ namespace SuperFantasticSteampunk
 
         #region Instance Fields
         private int currentAnimationFrameIndex;
-        private TextureData textureData;
         #endregion
 
         #region Instance Properties
         public SpriteData Data { get; private set; }
         public SpriteAnimation CurrentAnimation { get; set; }
+        public TextureData TextureData { get; private set; }
         public float Time { get; set; }
-
-        public Texture2D Texture
-        {
-            get { return textureData.Texture; }
-        }
         #endregion
 
         #region Constructors
@@ -49,7 +44,7 @@ namespace SuperFantasticSteampunk
             if (spriteData == null)
                 throw new Exception("SpriteData cannot be null");
             Data = spriteData;
-            textureData = ResourceManager.GetTextureData(spriteData.TextureName);
+            TextureData = ResourceManager.GetTextureData(spriteData.TextureName);
             currentAnimationFrameIndex = 0;
             CurrentAnimation = null;
             Time = 0.0f;
@@ -85,7 +80,7 @@ namespace SuperFantasticSteampunk
 
         public Rectangle GetSourceRectangle()
         {
-            int textureWidth = textureData.Width - Data.OffsetX;
+            int textureWidth = TextureData.Width - Data.OffsetX;
             int boundingWidth = Data.Width + (Data.PaddingX * 2);
             int boundingHeight = Data.Height + (Data.PaddingY * 2);
 

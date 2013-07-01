@@ -36,9 +36,8 @@ namespace SuperFantasticSteampunk
             this.battle = battle;
             Data = weaponData;
             entity = new Entity(sprite, position);
-            entity.UpdateExtensions.Add(new UpdateExtension((updateExtension, delta) => {
-                Update(delta);
-            }));
+            entity.RenderShadow = true;
+            entity.UpdateExtensions.Add(new UpdateExtension((updateExtension, delta) => Update(delta)));
             Scene.AddEntity(entity);
         }
         #endregion
