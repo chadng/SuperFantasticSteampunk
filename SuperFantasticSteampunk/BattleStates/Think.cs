@@ -105,9 +105,11 @@ namespace SuperFantasticSteampunk.BattleStates
         #region Static Methods
         public static ThinkAction ThinkForEnemyPartyMember(PartyMember partyMember, Battle battle)
         {
-            ThinkAction thinkAction = new ThinkAction(ThinkActionType.Attack, "default", partyMember, ChooseTargetForEnemyPartyMember(battle));
-            if (thinkAction.Actor.EquippedWeapon == null)
-                thinkAction.Actor.EquipWeapon(thinkAction.OptionName);
+            Party party = battle.GetPartyForPartyMember(partyMember);
+            string searchTerm = partyMember.Data.Name.ToUpperFirstChar();
+            string weaponName = new List<KeyValuePair<string, int>>(party.WeaponInventories[CharacterClass.Enemy].GetSortedItems(partyMember).Where(item => item.Key.StartsWith(searchTerm))).Sample().Key;
+            ThinkAction thinkAction = new ThinkAction(ThinkActionType.Attack, weaponName, partyMember, ChooseTargetForEnemyPartyMember(battle));
+            thinkAction.Actor.EquipWeapon(weaponName);
             return thinkAction;
         }
 

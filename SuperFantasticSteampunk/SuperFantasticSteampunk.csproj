@@ -159,7 +159,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\bat\spine\bat.png">
-      <Link>Content\Skeletons\bat.png</Link>
+      <Link>Content\Skeletons\forest\bat.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\butterbee\spine\butterbee.png">
+      <Link>Content\Skeletons\forest\butterbee.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\fox\spine\fox.png">
@@ -437,54 +441,62 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\bat\spine\bat.atlas">
-      <Link>Content\Skeletons\bat.atlas</Link>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\bat\spine\bat.atlas">
+      <Link>Content\Skeletons\forest\bat.atlas</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\bat\spine\bat.json">
-      <Link>Content\Skeletons\bat.json</Link>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\bat\spine\bat.json">
+      <Link>Content\Skeletons\forest\bat.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\fox\spine\fox.atlas">
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\fox\spine\fox.atlas">
       <Link>Content\Skeletons\fox.atlas</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\fox\spine\fox.json">
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\fox\spine\fox.json">
       <Link>Content\Skeletons\fox.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\fox\spine\fox_chibi.atlas">
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\fox\spine\fox_chibi.atlas">
       <Link>Content\Skeletons\fox_chibi.atlas</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\fox\spine\fox_chibi.json">
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\fox\spine\fox_chibi.json">
       <Link>Content\Skeletons\fox_chibi.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\monkey\spine\monkey.atlas">
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\monkey\spine\monkey.atlas">
       <Link>Content\Skeletons\monkey.atlas</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\monkey\spine\monkey.json">
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\monkey\spine\monkey.json">
       <Link>Content\Skeletons\monkey.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\rhino\spine\rhino.atlas">
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\rhino\spine\rhino.atlas">
       <Link>Content\Skeletons\rhino.atlas</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\rhino\spine\rhino.json">
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\rhino\spine\rhino.json">
       <Link>Content\Skeletons\rhino.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.atlas">
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.atlas">
       <Link>Content\Skeletons\weasel.atlas</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.json">
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.json">
       <Link>Content\Skeletons\weasel.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\butterbee\spine\butterbee.atlas">
+      <Link>Content\Skeletons\forest\butterbee.atlas</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\butterbee\spine\butterbee.json">
+      <Link>Content\Skeletons\forest\butterbee.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana10.xnb">
       <Link>Content\Fonts\verdana\verdana10.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

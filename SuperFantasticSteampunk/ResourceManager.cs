@@ -323,13 +323,13 @@ namespace SuperFantasticSteampunk
         private static void populateSkeletonDataDictionary(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             string skeletonDirectory = contentManager.RootDirectory + "/Skeletons/";
-            IEnumerable<string> atlasFileNames = Directory.GetFiles(skeletonDirectory, "*.atlas");
+            IEnumerable<string> atlasFileNames = Directory.GetFiles(skeletonDirectory, "*.atlas", SearchOption.AllDirectories);
             foreach (string atlasFileName in atlasFileNames)
             {
-                string skeletonName = atlasFileName.Replace(skeletonDirectory, "").Replace(".atlas", "");
+                string skeletonName = atlasFileName.Replace(skeletonDirectory, "").Replace(".atlas", "").Replace('\\', '/');
                 SkeletonData skeletonData = loadSkeletonData(skeletonDirectory + skeletonName, graphicsDevice);
                 skeletonDataDictionary.Add(skeletonName, skeletonData);
-                skeletonBoundingBoxDictionary.Add(skeletonName, skeletonData.GenerateBoundingBox());
+                skeletonBoundingBoxDictionary.Add(skeletonData.Name, skeletonData.GenerateBoundingBox());
                 Logger.Log("Loaded skeleton '" + skeletonName + "'");
             }
         }
