@@ -302,10 +302,10 @@ namespace SuperFantasticSteampunk.BattleStates
                     Vector2 buttonPosition = menuOption.ScaledPosition + (iconContainerTextureData.Size * 0.8f * containerScale);
                     if (battleState.Paused)
                     {
-                        Vector2 buttonSize = battleState.Battle.DrawButtonWithText(InputButton.A, "Confirm", buttonPosition, renderer);
+                        Vector2 buttonSize = battleState.Battle.DrawButtonWithText(InputButton.A, "Confirm", buttonPosition, Color.White, renderer);
                         buttonPosition.Y += buttonSize.Y * 1.1f;
                     }
-                    battleState.Battle.DrawButtonWithText(buttonType, buttonText, buttonPosition, renderer);
+                    battleState.Battle.DrawButtonWithText(buttonType, buttonText, buttonPosition, Color.White, renderer);
                 }
             }
         }
@@ -320,7 +320,7 @@ namespace SuperFantasticSteampunk.BattleStates
             boundingBox = battleState.CurrentPartyMember.BattleEntity.GetBoundingBox();
             Vector2 currentPartyMemberPosition = new Vector2(boundingBox.X + (boundingBox.Width / 2.0f), boundingBox.Bottom);
             bool flip = currentPartyMemberPosition.X > position.X && currentPartyMemberPosition.Y > position.Y;
-            battleState.Battle.DrawButtonWithText(InputButton.B, "Back to " + battleState.PreviouslyActedPartyMember.Name, position, renderer, flip);
+            battleState.Battle.DrawButtonWithText(InputButton.B, "Back to " + battleState.PreviouslyActedPartyMember.Name, position, Color.White, renderer, flip);
         }
 
         private void drawOptionNamesSubMenu(Renderer renderer)
@@ -360,18 +360,18 @@ namespace SuperFantasticSteampunk.BattleStates
                     Vector2 arrowSize = renderer.Font.MeasureString(">", measureFontSize);
                     Vector2 buttonSize = new Vector2(renderer.Font.MeasureString("I", measureFontSize).Y);
                     Vector2 buttonPosition = arrowPosition - new Vector2(buttonSize.X + (arrowSize.X * 0.2f), (buttonSize.Y - (arrowSize.Y * 0.8f)) / 2.0f);
-                    battleState.Battle.DrawButtonWithText(InputButton.A, null, buttonPosition, renderer);
+                    battleState.Battle.DrawButtonWithText(InputButton.A, null, buttonPosition, menuOption.Disabled ? Color.Gray : Color.White, renderer);
                     Vector2 containerSize = renderer.Font.MeasureString(menuOption.Description, measureFontSize) / scale;
                     Vector2 containerPosition = position + new Vector2(subMenuWidth + (borderTextureData[Battle.E].Width * 0.5f), 0.0f);
                     drawContainer(containerPosition.X, containerPosition.Y, containerSize.X, containerSize.Y, renderer);
                     renderer.DrawText(menuOption.Description, containerPosition * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
                 }
 
-                renderer.DrawText(menuOption.Name.Replace('-', ' '), position * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
+                renderer.DrawText(menuOption.Name.Replace('-', ' '), position * scale, menuOption.Disabled ? Color.Gray : Color.White, 0.0f, Vector2.Zero, fontScale);
 
                 string amountString = menuOption.Amount < 0 ? "~" : menuOption.Amount.ToString();
                 Vector2 amountSize = renderer.Font.MeasureString(amountString, subMenuFontSize);
-                renderer.DrawText(amountString, (position + new Vector2(subMenuWidth - (subMenuPadding * 2) - amountSize.X, 0.0f)) * scale, Color.White, 0.0f, Vector2.Zero, fontScale);
+                renderer.DrawText(amountString, (position + new Vector2(subMenuWidth - (subMenuPadding * 2) - amountSize.X, 0.0f)) * scale, menuOption.Disabled ? Color.Gray : Color.White, 0.0f, Vector2.Zero, fontScale);
 
                 position.Y += fontHeight * fontHeightScale;
             }

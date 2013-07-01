@@ -114,7 +114,7 @@ namespace SuperFantasticSteampunk.BattleStates
             Vector2 upArrowPosition = Vector2.Zero;
             for (int i = startIndex; i <= finishIndex; ++i)
             {
-                string text = battleState.ItemsWon[i].Item1;
+                string text = battleState.ItemsWon[i].Item1.Replace('-', ' ');
                 Vector2 textSize = renderer.Font.MeasureString(text, fontSize);
                 renderer.DrawText(text, position, textColor, 0.0f, textSize / 2.0f, fontScale);
 

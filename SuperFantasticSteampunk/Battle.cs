@@ -201,7 +201,7 @@ namespace SuperFantasticSteampunk
             renderer.Draw(arrowTextureData, position, color);
         }
 
-        public Vector2 DrawButtonWithText(InputButton button, string text, Vector2 position, Renderer renderer, bool flip = false)
+        public Vector2 DrawButtonWithText(InputButton button, string text, Vector2 position, Color color, Renderer renderer, bool flip = false)
         {
             if (text != null && text.Length == 0)
                 text = null;
@@ -234,10 +234,10 @@ namespace SuperFantasticSteampunk
                 Vector2 borderScaleY = new Vector2(borderScale * minScale.X, (backingSize.Y - (BorderTextureData[NE].Height * cornerScale.Y * 2.0f)) / BorderTextureData[E].Height);
                 renderer.Draw(BorderTextureData[flip ? W : E], backingPosition + new Vector2(cornerX, BorderTextureData[NE].Height * cornerScale.Y), Color.White, 0.0f, borderScaleY, false);
                 Vector2 textPosition = backingPosition + (flip ? Vector2.Zero : new Vector2(halfButtonWidth, 0.0f)) + ((backingSize - new Vector2(halfButtonWidth, 0.0f) - textSize) / 2.0f) + new Vector2(0.0f, minScale.Y);
-                renderer.DrawText(text, textPosition, Color.White, 0.0f, Vector2.Zero, minScale);
+                renderer.DrawText(text, textPosition, color, 0.0f, Vector2.Zero, minScale);
             }
 
-            renderer.Draw(textureData, position, Color.White, 0.0f, buttonScale, false);
+            renderer.Draw(textureData, position, color, 0.0f, buttonScale, false);
             if (!Input.GamePadUsedLast)
             {
                 text = Input.KeyboardMapping[button].ToString();

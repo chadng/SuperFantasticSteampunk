@@ -314,6 +314,34 @@
       <Link>Content\Textures\weapons\marksman\sponge_gun.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\thief_output\knife.png">
+      <Link>Content\Textures\weapons\thief\knife.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\thief_output\trap.png">
+      <Link>Content\Textures\weapons\thief\trap.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\thief_output\trap_floor.png">
+      <Link>Content\Textures\weapons\thief\trap_floor.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\warrior_output\dagger.png">
+      <Link>Content\Textures\weapons\warrior\dagger.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\warrior_output\longsword.png">
+      <Link>Content\Textures\weapons\warrior\longsword.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\warrior_output\sword.png">
+      <Link>Content\Textures\weapons\warrior\sword.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weapons\warrior_output\throwing_axe.png">
+      <Link>Content\Textures\weapons\warrior\throwing_axe.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\weasel\spine\weasel.png">
       <Link>Content\Skeletons\weasel.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
