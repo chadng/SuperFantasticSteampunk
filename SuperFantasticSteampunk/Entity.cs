@@ -41,6 +41,7 @@ namespace SuperFantasticSteampunk
         public float AngularVelocity { get; set; }
         public Color Tint { get; set; }
         public int ZIndex { get; set; }
+        public float DepthOverride { get; set; }
         public float Altitude { get; set; }
         public Bone ShadowFollowBone { get; set; }
         public bool Alive { get; private set; }
@@ -58,6 +59,7 @@ namespace SuperFantasticSteampunk
             ResetManipulation();
             Position = position;
             ZIndex = 0;
+            DepthOverride = -1.0f;
             Altitude = 0.0f;
             Alive = true;
             Visible = true;

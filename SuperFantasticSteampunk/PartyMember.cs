@@ -155,7 +155,15 @@ namespace SuperFantasticSteampunk
         public void AddStatusEffect(StatusEffect statusEffect)
         {
             if (!HasStatusEffect(statusEffect))
+            {
                 StatusEffects.Add(statusEffect);
+                if (BattleEntity != null)
+                {
+                    ParticleEffect particleEffect = new ParticleEffect(BattleEntity.GetCenter(), Color.White, 10, statusEffect.TextureData, 200.0f, 0.0f, 0.5f, 1.0f, false);
+                    particleEffect.DepthOverride = BattleEntity.Position.Y + 5.0f;
+                    Scene.AddEntity(particleEffect);
+                }
+            }
         }
 
         public void ApplyStatusEffectsFromAttributes(PartyMember inflictor, Attributes attributes, Battle battle)

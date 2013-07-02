@@ -143,7 +143,15 @@ namespace SuperFantasticSteampunk
 
         protected virtual void draw(Renderer renderer)
         {
-            Entities.Sort((a, b) => a.ZIndex == b.ZIndex ? a.Position.Y.CompareTo(b.Position.Y) : b.ZIndex.CompareTo(a.ZIndex));
+            Entities.Sort((a, b) => {
+                if (a.ZIndex == b.ZIndex)
+                {
+                    float aPos = a.DepthOverride > 0.0f ? a.DepthOverride : a.Position.Y;
+                    float bPos = b.DepthOverride > 0.0f ? b.DepthOverride : b.Position.Y;
+                    return aPos.CompareTo(bPos);
+                }
+                return b.ZIndex.CompareTo(a.ZIndex);
+            });
             foreach (Entity entity in Entities)
                 entity.DrawShadow(renderer);
             foreach (Entity entity in Entities)

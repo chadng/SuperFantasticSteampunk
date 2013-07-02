@@ -60,7 +60,7 @@ namespace SuperFantasticSteampunk.BattleStates
             {
                 currentlySelectedPartyMember = battleState.PotentialTarget;
                 currentlySelectedPartyMember.BattleEntity.Tint = Color.White;
-                tintOtherPartyMembers(new Color(Color.White.ToVector3() * 0.7f));
+                tintOtherPartyMembers(new Color(Color.White.ToVector3() * 0.5f));
             }
         }
 

@@ -132,6 +132,7 @@ namespace SuperFantasticSteampunk
             case "moveToIdlePosition": _moveToIdlePosition(args); break;
             case "setIdleAnimation": _setIdleAnimation(args); break;
             case "createTrap": _createTrap(args); break;
+            case "createParticleEffectOnPartyMember": _createParticleEffectOnPartyMember(args); break;
             case "random": _random(args); break;
             case "log": _log(args); break;
             case "safe": _safe(args); break;
@@ -503,6 +504,22 @@ namespace SuperFantasticSteampunk
 
             Trap trap = new Trap(ResourceManager.GetNewSprite(spriteName), position, actorPartyMember.EquippedWeapon.Attributes, actorPartyMember.EquippedWeapon.Data, actorPartyMember, battle);
             battle.GetPartyBattleLayoutForPartyMember(frontPartyMember).PlaceTrapInFrontOfPartyMember(frontPartyMember, trap);
+        }
+
+        private void _createParticleEffectOnPartyMember(object[] args)
+        { // createParticleEffectOnPartyMember(string partyMemberSelector, int particleCount, string textureDataName, float speed, float gravity, float maxScale, float lifeTime, bool rotate)
+            string partyMemberSelector = (string)args[0];
+            int particleCount = (int)args[1];
+            string textureDataName = (string)args[2];
+            float speed = (float)args[3];
+            float gravity = (float)args[4];
+            float maxScale = (float)args[5];
+            float lifeTime = (float)args[6];
+            bool rotate = (bool)args[7];
+
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+            TextureData textureData = ResourceManager.GetTextureData(textureDataName);
+            Scene.AddEntity(new ParticleEffect(partyMember.BattleEntity.GetCenter(), Color.White, particleCount, textureData, speed, gravity, maxScale, lifeTime, rotate));
         }
 
         private void _random(object[] args)

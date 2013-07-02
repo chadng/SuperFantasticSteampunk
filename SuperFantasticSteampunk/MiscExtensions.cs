@@ -220,10 +220,10 @@ namespace SuperFantasticSteampunk
             }
 
             return new Rectangle(
-                (int)(minPoint.X),
-                (int)(minPoint.Y - Math.Abs(maxPoint.Y)),
-                (int)(Math.Abs(minPoint.X) + Math.Abs(maxPoint.X)),
-                (int)(Math.Abs(minPoint.Y) + Math.Abs(maxPoint.Y))
+                (int)minPoint.X,
+                (int)(-maxPoint.Y),
+                (int)(maxPoint.X - minPoint.X),
+                (int)(maxPoint.Y - minPoint.Y)
             );
         }
     }
