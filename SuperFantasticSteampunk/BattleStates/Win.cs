@@ -8,7 +8,8 @@ namespace SuperFantasticSteampunk.BattleStates
     class Win : BattleState
     {
         #region Constants
-        private const int minimumForItemsWonRandomizer = 10;
+        private const int minimumItemsWon = 7;
+        private const int minimumForItemsWonRandomizer = 15;
         private const int itemsUsedDivisorForItemsWonRandomizer = 5;
         #endregion
 
@@ -115,10 +116,11 @@ namespace SuperFantasticSteampunk.BattleStates
             List<ThinkActionType> thinkActionTypeList = new List<ThinkActionType> {
                 ThinkActionType.Attack,
                 ThinkActionType.Defend,
+                ThinkActionType.Attack,
                 ThinkActionType.UseItem
             };
 
-            int count = Battle.PlayerPartyItemsUsed + Game1.Random.Next(Math.Max(minimumForItemsWonRandomizer, Battle.PlayerPartyItemsUsed / itemsUsedDivisorForItemsWonRandomizer));
+            int count = Math.Max(minimumItemsWon, Battle.PlayerPartyItemsUsed + Game1.Random.Next(Math.Max(minimumForItemsWonRandomizer, Battle.PlayerPartyItemsUsed / itemsUsedDivisorForItemsWonRandomizer)));
             for (int i = 0; i < count; ++i)
             {
                 Rarity rarity = rarityList.Sample();

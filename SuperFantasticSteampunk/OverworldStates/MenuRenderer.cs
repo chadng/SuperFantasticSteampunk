@@ -43,10 +43,11 @@ namespace SuperFantasticSteampunk.OverworldStates
             Vector2 minScale = Game1.MinScreenScaleFactor;
             float fontSize = Font.DefaultSize * minScale.Y;
             Vector2 position = new Vector2(400.0f) * minScale;
+            Vector2 textSize = Vector2.Zero;
             for (int i = 0; i < Menu.MenuOptions.Length; ++i)
             {
                 string text = Menu.MenuOptions[i];
-                Vector2 textSize = renderer.Font.MeasureString(text, fontSize);
+                textSize = renderer.Font.MeasureString(text, fontSize);
                 renderer.DrawText(text, position, Color.White, 0.0f, Vector2.Zero, minScale);
 
                 if (i == overworldState.CurrentMenuOptionIndex)
@@ -57,6 +58,22 @@ namespace SuperFantasticSteampunk.OverworldStates
 
                 position.Y += textSize.Y * 1.1f;
             }
+            position.Y += textSize.Y * 2.2f;
+            renderer.DrawText("TIPS:", position, Color.White, 0.0f, Vector2.Zero, minScale);
+            position.Y += textSize.Y * 1.1f;
+            renderer.DrawText("- Move your party around for strategic layouts", position, Color.White, 0.0f, Vector2.Zero, minScale);
+            position.Y += textSize.Y * 1.1f;
+            renderer.DrawText("- The front line defends the party members at the back", position, Color.White, 0.0f, Vector2.Zero, minScale);
+            position.Y += textSize.Y * 1.1f;
+            renderer.DrawText("- Shields will give extra defence, and will be returned to the inventory if unscathed during a round", position, Color.White, 0.0f, Vector2.Zero, minScale);
+            position.Y += textSize.Y * 1.1f;
+            renderer.DrawText("- You can only use ranged weapons when you're not in the front line", position, Color.White, 0.0f, Vector2.Zero, minScale);
+            position.Y += textSize.Y * 1.1f;
+            renderer.DrawText("- The more items you use, the more you win back at the end of a battle", position, Color.White, 0.0f, Vector2.Zero, minScale);
+            position.Y += textSize.Y * 1.1f;
+            renderer.DrawText("- Don't be afraid to use items. You'll win more items than you started with", position, Color.White, 0.0f, Vector2.Zero, minScale);
+            position.Y += textSize.Y * 1.1f;
+            renderer.DrawText("- Try to work out what the items do to build a decent strategy", position, Color.White, 0.0f, Vector2.Zero, minScale);
         }
         #endregion
     }

@@ -184,13 +184,13 @@ namespace SuperFantasticSteampunk
             {
             case Status.Poisonous: statusEffect = new StatusEffects.Poison(); break;
             case Status.Shocking: statusEffect = new StatusEffects.Paralysis(); break;
-            case Status.Scary: statusEffect = sameParty ? null : new StatusEffects.Fear(inflictor); break;
+            case Status.Scary: statusEffect = sameParty || !inflictor.Alive ? null : new StatusEffects.Fear(inflictor); break;
             default: statusEffect = null; break;
             }
             if (statusEffect != null)
                 AddStatusEffect(statusEffect);
 
-            if (attributes.Affiliation == Affiliation.Doom && !sameParty)
+            if (attributes.Affiliation == Affiliation.Doom && !sameParty && inflictor.Alive)
                 AddStatusEffect(new StatusEffects.Doom(inflictor));
         }
 
@@ -327,7 +327,9 @@ namespace SuperFantasticSteampunk
 
         public int CalculateDamageTaken(Trap trap)
         {
-            return calculateDamageTaken(trap.Data.Power);
+            int result = calculateDamageTaken(trap.Data.Power);
+            result = modifyStatFromAttributes(result, trap.Attributes);
+            return result;
         }
 
         public void SetBattleEntityIdleAnimationNameOverride(string animationName)
