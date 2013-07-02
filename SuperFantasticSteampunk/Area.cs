@@ -6,7 +6,7 @@ namespace SuperFantasticSteampunk
     class Area
     {
         #region Constants
-        private const int enemiesPerArea = 4;
+        private const int enemiesPerArea = 5;
         #endregion
 
         #region Instance Properties

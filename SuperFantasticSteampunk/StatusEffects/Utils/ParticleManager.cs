@@ -7,6 +7,8 @@ namespace SuperFantasticSteampunk.StatusEffects.Utils
         #region Instance Fields
         private readonly float particleTime;
         private readonly TextureData textureData;
+        private readonly string text;
+        private readonly Color textColor;
         private float particleTimer;
         #endregion
 
@@ -15,6 +17,15 @@ namespace SuperFantasticSteampunk.StatusEffects.Utils
         {
             this.particleTime = particleTime;
             this.textureData = textureData;
+            text = null;
+        }
+
+        public ParticleManager(float particleTime, string text, Color textColor)
+        {
+            this.particleTime = particleTime;
+            this.text = text;
+            this.textColor = textColor;
+            textureData = null;
         }
         #endregion
 
@@ -33,7 +44,10 @@ namespace SuperFantasticSteampunk.StatusEffects.Utils
                 Rectangle boundingBox = partyMember.BattleEntity.GetBoundingBox();
                 float x = boundingBox.X + (boundingBox.Width / 2) + Game1.Random.Next(boundingBox.Width / 2) - (boundingBox.Width / 4);
                 float y = boundingBox.Y + (boundingBox.Height / 2) + (Game1.Random.Next(boundingBox.Height / 4) - (boundingBox.Height / 8));
-                Scene.AddEntity(new FloatingParticle(new Vector2(x, y), new Vector2(0.0f, -200.0f), new Vector2(0.3f), 1.4f, textureData));
+                if (textureData != null)
+                    Scene.AddEntity(new FloatingParticle(new Vector2(x, y), new Vector2(0.0f, -200.0f), new Vector2(0.3f), 1.4f, textureData));
+                else if (text != null)
+                    Scene.AddEntity(new FloatingText(text, textColor, new Vector2(x, y), 3.0f, true));
             }
         }
         #endregion

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SuperFantasticSteampunk
 {
@@ -66,6 +67,25 @@ namespace SuperFantasticSteampunk
             }
 
             layout[0].AddRange(partyMembersLeftToAdd);
+        }
+
+        public void ArrangeRandomly()
+        {
+            foreach (List<PartyMember> list in layout)
+                list.Clear();
+            List<PartyMember> partyMembersLeftToAdd = new List<PartyMember>(party);
+            while (partyMembersLeftToAdd.Count > 0)
+            {
+                List<PartyMember> list = layout.Sample();
+                PartyMember partyMember = partyMembersLeftToAdd.Sample();
+                list.Add(partyMember);
+                partyMembersLeftToAdd.Remove(partyMember);
+            }
+
+            List<List<PartyMember>> newLayout = new List<List<PartyMember>>(layout.Where(list => list.Count > 0));
+            while (newLayout.Count < layout.Count)
+                newLayout.Add(new List<PartyMember>());
+            layout = newLayout;
         }
 
         public void MovePartyMemberUp(PartyMember partyMember, BattleStates.Think thinkState)
@@ -204,7 +224,7 @@ namespace SuperFantasticSteampunk
         {
             if (partyMember == null)
                 throw new Exception("PartyMember cannot be null");
-            List<PartyMember> result = new List<PartyMember>();
+            List<PartyMember> result = new List<PartyMember>(1);
             result.Add(partyMember);
             return result;
         }

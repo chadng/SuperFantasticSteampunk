@@ -15,7 +15,8 @@ namespace SuperFantasticSteampunk.StatusEffects
         #region Instance Fields
         private int turns;
         private ShudderManager shudderManager;
-        private ParticleManager particleManager;
+        private ParticleManager doomParticleManager;
+        private ParticleManager textParticleManager;
         #endregion
 
         #region Instance Properties
@@ -41,7 +42,8 @@ namespace SuperFantasticSteampunk.StatusEffects
             turns = 0;
             TextureData = ResourceManager.GetTextureData("particles/doom");
             shudderManager = new ShudderManager(shudderCount, shudderTime);
-            particleManager = new ParticleManager(particleTime, TextureData);
+            doomParticleManager = new ParticleManager(particleTime, TextureData);
+            textParticleManager = null;
         }
         #endregion
 
@@ -50,28 +52,36 @@ namespace SuperFantasticSteampunk.StatusEffects
         {
             base.EndTurnStart(partyMember);
 
+            textParticleManager = new ParticleManager(particleTime, (durationInTurns - turns).ToString(), Color.LightBlue);
+
             if (!Inflictor.Alive)
                 Inflictor = null;
-             else if (++turns > durationInTurns)
-            {
-                partyMember.DoDamage(partyMember.Health, true);
-                Inflictor = null;
-            }
 
             shudderManager.Reset(partyMember);
-            particleManager.Reset();
+            doomParticleManager.Reset();
+            textParticleManager.Reset();
         }
 
         public override void EndTurnUpdate(PartyMember partyMember, Delta delta)
         {
             base.EndTurnUpdate(partyMember, delta);
             Fear.UpdateShudder(partyMember, Color.DarkRed, shudderManager, delta);
-            particleManager.Update(Inflictor, delta);
+            doomParticleManager.Update(Inflictor, delta);
+            textParticleManager.Update(partyMember, delta);
+
+            if (Inflictor.Alive && shudderManager.Finished)
+            {
+                if (++turns > durationInTurns)
+                {
+                    partyMember.DoDamage(partyMember.Health, true);
+                    Inflictor = null;
+                }
+            }
         }
 
         public override bool EndTurnIsFinished()
         {
-            return shudderManager.Finished;
+            return shudderManager.Finished || !Inflictor.Alive;
         }
         #endregion
     }

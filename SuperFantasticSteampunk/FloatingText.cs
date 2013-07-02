@@ -5,7 +5,7 @@ namespace SuperFantasticSteampunk
     class FloatingText : Entity
     {
         #region Constants
-        private float floatTimeInSeconds = 5.0f;
+        private float floatTimeInSeconds = 1.5f;
         private float floatSpeed = 100.0f;
         #endregion
 
@@ -43,19 +43,13 @@ namespace SuperFantasticSteampunk
                 Tint = Color.Transparent;
                 Kill();
             }
-            else
-            {
-                Color newColor = Tint;
-                newColor *= 1.0f - (time / floatTimeInSeconds);
-                Tint = newColor;
-            }
         }
 
         public override void Draw(Renderer renderer)
         {
             if (textOrigin.X < 0.0f)
                 calculateTextOrigin(renderer);
-            renderer.DrawText(text, Position, Tint, 0.0f, textOrigin, scale, true);
+            renderer.DrawText(text, Position, new Color(Tint.R, Tint.G, Tint.B, (byte)(255 * (1.0f - (time / floatTimeInSeconds)))), 0.0f, textOrigin, scale, true);
         }
 
         private void calculateTextOrigin(Renderer renderer)

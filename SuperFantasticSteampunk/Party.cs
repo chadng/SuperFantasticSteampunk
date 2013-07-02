@@ -90,11 +90,13 @@ namespace SuperFantasticSteampunk
             }
         }
 
-        public void InitPartyBattleLayout(string arrangement = null)
+        public void InitPartyBattleLayout(string arrangement = null, bool random = false)
         {
             BattleLayout = new PartyBattleLayout(this);
             if (arrangement != null)
                 BattleLayout.ArrangeFromString(arrangement);
+            else if (random)
+                BattleLayout.ArrangeRandomly();
         }
 
         public bool HasMemberOfCharacterClass(CharacterClass characterClass)

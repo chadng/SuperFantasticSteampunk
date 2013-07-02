@@ -5,8 +5,9 @@ namespace SuperFantasticSteampunk.OverworldStates
     class Menu : OverworldState
     {
         #region Constants
-        public static readonly string[] MenuOptions = { "Next battle" };
+        public static readonly string[] MenuOptions = { "Next battle", "Restart game" };
         private const int NEXT_BATTLE = 0;
+        private const int RESTART_GAME = 1;
         #endregion
 
         #region Instance Fields
@@ -63,6 +64,7 @@ namespace SuperFantasticSteampunk.OverworldStates
             switch (CurrentMenuOptionIndex)
             {
             case NEXT_BATTLE: PushState(new Encounter(Overworld, Overworld.GenerateEnemyParty())); break;
+            case RESTART_GAME: Game1.RestartGame(); break;
             default: break;
             }
         }

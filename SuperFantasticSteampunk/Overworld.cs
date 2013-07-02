@@ -117,14 +117,10 @@ namespace SuperFantasticSteampunk
         public Party GenerateEnemyParty()
         {
             Party enemyParty = new Party(true);
-            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-            enemyParty.InitPartyBattleLayout("0,1\n2,3\n4,5\n6");
+            int count = Game1.Random.Next(7) + 1;
+            for (int i = 0; i < count; ++i)
+                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
+            enemyParty.InitPartyBattleLayout(random: true);
             return enemyParty;
         }
 
