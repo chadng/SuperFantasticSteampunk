@@ -106,6 +106,8 @@
     <Compile Include="OverworldStates\EncounterIntro.cs" />
     <Compile Include="OverworldStates\EncounterIntroRenderer.cs" />
     <Compile Include="OverworldStates\EncounterRenderer.cs" />
+    <Compile Include="OverworldStates\Menu.cs" />
+    <Compile Include="OverworldStates\MenuRenderer.cs" />
     <Compile Include="OverworldStates\Play.cs" />
     <Compile Include="OverworldStates\PlayRenderer.cs" />
     <Compile Include="ParticleEffect.cs" />

@@ -41,7 +41,8 @@ namespace SuperFantasticSteampunk.OverworldStates
             {
             case EncounterState.Won:
                 Overworld.EnemyParties.Remove(enemyParty);
-                primaryEnemyPartyMemberEntity.Kill();
+                if (primaryEnemyPartyMemberEntity != null)
+                    primaryEnemyPartyMemberEntity.Kill();
                 PopState();
                 break;
 

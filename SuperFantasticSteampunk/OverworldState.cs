@@ -8,6 +8,11 @@ namespace SuperFantasticSteampunk
         #region Instance Properties
         public Overworld Overworld { get; private set; }
         public OverworldStateRenderer OverworldStateRenderer { get; protected set; }
+
+        public virtual bool RenderWorld
+        {
+            get { return true; }
+        }
         #endregion
 
         #region Constructors

@@ -46,7 +46,7 @@ namespace SuperFantasticSteampunk
             EnemyParties = new List<Party>();
 
             states = new Stack<OverworldState>();
-            states.Push(new OverworldStates.Play(this));
+            states.Push(new OverworldStates.Menu(this));
             stateChanged = true;
 
             Map = new Map(100, 100, 5, 5);
@@ -57,8 +57,8 @@ namespace SuperFantasticSteampunk
             camera = new Camera(Game1.ScreenSize);
             camera.Target = playerParty.PrimaryPartyMember.OverworldEntity;
 
-            populateWithScenery();
-            populateWithEnemies();
+            //populateWithScenery();
+            //populateWithEnemies();
 
             playerInvincibilityTimer = 0.0f;
         }
@@ -89,10 +89,10 @@ namespace SuperFantasticSteampunk
 
         public void AddEnemyParty(Party party, Vector2 position)
         {
-            if (party.PrimaryPartyMember.OverworldEntity == null)
+            /*if (party.PrimaryPartyMember.OverworldEntity == null)
                 party.PrimaryPartyMember.StartOverworld(position);
             EnemyParties.Add(party);
-            addEntity(party.PrimaryPartyMember.OverworldEntity);
+            addEntity(party.PrimaryPartyMember.OverworldEntity);*/
         }
 
         public void SetEntityAnimationForVelocity(Entity entity)
@@ -112,6 +112,20 @@ namespace SuperFantasticSteampunk
         {
             if (PlayerIsInvincible)
                 playerInvincibilityTimer -= delta.Time;
+        }
+
+        public Party GenerateEnemyParty()
+        {
+            Party enemyParty = new Party(true);
+            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
+            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
+            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
+            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
+            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
+            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
+            enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
+            enemyParty.InitPartyBattleLayout("0,1\n2,3\n4,5\n6");
+            return enemyParty;
         }
 
         protected override void update(Delta delta)
@@ -142,10 +156,11 @@ namespace SuperFantasticSteampunk
             if (CurrentOverworldState.OverworldStateRenderer != null)
                 CurrentOverworldState.OverworldStateRenderer.BeforeDraw(renderer);
 
-            drawMap(renderer);
-
-            base.draw(renderer);
-
+            if (CurrentOverworldState.RenderWorld)
+            {
+                drawMap(renderer);
+                base.draw(renderer);
+            }
 
             renderer.ResetTint();
 
@@ -172,18 +187,7 @@ namespace SuperFantasticSteampunk
         private void populateWithEnemies()
         {
             for (int i = 3; i < 6; ++i)
-            {
-                Party enemyParty = new Party(true);
-                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-                enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
-                enemyParty.InitPartyBattleLayout("0,1\n2,3\n4,5\n6");
-                AddEnemyParty(enemyParty, new Vector2(100.0f * i));
-            }
+                AddEnemyParty(GenerateEnemyParty(), new Vector2(100.0f * i));
         }
 
         private void drawMap(Renderer renderer)
