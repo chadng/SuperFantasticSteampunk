@@ -39,7 +39,7 @@ namespace SuperFantasticSteampunk.BattleStates
 
         public override void Update(Delta delta)
         {
-            if (currentStatusEffectIndex >= partyMember.StatusEffects.Count)
+            if (currentStatusEffectIndex >= partyMember.StatusEffects.Count || !partyMember.Alive)
             {
                 Finish();
                 return;
@@ -47,21 +47,33 @@ namespace SuperFantasticSteampunk.BattleStates
 
             bool statusEffectFinished = false;
             StatusEffect statusEffect = partyMember.StatusEffects[currentStatusEffectIndex];
-            switch (statusEffectEvent)
+
+            StatusEffects.IInflictable inflictable = statusEffect as StatusEffects.IInflictable;
+            if (inflictable != null && (inflictable.Inflictor == null || !inflictable.Inflictor.Alive))
             {
-            case StatusEffectEvent.BeforeAct:
-                if (statusEffect.BeforeActIsFinished())
-                    statusEffectFinished = true;
-                else
-                    statusEffect.BeforeActUpdate(thinkAction, delta);
-                break;
-            case StatusEffectEvent.EndTurn:
-                if (statusEffect.EndTurnIsFinished())
-                    statusEffectFinished = true;
-                else
-                    statusEffect.EndTurnUpdate(partyMember, delta);
-                break;
-            default: break;
+                partyMember.StatusEffects.RemoveAt(currentStatusEffectIndex);
+                --currentStatusEffectIndex;
+                statusEffectFinished = true;
+            }
+
+            if (!statusEffectFinished)
+            {
+                switch (statusEffectEvent)
+                {
+                case StatusEffectEvent.BeforeAct:
+                    if (statusEffect.BeforeActIsFinished())
+                        statusEffectFinished = true;
+                    else
+                        statusEffect.BeforeActUpdate(thinkAction, delta);
+                    break;
+                case StatusEffectEvent.EndTurn:
+                    if (statusEffect.EndTurnIsFinished())
+                        statusEffectFinished = true;
+                    else
+                        statusEffect.EndTurnUpdate(partyMember, delta);
+                    break;
+                default: break;
+                }
             }
 
             if (statusEffectFinished && partyMember.BattleEntity.AnimationState.Animation.Name == partyMember.GetBattleEntityIdleAnimationName())

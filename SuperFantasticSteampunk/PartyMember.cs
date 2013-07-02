@@ -154,7 +154,7 @@ namespace SuperFantasticSteampunk
 
         public void AddStatusEffect(StatusEffect statusEffect)
         {
-            if (!HasStatusEffect(statusEffect.Type))
+            if (!HasStatusEffect(statusEffect))
                 StatusEffects.Add(statusEffect);
         }
 
@@ -182,7 +182,23 @@ namespace SuperFantasticSteampunk
             StatusEffects.ForEach(action);
         }
 
-        public bool HasStatusEffect(StatusEffectType statusEffectType)
+        public bool HasStatusEffect(StatusEffect otherStatusEffect)
+        {
+            foreach (StatusEffect statusEffect in StatusEffects)
+            {
+                if (statusEffect.Type == otherStatusEffect.Type)
+                {
+                    StatusEffects.IInflictable inflictable = otherStatusEffect as StatusEffects.IInflictable;
+                    if (inflictable == null)
+                        return true;
+                    else if (inflictable.Inflictor == (statusEffect as SuperFantasticSteampunk.StatusEffects.IInflictable).Inflictor)
+                            return true;
+                }
+            }
+            return false;
+        }
+
+        public bool HasStatusEffectOfType(StatusEffectType statusEffectType)
         {
             foreach (StatusEffect statusEffect in StatusEffects)
             {

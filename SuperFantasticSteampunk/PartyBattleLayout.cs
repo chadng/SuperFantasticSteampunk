@@ -70,25 +70,25 @@ namespace SuperFantasticSteampunk
 
         public void MovePartyMemberUp(PartyMember partyMember, BattleStates.Think thinkState)
         {
-            if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
+            if (!partyMember.HasStatusEffectOfType(StatusEffectType.Paralysis))
                 movePartyMemberAcrossLists(partyMember, true, -1, thinkState);
         }
 
         public void MovePartyMemberDown(PartyMember partyMember, BattleStates.Think thinkState)
         {
-            if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
+            if (!partyMember.HasStatusEffectOfType(StatusEffectType.Paralysis))
                 movePartyMemberAcrossLists(partyMember, false, 1, thinkState);
         }
 
         public void MovePartyMemberBack(PartyMember partyMember, BattleStates.Think thinkState) // last item/back is towards edge of screen
         {
-            if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
+            if (!partyMember.HasStatusEffectOfType(StatusEffectType.Paralysis))
                 movePartyMemberWithinList(partyMember, false, 1, thinkState);
         }
 
         public void MovePartyMemberForward(PartyMember partyMember, BattleStates.Think thinkState) // first item/forward is towards middle of screen
         {
-            if (!partyMember.HasStatusEffect(StatusEffectType.Paralysis))
+            if (!partyMember.HasStatusEffectOfType(StatusEffectType.Paralysis))
                 movePartyMemberWithinList(partyMember, true, -1, thinkState);
         }
 

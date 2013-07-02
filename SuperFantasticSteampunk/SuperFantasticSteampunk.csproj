@@ -131,6 +131,7 @@
     <Compile Include="StatusEffect.cs" />
     <Compile Include="StatusEffects\Doom.cs" />
     <Compile Include="StatusEffects\Fear.cs" />
+    <Compile Include="StatusEffects\IInflictable.cs" />
     <Compile Include="StatusEffects\Paralysis.cs" />
     <Compile Include="StatusEffects\Poison.cs" />
     <Compile Include="StatusEffects\Utils\ParticleManager.cs" />
@@ -164,6 +165,10 @@
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\butterbee\spine\butterbee.png">
       <Link>Content\Skeletons\forest\butterbee.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\dead_tree\spine\dead_tree.png">
+      <Link>Content\Skeletons\forest\dead_tree.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\rock\spine\rock.png">
@@ -543,6 +548,14 @@
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\rock\spine\rock.atlas">
       <Link>Content\Skeletons\forest\rock.atlas</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\dead_tree\spine\dead_tree.atlas">
+      <Link>Content\Skeletons\forest\dead_tree.atlas</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\dead_tree\spine\dead_tree.json">
+      <Link>Content\Skeletons\forest\dead_tree.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana10.xnb">

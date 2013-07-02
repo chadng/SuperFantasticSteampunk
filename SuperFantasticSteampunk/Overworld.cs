@@ -173,7 +173,7 @@ namespace SuperFantasticSteampunk
         {
             for (int i = 3; i < 6; ++i)
             {
-                Party enemyParty = new Party();
+                Party enemyParty = new Party(true);
                 enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
                 enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));
                 enemyParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.EnemyNames.Sample()));

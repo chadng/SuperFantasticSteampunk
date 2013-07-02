@@ -37,7 +37,10 @@ namespace SuperFantasticSteampunk.BattleStates
             scriptRunner = new ScriptRunner(script, Battle, thinkAction.Actor, thinkAction.Target);
 
             AnimationState animationState = thinkAction.Actor.BattleEntity.AnimationState;
-            scriptStartTime = animationState.Animation.Duration - (animationState.Time % animationState.Animation.Duration);
+            if (animationState.Animation.Duration <= 0.0f)
+                scriptStartTime = 0.0f;
+            else
+                scriptStartTime = animationState.Animation.Duration - (animationState.Time % animationState.Animation.Duration);
         }
 
         public override void Finish()

@@ -103,23 +103,6 @@ namespace SuperFantasticSteampunk.BattleStates
         #endregion
 
         #region Static Methods
-        public static ThinkAction ThinkForEnemyPartyMember(PartyMember partyMember, Battle battle)
-        {
-            Party party = battle.GetPartyForPartyMember(partyMember);
-            string searchTerm = partyMember.Data.Name.ToUpperFirstChar();
-            List<KeyValuePair<string, int>> options = new List<KeyValuePair<string, int>>(party.WeaponInventories[CharacterClass.Enemy].GetSortedItems(partyMember).Where(item => item.Key.StartsWith(searchTerm)));
-            ThinkAction thinkAction;
-            if (options.Count > 0)
-            {
-                string weaponName = options.Sample().Key;
-                thinkAction = new ThinkAction(ThinkActionType.Attack, weaponName, partyMember, ChooseTargetForEnemyPartyMember(battle));
-                thinkAction.Actor.EquipWeapon(weaponName);
-            }
-            else
-                thinkAction = new ThinkAction(ThinkActionType.Defend, "", partyMember);
-            return thinkAction;
-        }
-
         public static PartyMember ChooseTargetForEnemyPartyMember(Battle battle)
         {
             return battle.PlayerParty.Sample();
@@ -364,9 +347,9 @@ namespace SuperFantasticSteampunk.BattleStates
                     CurrentPartyMember = lastAction.Actor;
                     if (!ThinkMenuOption.IsDefaultOptionName(lastAction.OptionName))
                     {
-                        Inventory inventory = getInventoryFromThinkActionType(lastAction.Type, CurrentPartyMember.CharacterClass);
+                        Inventory inventory = getInventoryFromThinkActionType(lastAction.Type, CurrentPartyMember);
                         if (inventory != null)
-                            inventory.AddItem(lastAction.OptionName);
+                            inventory.AddItem(lastAction.OptionName, CurrentPartyMember);
                     }
                     repopulateMenuOptions();
                     Logger.Log("Back to action selection for party member " + (Actions.Count + 1).ToString());
@@ -540,9 +523,7 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             if (currentThinkAction.Target != null || currentThinkAction.Type == ThinkActionType.Defend)
             {
-                Inventory inventory = getInventoryFromThinkActionType(currentThinkAction.Type, CurrentPartyMember.CharacterClass);
-                if (inventory != null)
-                    inventory.UseItem(currentThinkAction.OptionName, CurrentPartyMember);
+                takeFromInventory(currentThinkAction, CurrentPartyMember);
                 Actions.Add(currentThinkAction);
                 Battle.LastUsedThinkActionTypes.AddOrReplace(CurrentPartyMember, new Wrapper<ThinkActionType>(currentThinkAction.Type));
                 getNextPartyMember();
@@ -581,7 +562,32 @@ namespace SuperFantasticSteampunk.BattleStates
         private void thinkAboutEnemyPartyActions()
         {
             foreach (PartyMember partyMember in Battle.EnemyParty)
-                Actions.Add(ThinkForEnemyPartyMember(partyMember, Battle));
+                Actions.Add(thinkForEnemyPartyMember(partyMember, Battle));
+        }
+
+        private ThinkAction thinkForEnemyPartyMember(PartyMember partyMember, Battle battle)
+        {
+            Party party = battle.GetPartyForPartyMember(partyMember);
+            string searchTerm = partyMember.Data.Name.ToUpperFirstChar();
+            List<KeyValuePair<string, int>> options = new List<KeyValuePair<string, int>>(party.WeaponInventories[CharacterClass.Enemy].GetSortedItems(partyMember).Where(item => item.Key.StartsWith(searchTerm)));
+            ThinkAction thinkAction;
+            if (options.Count > 0)
+            {
+                string weaponName = options.Sample().Key;
+                thinkAction = new ThinkAction(ThinkActionType.Attack, weaponName, partyMember, ChooseTargetForEnemyPartyMember(battle));
+                thinkAction.Actor.EquipWeapon(weaponName);
+                takeFromInventory(thinkAction, partyMember);
+            }
+            else
+                thinkAction = new ThinkAction(ThinkActionType.Defend, "", partyMember);
+            return thinkAction;
+        }
+
+        private void takeFromInventory(ThinkAction thinkAction, PartyMember partyMember)
+        {
+            Inventory inventory = getInventoryFromThinkActionType(thinkAction.Type, partyMember);
+            if (inventory != null)
+                inventory.UseItem(thinkAction.OptionName, partyMember);
         }
         #endregion
     }

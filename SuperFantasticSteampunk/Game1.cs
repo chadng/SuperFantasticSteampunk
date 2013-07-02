@@ -165,7 +165,7 @@ namespace SuperFantasticSteampunk
                 Scene.UpdateCurrent(new Delta(0.001f));
             }
 
-            Party playerParty = new Party();
+            Party playerParty = new Party(false);
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("marksman")));
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("warrior")));
             playerParty.AddPartyMember(new PartyMember(ResourceManager.GetPartyMemberData("medic")));

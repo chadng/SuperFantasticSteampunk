@@ -3,7 +3,7 @@ using SuperFantasticSteampunk.StatusEffects.Utils;
 
 namespace SuperFantasticSteampunk.StatusEffects
 {
-    class Doom : StatusEffect
+    class Doom : StatusEffect, IInflictable
     {
         #region Constants
         private const int durationInTurns = 3;
@@ -52,7 +52,7 @@ namespace SuperFantasticSteampunk.StatusEffects
 
             if (!Inflictor.Alive)
                 Inflictor = null;
-             else if (++turns >= durationInTurns)
+             else if (++turns > durationInTurns)
             {
                 partyMember.DoDamage(partyMember.Health, true);
                 Inflictor = null;

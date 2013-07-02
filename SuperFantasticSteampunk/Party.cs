@@ -18,13 +18,13 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Constructors
-        public Party()
+        public Party(bool isEnemyParty)
         {
             WeaponInventories = new Dictionary<CharacterClass, Inventory>();
             foreach (CharacterClass characterClass in Enum.GetValues(typeof(CharacterClass)))
-                WeaponInventories.Add(characterClass, new Inventory());
-            ShieldInventory = new Inventory();
-            ItemInventory = new Inventory();
+                WeaponInventories.Add(characterClass, new Inventory(isEnemyParty));
+            ShieldInventory = new Inventory(isEnemyParty);
+            ItemInventory = new Inventory(isEnemyParty);
         }
         #endregion
 
@@ -32,10 +32,12 @@ namespace SuperFantasticSteampunk
         public void AddPartyMember(PartyMember partyMember)
         {
             Add(partyMember);
-            Func<int, int, int> keyExistsHandler = (a, b) => a < 0 || b < 0 ? -1 : a + b;
-            WeaponInventories[partyMember.CharacterClass].Merge(partyMember.Data.DefaultWeaponsToDictionary(), keyExistsHandler);
-            ShieldInventory.Merge(partyMember.Data.DefaultShieldsToDictionary(), keyExistsHandler);
-            ItemInventory.Merge(partyMember.Data.DefaultItemsToDictionary(), keyExistsHandler);
+            foreach (KeyValuePair<string, int> pair in partyMember.Data.DefaultWeaponsToDictionary())
+                WeaponInventories[partyMember.CharacterClass].AddItem(pair.Key, partyMember, pair.Value < 0);
+            foreach (KeyValuePair<string, int> pair in partyMember.Data.DefaultShieldsToDictionary())
+                ShieldInventory.AddItem(pair.Key, partyMember, pair.Value < 0);
+            foreach (KeyValuePair<string, int> pair in partyMember.Data.DefaultItemsToDictionary())
+                ItemInventory.AddItem(pair.Key, partyMember, pair.Value < 0);
         }
 
         public void RemovePartyMember(PartyMember partyMember)

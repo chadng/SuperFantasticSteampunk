@@ -132,7 +132,7 @@ namespace SuperFantasticSteampunk.BattleStates
                     }
                     WeaponData weaponData = weapons[rarity].Sample();
                     string weaponName = new Attributes(weaponData).ToString(weaponData.Name);
-                    Battle.PlayerParty.WeaponInventories[weaponData.CharacterClass].AddItem(weaponName);
+                    Battle.PlayerParty.WeaponInventories[weaponData.CharacterClass].AddItem(weaponName, null);
                     ItemsWon.Add(new Tuple<string, CharacterClass>(weaponName, weaponData.CharacterClass));
                     Logger.Log("Player party won weapon " + weaponName);
                     break;
@@ -145,7 +145,7 @@ namespace SuperFantasticSteampunk.BattleStates
                     }
                     ShieldData shieldData = shields[rarity].Sample();
                     string shieldName = new Attributes(shieldData).ToString(shieldData.Name);
-                    Battle.PlayerParty.ShieldInventory.AddItem(shieldName);
+                    Battle.PlayerParty.ShieldInventory.AddItem(shieldName, null);
                     ItemsWon.Add(new Tuple<string, CharacterClass>(shieldName, CharacterClass.Enemy));
                     Logger.Log("Player party won shield " + shieldName);
                     break;
@@ -158,7 +158,7 @@ namespace SuperFantasticSteampunk.BattleStates
                     }
                     ItemData itemData = items[rarity].Sample();
                     string itemName = itemData.Name.ToUpperFirstChar();
-                    Battle.PlayerParty.ItemInventory.AddItem(itemName);
+                    Battle.PlayerParty.ItemInventory.AddItem(itemName, null);
                     ItemsWon.Add(new Tuple<string, CharacterClass>(itemName, CharacterClass.Enemy));
                     Logger.Log("Player party won item " + itemName);
                     break;

@@ -73,13 +73,16 @@ namespace SuperFantasticSteampunk
             removeDeadPartyMembers(Battle.EnemyParty, Battle.PlayerParty);
         }
 
-        protected Inventory getInventoryFromThinkActionType(ThinkActionType thinkActionType, CharacterClass characterClass)
+        protected Inventory getInventoryFromThinkActionType(ThinkActionType thinkActionType, PartyMember partyMember)
         {
+            Party party = Battle.GetPartyForPartyMember(partyMember);
+            if (party == null)
+                return null;
             switch (thinkActionType)
             {
-            case ThinkActionType.Attack: return Battle.PlayerParty.WeaponInventories[characterClass];
-            case ThinkActionType.Defend: return Battle.PlayerParty.ShieldInventory;
-            case ThinkActionType.UseItem: return Battle.PlayerParty.ItemInventory;
+            case ThinkActionType.Attack: return party.WeaponInventories[partyMember.CharacterClass];
+            case ThinkActionType.Defend: return party.ShieldInventory;
+            case ThinkActionType.UseItem: return party.ItemInventory;
             default: return null;
             }
         }

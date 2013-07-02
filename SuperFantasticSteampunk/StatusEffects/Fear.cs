@@ -3,7 +3,7 @@ using SuperFantasticSteampunk.StatusEffects.Utils;
 
 namespace SuperFantasticSteampunk.StatusEffects
 {
-    class Fear : StatusEffect
+    class Fear : StatusEffect, IInflictable
     {
         #region Constants
         private const int durationInTurns = 3;
