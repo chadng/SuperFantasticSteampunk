@@ -166,6 +166,10 @@
       <Link>Content\Skeletons\forest\butterbee.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\rock\spine\rock.png">
+      <Link>Content\Skeletons\forest\rock.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\fox\spine\fox.png">
       <Link>Content\Skeletons\fox.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -531,6 +535,14 @@
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\butterbee\spine\butterbee.json">
       <Link>Content\Skeletons\forest\butterbee.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\rock\spine\rock.json">
+      <Link>Content\Skeletons\forest\rock.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\rock\spine\rock.atlas">
+      <Link>Content\Skeletons\forest\rock.atlas</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana10.xnb">

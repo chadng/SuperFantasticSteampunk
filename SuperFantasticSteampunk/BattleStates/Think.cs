@@ -107,9 +107,16 @@ namespace SuperFantasticSteampunk.BattleStates
         {
             Party party = battle.GetPartyForPartyMember(partyMember);
             string searchTerm = partyMember.Data.Name.ToUpperFirstChar();
-            string weaponName = new List<KeyValuePair<string, int>>(party.WeaponInventories[CharacterClass.Enemy].GetSortedItems(partyMember).Where(item => item.Key.StartsWith(searchTerm))).Sample().Key;
-            ThinkAction thinkAction = new ThinkAction(ThinkActionType.Attack, weaponName, partyMember, ChooseTargetForEnemyPartyMember(battle));
-            thinkAction.Actor.EquipWeapon(weaponName);
+            List<KeyValuePair<string, int>> options = new List<KeyValuePair<string, int>>(party.WeaponInventories[CharacterClass.Enemy].GetSortedItems(partyMember).Where(item => item.Key.StartsWith(searchTerm)));
+            ThinkAction thinkAction;
+            if (options.Count > 0)
+            {
+                string weaponName = options.Sample().Key;
+                thinkAction = new ThinkAction(ThinkActionType.Attack, weaponName, partyMember, ChooseTargetForEnemyPartyMember(battle));
+                thinkAction.Actor.EquipWeapon(weaponName);
+            }
+            else
+                thinkAction = new ThinkAction(ThinkActionType.Defend, "", partyMember);
             return thinkAction;
         }
 
