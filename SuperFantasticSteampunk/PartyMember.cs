@@ -166,6 +166,15 @@ namespace SuperFantasticSteampunk
             }
         }
 
+        public void RemoveStatusEffect(StatusEffectType statusEffectType)
+        {
+            for (int i = StatusEffects.Count - 1; i >= 0; --i)
+            {
+                if (StatusEffects[i].Type == statusEffectType)
+                    StatusEffects.RemoveAt(i);
+            }
+        }
+
         public void ApplyStatusEffectsFromAttributes(PartyMember inflictor, Attributes attributes, Battle battle)
         {
             bool sameParty = battle.GetPartyForPartyMember(inflictor) == battle.GetPartyForPartyMember(this);

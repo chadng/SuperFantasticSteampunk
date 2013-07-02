@@ -332,6 +332,15 @@ namespace SuperFantasticSteampunk
             }
         }
 
+        private void _removeStatusEffect(object[] args)
+        { // removeStatusEffect(string partyMemberSelector, StatusEffectType statusEffectType)
+            string partyMemberSelector = (string)args[0];
+            StatusEffectType statusEffectType = (StatusEffectType)args[1];
+
+            PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
+            partyMember.RemoveStatusEffect(statusEffectType);
+        }
+
         private void _setVelocity(object[] args)
         { // setVelocity(string partyMemberSelector, float x, float y)
             string partyMemberSelector = (string)args[0];
