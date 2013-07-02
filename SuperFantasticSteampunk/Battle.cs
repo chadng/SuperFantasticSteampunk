@@ -549,7 +549,7 @@ namespace SuperFantasticSteampunk
         {
             Vector2 screenScaleFactor = Game1.ScreenScaleFactor;
             Vector2 minScale = new Vector2(MathHelper.Min(screenScaleFactor.X, screenScaleFactor.Y));
-            Vector2 shadowOffset = new Vector2(-2f, 2f) * minScale;
+            Vector2 shadowOffset = new Vector2(-5.0f, 5.0f) * minScale;
             Color shadowColor = Color.Black * 0.4f;
 
             TextureData textureData = CharacterClassHeadTextureData[partyMember.CharacterClass];

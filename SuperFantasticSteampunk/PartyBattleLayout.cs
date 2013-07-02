@@ -174,6 +174,13 @@ namespace SuperFantasticSteampunk
             return traps[index];
         }
 
+        public List<PartyMember> GetListAt(int index)
+        {
+            if (index < 0 || index >= layout.Count)
+                return null;
+            return layout[index];
+        }
+
         public void ForEachList(Action<List<PartyMember>> action)
         {
             layout.ForEach(action);

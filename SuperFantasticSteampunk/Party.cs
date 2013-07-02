@@ -96,6 +96,16 @@ namespace SuperFantasticSteampunk
             if (arrangement != null)
                 BattleLayout.ArrangeFromString(arrangement);
         }
+
+        public bool HasMemberOfCharacterClass(CharacterClass characterClass)
+        {
+            foreach (PartyMember partyMember in this)
+            {
+                if (partyMember.CharacterClass == characterClass)
+                    return true;
+            }
+            return false;
+        }
         #endregion
     }
 }

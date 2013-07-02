@@ -131,6 +131,11 @@ namespace SuperFantasticSteampunk.BattleStates
                         continue;
                     }
                     WeaponData weaponData = weapons[rarity].Sample();
+                    if (!Battle.PlayerParty.HasMemberOfCharacterClass(weaponData.CharacterClass))
+                    {
+                        --i;
+                        continue;
+                    }
                     string weaponName = new Attributes(weaponData).ToString(weaponData.Name);
                     Battle.PlayerParty.WeaponInventories[weaponData.CharacterClass].AddItem(weaponName, null);
                     ItemsWon.Add(new Tuple<string, CharacterClass>(weaponName, weaponData.CharacterClass));
