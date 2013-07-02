@@ -133,6 +133,7 @@ namespace SuperFantasticSteampunk
             case "setIdleAnimation": _setIdleAnimation(args); break;
             case "createTrap": _createTrap(args); break;
             case "createParticleEffectOnPartyMember": _createParticleEffectOnPartyMember(args); break;
+            case "createProjectile": _createProjectile(args); break;
             case "random": _random(args); break;
             case "log": _log(args); break;
             case "safe": _safe(args); break;
@@ -520,6 +521,40 @@ namespace SuperFantasticSteampunk
             PartyMember partyMember = getPartyMemberFromSelector(partyMemberSelector);
             TextureData textureData = ResourceManager.GetTextureData(textureDataName);
             Scene.AddEntity(new ParticleEffect(partyMember.BattleEntity.GetCenter(), Color.White, particleCount, textureData, speed, gravity, maxScale, lifeTime, rotate));
+        }
+
+        private void _createProjectile(object[] args)
+        { // createProjectile(string actorPartyMemberSelector, string boneName, string spriteName, bool facingRight, float speed, Script callback, string targetPartyMemberSelector, bool addParticleEffect)
+            string actorPartyMemberSelector = (string)args[0];
+            string boneName = (string)args[1];
+            string spriteName = (string)args[2];
+            bool facingRight = (bool)args[3];
+            float speed = (float)args[4];
+            Script callback = (Script)args[5];
+            string targetPartyMemberSelector = (string)args[6];
+            bool addParticleEffect = (bool)args[7];
+
+            PartyMember actor = getPartyMemberFromSelector(actorPartyMemberSelector);
+            PartyMember target = getPartyMemberFromSelector(targetPartyMemberSelector);
+
+            Bone bone = actor.BattleEntity.Skeleton.FindBone(boneName);
+            Vector2 position = new Vector2(bone.WorldX, bone.WorldY);
+
+            Sprite sprite = ResourceManager.GetNewSprite(spriteName);
+
+            blocked = true;
+            ScriptRunner self = this;
+            Scene.AddEntity(new Projectile(sprite, position, facingRight, actor, target, speed, projectile =>
+            {
+                projectile.Kill();
+                self.addNestedScriptRunner(callback, 0.0f);
+                if (addParticleEffect)
+                {
+                    ParticleEffect particleEffect = ParticleEffect.AddSmokePuff(projectile.Position, self.battle);
+                    particleEffect.DepthOverride = target.BattleEntity.Position.Y + 5.0f;
+                }
+                self.blocked = false;
+            }));
         }
 
         private void _random(object[] args)

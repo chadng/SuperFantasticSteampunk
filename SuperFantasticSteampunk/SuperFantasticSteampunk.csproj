@@ -117,6 +117,7 @@
     <Compile Include="PartyMemberData.cs" />
     <Compile Include="PauseMenu.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Renderer.cs" />
     <Compile Include="ResourceManager.cs" />
@@ -175,6 +176,10 @@
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\rock\spine\rock.png">
       <Link>Content\Skeletons\forest\rock.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\weird_plant\spine\weird_plant.png">
+      <Link>Content\Skeletons\forest\weird_plant.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\fox\spine\fox.png">
@@ -287,6 +292,10 @@
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\particles_output\poison_bubble.png">
       <Link>Content\Textures\particles\poison_bubble.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\projectiles_output\boxing_glove.png">
+      <Link>Content\Textures\projectiles\boxing_glove.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\misc\shield_output\shield.png">
@@ -558,6 +567,14 @@
     </Content>
     <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\dead_tree\spine\dead_tree.json">
       <Link>Content\Skeletons\forest\dead_tree.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\weird_plant\spine\weird_plant.atlas">
+      <Link>Content\Skeletons\forest\weird_plant.atlas</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Dropbox\illustrator\game\forest\weird_plant\spine\weird_plant.json">
+      <Link>Content\Skeletons\forest\weird_plant.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="..\..\..\..\..\Dropbox\SuperFantasticSteampunk\Content\Fonts\verdana\verdana10.xnb">
