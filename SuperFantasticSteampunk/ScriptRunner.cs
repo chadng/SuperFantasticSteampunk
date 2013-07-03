@@ -134,6 +134,7 @@ namespace SuperFantasticSteampunk
             case "createTrap": _createTrap(args); break;
             case "createParticleEffectOnPartyMember": _createParticleEffectOnPartyMember(args); break;
             case "createProjectile": _createProjectile(args); break;
+            case "createEnemyPartyMember": _createEnemyPartyMember(args); break;
             case "random": _random(args); break;
             case "log": _log(args); break;
             case "safe": _safe(args); break;
@@ -564,6 +565,34 @@ namespace SuperFantasticSteampunk
                 }
                 self.blocked = false;
             }));
+        }
+
+        private void _createEnemyPartyMember(object[] args)
+        { // createEnemyPartyMember(string actorPartyMemberSelector, string partyMemberName, int relativeLayoutIndex, bool addParticleEffect)
+            string actorPartyMemberSelector = (string)args[0];
+            string partyMemberName = (string)args[1];
+            int relativeLayoutIndex = (int)args[2];
+            bool addParticleEffect = (bool)args[3];
+
+            PartyMember actor = getPartyMemberFromSelector(actorPartyMemberSelector);
+
+            PartyMember partyMember = ResourceManager.GetNewPartyMember(partyMemberName);
+            battle.EnemyParty.AddPartyMember(partyMember);
+            partyMember.StartBattle();
+            partyMember.EquipDefaultWeapon(battle.EnemyParty);
+            battle.AddBattleEntity(partyMember.BattleEntity);
+
+            List<PartyMember> actorList = battle.EnemyPartyLayout.GetListWithPartyMember(actor);
+            List<PartyMember> newList = battle.EnemyPartyLayout.RelativeList(actorList, relativeLayoutIndex);
+            newList.Add(partyMember);
+
+            battle.RepositionPartyMembers();
+
+            if (addParticleEffect)
+            {
+                ParticleEffect particleEffect = ParticleEffect.AddSmokePuff(partyMember.BattleEntity.GetCenter(), battle);
+                particleEffect.DepthOverride = partyMember.BattleEntity.Position.Y + 5.0f;
+            }
         }
 
         private void _random(object[] args)

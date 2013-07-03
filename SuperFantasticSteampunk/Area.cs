@@ -12,6 +12,7 @@ namespace SuperFantasticSteampunk
         #region Instance Properties
         public AreaData Data { get; private set; }
         public List<string> EnemyNames { get; private set; }
+        public List<string> BossNames { get; private set; }
         public List<string> ScenerySpriteNames { get; private set; }
         #endregion
 
@@ -23,6 +24,7 @@ namespace SuperFantasticSteampunk
 
             Data = data;
             ScenerySpriteNames = Data.OverworldScenerySpriteNamesToList();
+            BossNames = Data.BossNamesToList();
             populateEnemyNames();
         }
         #endregion

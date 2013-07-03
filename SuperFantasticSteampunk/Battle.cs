@@ -82,7 +82,7 @@ namespace SuperFantasticSteampunk
             Camera.Position = Camera.Size / 2.0f;
             cameraUpdateDelay = 0.0f;
 
-            repositionPartyMembers();
+            RepositionPartyMembers();
             updateCamera();
             Camera.Scale = Camera.TargetScale;
             updateCamera();
@@ -194,6 +194,27 @@ namespace SuperFantasticSteampunk
             }
         }
 
+        public void RepositionPartyMembers()
+        {
+            Vector2 position = new Vector2(600.0f, 400.0f);
+            PlayerPartyLayout.ForEachList(list =>
+            {
+                for (int i = 0; i < list.Count; ++i)
+                    list[i].BattleEntityIdlePosition = list[i].BattleEntity.Position = new Vector2(position.X - (200.0f * i), position.Y + i);
+                position.X -= 150.0f;
+                position.Y += 150.0f;
+            });
+
+            position = new Vector2(1200.0f, 400.0f);
+            EnemyPartyLayout.ForEachList(list =>
+            {
+                for (int i = 0; i < list.Count; ++i)
+                    list[i].BattleEntityIdlePosition = list[i].BattleEntity.Position = new Vector2(position.X + (200.0f * i), position.Y + i);
+                position.X += 150.0f;
+                position.Y += 150.0f;
+            });
+        }
+
         public void DrawArrowOverPartyMember(PartyMember partyMember, Color color, Renderer renderer)
         {
             Rectangle boundingBox = partyMember.BattleEntity.GetBoundingBox();
@@ -262,7 +283,7 @@ namespace SuperFantasticSteampunk
             CurrentBattleState.Update(delta);
 
             if (CurrentBattleState.KeepPartyMembersStatic)
-                repositionPartyMembers();
+                RepositionPartyMembers();
 
             base.update(delta);
 
@@ -468,27 +489,6 @@ namespace SuperFantasticSteampunk
                     return partyMember;
             }
             return null;
-        }
-
-        private void repositionPartyMembers()
-        {
-            Vector2 position = new Vector2(600.0f, 400.0f);
-            PlayerPartyLayout.ForEachList(list =>
-            {
-                for (int i = 0; i < list.Count; ++i)
-                    list[i].BattleEntityIdlePosition = list[i].BattleEntity.Position = new Vector2(position.X - (200.0f * i), position.Y + i);
-                position.X -= 150.0f;
-                position.Y += 150.0f;
-            });
-
-            position = new Vector2(1200.0f, 400.0f);
-            EnemyPartyLayout.ForEachList(list =>
-            {
-                for (int i = 0; i < list.Count; ++i)
-                    list[i].BattleEntityIdlePosition = list[i].BattleEntity.Position = new Vector2(position.X + (200.0f * i), position.Y + i);
-                position.X += 150.0f;
-                position.Y += 150.0f;
-            });
         }
 
         private void drawBackground(Renderer renderer)

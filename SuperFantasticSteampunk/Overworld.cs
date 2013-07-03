@@ -124,6 +124,14 @@ namespace SuperFantasticSteampunk
             return enemyParty;
         }
 
+        public Party GenerateBossParty()
+        {
+            Party bossParty = new Party(true);
+            bossParty.AddPartyMember(ResourceManager.GetNewPartyMember(Area.BossNames.Sample()));
+            bossParty.InitPartyBattleLayout(arrangement: "\n\n0", minSize: 5);
+            return bossParty;
+        }
+
         protected override void update(Delta delta)
         {
             if (stateChanged)

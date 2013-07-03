@@ -27,6 +27,7 @@ namespace SuperFantasticSteampunk
         #region Instance Properties
         public string Name { get; private set; }
         public string EnemyNames { get; private set; }
+        public string BossNames { get; private set; }
         public string OverworldScenerySpriteNames { get; private set; }
         public string OverworldTileTextureNames { get; private set; }
         public string BattleBackgroundTextureNames { get; private set; }
@@ -38,6 +39,10 @@ namespace SuperFantasticSteampunk
         public List<string> EnemyNamesToList()
         {
             return splitStringIntoList(EnemyNames);
+        }
+        public List<string> BossNamesToList()
+        {
+            return splitStringIntoList(BossNames);
         }
 
         public List<string> OverworldScenerySpriteNamesToList()

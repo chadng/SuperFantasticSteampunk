@@ -20,7 +20,7 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Constructors
-        public PartyBattleLayout(Party party)
+        public PartyBattleLayout(Party party, int minSize = -1)
         {
             if (party == null)
                 throw new Exception("Party cannot be null");
@@ -28,9 +28,11 @@ namespace SuperFantasticSteampunk
                 throw new Exception("Party cannot be empty");
 
             this.party = party;
-            layout = new List<List<PartyMember>>(party.Count);
+            layout = new List<List<PartyMember>>(Math.Max(party.Count, minSize));
             foreach (PartyMember partyMember in party)
                 layout.Add(newListWithPartyMember(partyMember));
+            while (layout.Count < minSize)
+                layout.Add(new List<PartyMember>());
             traps = new Trap[layout.Count];
             resetTraps();
         }
@@ -55,6 +57,8 @@ namespace SuperFantasticSteampunk
                 string[] indexes = lines[i].Split(',');
                 foreach (string indexStr in indexes)
                 {
+                    if (indexStr.Length == 0)
+                        continue;
                     int index = int.Parse(indexStr);
                     if (index < 0 || index >= party.Count)
                         continue;

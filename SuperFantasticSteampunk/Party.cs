@@ -90,9 +90,9 @@ namespace SuperFantasticSteampunk
             }
         }
 
-        public void InitPartyBattleLayout(string arrangement = null, bool random = false)
+        public void InitPartyBattleLayout(string arrangement = null, bool random = false, int minSize = -1)
         {
-            BattleLayout = new PartyBattleLayout(this);
+            BattleLayout = new PartyBattleLayout(this, minSize);
             if (arrangement != null)
                 BattleLayout.ArrangeFromString(arrangement);
             else if (random)
