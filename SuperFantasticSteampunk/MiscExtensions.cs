@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Reflection;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Spine;
 
@@ -55,6 +57,20 @@ namespace SuperFantasticSteampunk
         {
             foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(self))
                 Console.WriteLine("{0}={1}", descriptor.Name, descriptor.GetValue(self));
+        }
+
+        public static string FieldsToString(this Object self)
+        {
+            StringBuilder result = new StringBuilder();
+            foreach (FieldInfo fieldInfo in self.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+            {
+                result.Append(fieldInfo.Name);
+                result.Append('=');
+                object value = fieldInfo.GetValue(self);
+                result.Append(value == null ? "null" : value.ToString());
+                result.Append(", ");
+            }
+            return result.ToString();
         }
 
         public static void AddOrReplace<TKey, TValue>(this ConditionalWeakTable<TKey, TValue> self, TKey key, TValue value)

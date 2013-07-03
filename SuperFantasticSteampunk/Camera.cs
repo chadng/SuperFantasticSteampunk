@@ -29,10 +29,7 @@ namespace SuperFantasticSteampunk
         #region Constructors
         public Camera(Vector2 size)
         {
-            shakePosition = Vector2.Zero;
-            shakeTarget = Vector2.Zero;
-            shakeTimer = 0.0f;
-            shakeTime = 0.0f;
+            resetScreenShake();
             Target = null;
             Size = size;
             Position = Vector2.Zero;
@@ -60,17 +57,12 @@ namespace SuperFantasticSteampunk
 
         public void Shake(Vector2 magnitude, float shakeTime)
         {
-            if (magnitude.LengthSquared() < shakeTarget.LengthSquared())
-                return;
-
-            shakeTimer = 0.0f;
-            if (magnitude.Length() < 0.01f)
+            if (magnitude.LengthSquared() < shakeTarget.LengthSquared() || magnitude.Length() < 0.01f)
             {
-                shakePosition = Vector2.Zero;
-                shakeTarget = Vector2.Zero;
-                this.shakeTime = 0.0f;
+                resetScreenShake();
                 return;
             }
+            shakeTimer = 0.0f;
             shakePosition = magnitude;
             shakeTarget = -shakePosition * shakeCooldown;
             this.shakeTime = shakeTime;
@@ -136,6 +128,14 @@ namespace SuperFantasticSteampunk
             else
                 shakePosition = Vector2.Lerp(shakePosition, shakeTarget, shakeTimer / shakeTime);
             Position += shakePosition;
+        }
+
+        private void resetScreenShake()
+        {
+            shakePosition = Vector2.Zero;
+            shakeTarget = Vector2.Zero;
+            shakeTime = 0.0f;
+            shakeTimer = 0.0f;
         }
         #endregion
     }
