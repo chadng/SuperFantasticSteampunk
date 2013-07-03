@@ -429,11 +429,12 @@ namespace SuperFantasticSteampunk
 
         private void getLowestAndHighestPositionalValuesForParties(out float lowestX, out float lowestY, out float highestX, out float highestY)
         {
-            Vector2 firstPosition = (PlayerParty.Count > 0 ? PlayerParty : EnemyParty)[0].BattleEntity.Position;
-            lowestX = firstPosition.X;
-            lowestY = firstPosition.Y;
-            highestX = firstPosition.X;
-            highestY = firstPosition.Y;
+            Rectangle boundingBox = (getFirstAlivePartyMemberWithBattleEntity(PlayerParty) ?? getFirstAlivePartyMemberWithBattleEntity(EnemyParty)).BattleEntity.GetBoundingBox();
+
+            lowestX = boundingBox.Left;
+            lowestY = boundingBox.Top;
+            highestX = boundingBox.Right;
+            highestY = boundingBox.Bottom;
 
             getLowestAndHighestPositionalValuesForParty(PlayerParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
             getLowestAndHighestPositionalValuesForParty(EnemyParty, ref lowestX, ref lowestY, ref highestX, ref highestY);
@@ -443,6 +444,8 @@ namespace SuperFantasticSteampunk
         {
             foreach (PartyMember partyMember in party)
             {
+                if (!partyMember.Alive || partyMember.BattleEntity == null)
+                    continue;
                 Rectangle boundingBox = partyMember.BattleEntity.GetBoundingBox();
 
                 if (boundingBox.Left < lowestX)
@@ -455,6 +458,16 @@ namespace SuperFantasticSteampunk
                 else if (boundingBox.Bottom > highestY)
                     highestY = boundingBox.Bottom;
             }
+        }
+
+        private PartyMember getFirstAlivePartyMemberWithBattleEntity(Party party)
+        {
+            foreach (PartyMember partyMember in party)
+            {
+                if (partyMember.Alive && partyMember.BattleEntity != null)
+                    return partyMember;
+            }
+            return null;
         }
 
         private void repositionPartyMembers()

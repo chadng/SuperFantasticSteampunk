@@ -42,10 +42,10 @@ namespace SuperFantasticSteampunk
             base.draw(renderer);
             renderer.Draw(whitePixelTextureData, Vector2.Zero, Color.Black, 0.0f, Game1.ScreenSize, false);
             Vector2 minScale = Game1.MinScreenScaleFactor;
-            float fontScale = Font.DefaultSize * 2 * minScale.Y;
-            Vector2 textSize = renderer.Font.MeasureString(gameOverText, fontScale);
+            Vector2 fontScale = 4f * minScale;
+            Vector2 textSize = renderer.Font.MeasureString(gameOverText, fontScale.Y * Font.DefaultSize);
             float alpha = gameOverAlphaTimer / gameOverAlphaTime;
-            renderer.DrawText(gameOverText, Game1.ScreenSize / 2.0f, new Color(1.0f, 1.0f, 1.0f, alpha), 0.0f, textSize / 2.0f, new Vector2(fontScale));
+            renderer.DrawText(gameOverText, Game1.ScreenSize / 2.0f, new Color(1.0f, 1.0f, 1.0f, alpha), 0.0f, textSize / 2.0f, fontScale);
         }
         #endregion
     }

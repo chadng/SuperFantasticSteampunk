@@ -62,7 +62,7 @@ namespace SuperFantasticSteampunk.BattleStates
         static ThinkMenuOption()
         {
             NoWeapon = new ThinkMenuOption("No weapon", null, -1, false);
-            NoShield = new ThinkMenuOption("No shield", null, -1, false);
+            NoShield = new ThinkMenuOption("No shield", "Meatshields. Yum.", -1, false);
         }
         #endregion
 

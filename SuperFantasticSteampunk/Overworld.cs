@@ -140,7 +140,7 @@ namespace SuperFantasticSteampunk
                 CurrentOverworldState.OverworldStateRenderer.Update(delta);
 
             camera.Update(delta);
-            Clock.Update(delta);
+            //Clock.Update(delta);
         }
 
         protected override void draw(Renderer renderer)

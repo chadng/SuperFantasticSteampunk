@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SuperFantasticSteampunk
 {
-    enum Handling { NoHandling, Light, Heavy, Uncomfortable }
+    enum Handling { NoHandling, Lightweight, Heavy, Uncomfortable }
     enum Enhancement { NoEnhancement, Piercing, Explosive, Relentless, Inaccurate, Spiky }
     enum Status { NoStatus, Poisonous, Shocking, Scary }
     enum Affiliation { NoAffiliation, Light, Darkness, Doom }
@@ -13,24 +13,24 @@ namespace SuperFantasticSteampunk
     {
         #region Constants
         private static readonly Dictionary<Handling, int> weaponHandlingChances = new Dictionary<Handling, int> {
-            { Handling.NoHandling, 4 },
-            { Handling.Light, 2 },
-            { Handling.Heavy, 2 },
+            { Handling.NoHandling, 8 },
+            { Handling.Lightweight, 4 },
+            { Handling.Heavy, 4 },
             { Handling.Uncomfortable, 1 }
         };
 
         private static readonly Dictionary<Handling, int> shieldHandlingChances = new Dictionary<Handling, int> {
-            { Handling.NoHandling, 3 },
-            { Handling.Light, 2 },
-            { Handling.Heavy, 1 }
+            { Handling.NoHandling, 4 },
+            { Handling.Lightweight, 2 },
+            { Handling.Heavy, 2 }
         };
 
         private static readonly Dictionary<Enhancement, int> weaponEnhancementChances = new Dictionary<Enhancement, int> {
             { Enhancement.NoEnhancement, 4 },
-            { Enhancement.Piercing, 1 },
+            { Enhancement.Piercing, 2 },
             { Enhancement.Explosive, 1 },
             { Enhancement.Relentless, 2 },
-            { Enhancement.Inaccurate, 2 }
+            { Enhancement.Inaccurate, 1 }
         };
 
         private static readonly Dictionary<Enhancement, int> shieldEnhancementChances = new Dictionary<Enhancement, int> {

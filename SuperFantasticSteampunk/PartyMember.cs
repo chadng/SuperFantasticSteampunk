@@ -418,7 +418,7 @@ namespace SuperFantasticSteampunk
         {
             int modifier = (int)Math.Ceiling(stat * 0.2f);
 
-            if (attributes.Handling == Handling.Light)
+            if (attributes.Handling == Handling.Lightweight)
                 stat -= modifier;
             else if (attributes.Handling == Handling.Heavy)
                 stat += modifier;
