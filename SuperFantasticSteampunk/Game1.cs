@@ -37,7 +37,7 @@ namespace SuperFantasticSteampunk
         #endregion
 
         #region Static Properties
-        public static Random Random { get; private set; }
+        internal static SuperRandom Random { get; private set; }
         public static Color BackgroundColor { get; set; }
         public static Vector2 ScreenSize { get; private set; }
 
@@ -55,7 +55,7 @@ namespace SuperFantasticSteampunk
         #region Static Constructors
         static Game1()
         {
-            Random = new Random();
+            Random = new SuperRandom();
             BackgroundColor = SkyColor;
         }
         #endregion
